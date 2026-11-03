@@ -4,6 +4,7 @@ import kotlinx.coroutines.flow.StateFlow
 interface Platform {
     val source: Source
     val touchAllowed: StateFlow<Boolean>
+    val voiceAllowed: StateFlow<Boolean> get() = touchAllowed
     val providers: List<CaptureProvider>
     fun start()
     fun stop()

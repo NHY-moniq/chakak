@@ -11,16 +11,19 @@ class ChakakApp : Application() {
     lateinit var store: RoomRecordStore; private set
     lateinit var platform: Platform; private set
     lateinit var engine: CaptureEngine; private set
+    lateinit var voiceEngine: CaptureEngine; private set
     lateinit var ready: Deferred<Unit>; private set
     override fun onCreate() {
         super.onCreate()
         val db = Room.databaseBuilder(this, ChakakDatabase::class.java, "chakak.db").build()
         store = RoomRecordStore(db)
         platform = createPlatform(this)
-        engine = CaptureEngine(store, platform.providers.map { provider -> object : CaptureProvider {
+        val providers = platform.providers.map { provider -> object : CaptureProvider {
             override val key = provider.key
             override suspend fun read() = withContext(Dispatchers.IO) { provider.read() }
-        } }, platform.source, platform.touchAllowed)
+        } }
+        engine = CaptureEngine(store, providers, platform.source, platform.touchAllowed)
+        voiceEngine = CaptureEngine(store, providers, platform.source, platform.voiceAllowed)
         ready = scope.async { store.recover() }
     }
 }

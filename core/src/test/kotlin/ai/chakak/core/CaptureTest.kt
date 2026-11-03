@@ -68,4 +68,24 @@ class CaptureTest {
         assertEquals(1, store.records.value.size)
     }
 
+    @Test fun approvedDrivingVoiceCapturePersistsWithoutTouchPermission() = runTest {
+        val access = captureAccess(DrivingState.DRIVE, true, false, true)
+        assertFalse(access.touch)
+        val store = MemoryStore()
+        val gate = MutableStateFlow(access.voice)
+        val engine = CaptureEngine(store, listOf(provider("value") { Observation("value", Status.OK, "sample") }), Source.REAL, gate)
+        assertTrue(engine.capture("voice", Category.VEHICLE_STATUS))
+        assertEquals(Status.OK, store.records.value.single().observations.single().status)
+    }
+    @Test fun lostVehicleStateInterruptsVoiceCaptureWithoutDeletingBase() = runTest {
+        val store = MemoryStore()
+        val gate = MutableStateFlow(captureAccess(DrivingState.DRIVE, true, false, true).voice)
+        val engine = CaptureEngine(store, listOf(provider("slow") { delay(6000); Observation("slow", Status.OK) }), Source.REAL, gate)
+        val job = launch { engine.capture("voice", Category.PLACE) }
+        runCurrent()
+        gate.value = captureAccess(DrivingState.UNKNOWN, false, false, true).voice
+        job.join()
+        assertEquals(Status.INTERRUPTED, store.records.value.single().observations.single().status)
+    }
+
 }

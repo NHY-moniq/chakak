@@ -36,19 +36,39 @@ class RealPlatform(private val context: Context) : Platform {
     private var car: Car? = null
     private var ux: CarUxRestrictionsManager? = null
     private var properties: CarPropertyManager? = null
-    private var parked = false
+    override val voiceAllowed = MutableStateFlow(false)
+    private var drivingState = DrivingState.UNKNOWN
+    private var uxKnown = false
     private var unrestricted = false
     private var active = false
     private var clients = 0
-    private fun update() { touchAllowed.value = active && parked && unrestricted }
+    private fun update() {
+        val access = captureAccess(if(active) drivingState else DrivingState.UNKNOWN, active && uxKnown,
+            unrestricted, inMotionVoiceEnabled(
+                approved = context.resources.getBoolean(R.bool.gleo_in_motion_approved),
+                emulatorOptIn = context.resources.getBoolean(R.bool.gleo_emulator_in_motion_enabled),
+                debugBuild = BuildConfig.DEBUG,
+                emulator = android.os.Build.HARDWARE == "ranchu"))
+        touchAllowed.value = access.touch
+        voiceAllowed.value = access.voice
+    }
+    private fun readGear(value: CarPropertyValue<*>): DrivingState {
+        if(value.status != CarPropertyValue.STATUS_AVAILABLE) return DrivingState.UNKNOWN
+        return when(value.value) {
+            VehicleGear.GEAR_PARK -> DrivingState.PARKED
+            VehicleGear.GEAR_DRIVE -> DrivingState.DRIVE
+            VehicleGear.GEAR_REVERSE -> DrivingState.REVERSE
+            else -> DrivingState.OTHER
+        }
+    }
     private val listener = object : CarPropertyManager.CarPropertyEventCallback {
         override fun onChangeEvent(value: CarPropertyValue<*>) {
             if(value.propertyId == VehiclePropertyIds.GEAR_SELECTION) {
-                parked = value.status == CarPropertyValue.STATUS_AVAILABLE && value.value == VehicleGear.GEAR_PARK
+                drivingState = readGear(value)
                 update()
             }
         }
-        override fun onErrorEvent(propId: Int, zone: Int) { parked = false; update() }
+        override fun onErrorEvent(propId: Int, zone: Int) { drivingState = DrivingState.UNKNOWN; update() }
     }
     override fun start() {
         clients++
@@ -56,24 +76,25 @@ class RealPlatform(private val context: Context) : Platform {
         active = true
         try {
             car = Car.createCar(context, null, Car.CAR_WAIT_TIMEOUT_DO_NOT_WAIT) { connected, ready ->
-                if(!ready || !active) { parked = false; unrestricted = false; update() }
+                if(!ready || !active) { drivingState = DrivingState.UNKNOWN; unrestricted = false; uxKnown = false; update() }
                 else try {
                     ux = connected.getCarManager(Car.CAR_UX_RESTRICTION_SERVICE) as CarUxRestrictionsManager
                     properties = connected.getCarManager(Car.PROPERTY_SERVICE) as CarPropertyManager
-                    ux!!.registerListener { restrictions -> unrestricted = !restrictions.isRequiresDistractionOptimization; update() }
+                    ux!!.registerListener { restrictions -> uxKnown = true; unrestricted = !restrictions.isRequiresDistractionOptimization; update() }
                     unrestricted = !ux!!.currentCarUxRestrictions.isRequiresDistractionOptimization
+                    uxKnown = true
                     val registered = properties!!.registerCallback(listener, VehiclePropertyIds.GEAR_SELECTION, CarPropertyManager.SENSOR_RATE_ONCHANGE)
                     val value = properties!!.getProperty<Int>(VehiclePropertyIds.GEAR_SELECTION, 0)
-                    parked = registered && value.status == CarPropertyValue.STATUS_AVAILABLE && value.value == VehicleGear.GEAR_PARK
+                    drivingState = if(registered) readGear(value) else DrivingState.UNKNOWN
                     update()
-                } catch (_: Exception) { parked = false; unrestricted = false; update() }
+                } catch (_: Exception) { drivingState = DrivingState.UNKNOWN; unrestricted = false; uxKnown = false; update() }
             }
-        } catch (_: Exception) { touchAllowed.value = false }
+        } catch (_: Exception) { drivingState = DrivingState.UNKNOWN; uxKnown = false; update() }
     }
     override fun stop() {
         clients = (clients - 1).coerceAtLeast(0)
         if(clients > 0) return
-        active = false; touchAllowed.value = false; parked = false; unrestricted = false
+        active = false; drivingState = DrivingState.UNKNOWN; unrestricted = false; uxKnown = false; update()
         runCatching { ux?.unregisterListener() }; runCatching { properties?.unregisterCallback(listener) }; runCatching { car?.disconnect() }
         ux = null; properties = null; car = null
     }

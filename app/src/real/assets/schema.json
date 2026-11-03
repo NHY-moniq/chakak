@@ -1,13 +1,13 @@
 {
   "packageName": "ai.chakak",
-  "appDescription": "Save local records of vehicle observations and location.",
+  "appDescription": "Save local snapshots of vehicle observations and location through voice requests without opening a screen.",
   "version": "0.1.0",
   "actionCalls": [
     {
       "type": "function",
       "function": {
         "name": "CAPTURE_RECORD",
-        "description": "Save the current vehicle observations and location while parked.",
+        "description": "Save the current vehicle observations and location when voice recording is permitted.",
         "parameters": {
           "type": "object",
           "properties": {
@@ -15,7 +15,7 @@
               "type": "string",
               "description": "The category of the record.",
               "enum": [
-                                "VEHICLE_STATUS",
+                "VEHICLE_STATUS",
                 "PLACE",
                 "UNCLASSIFIED"
               ]
@@ -60,5 +60,6 @@
         "component": "service"
       }
     }
-  ]
+  ],
+  "invokeWord": "차칵"
 }

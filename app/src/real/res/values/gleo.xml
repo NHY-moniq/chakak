@@ -1,6 +1,9 @@
 <resources>
-    <bool name="gleo_receiver_enabled">false</bool>
+    <bool name="gleo_emulator_in_motion_enabled">false</bool>
+    <!-- Enable only after feature/category/region eligibility is verified. Never enables touch UI. -->
+    <bool name="gleo_in_motion_approved">false</bool>
+    <bool name="gleo_receiver_enabled">true</bool>
     <bool name="gleo_follow_up_approved">false</bool>
-    <string name="gleo_sender_package" translatable="false"></string>
-    <string name="gleo_sender_sha256" translatable="false"></string>
+    <string name="gleo_sender_package" translatable="false">ai.umos.ambientai</string>
+    <string name="gleo_sender_sha256" translatable="false">26baafc8e2eea52ae6cfa0eecc804037b88ee1bcdc2b5f7eb5558cd7cf6c7d44</string>
 </resources>

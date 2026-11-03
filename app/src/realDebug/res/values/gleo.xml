@@ -1,0 +1,4 @@
+<resources>
+    <!-- User-requested local Pleos driving test; also guarded by DEBUG and ranchu hardware. -->
+    <bool name="gleo_emulator_in_motion_enabled">true</bool>
+</resources>

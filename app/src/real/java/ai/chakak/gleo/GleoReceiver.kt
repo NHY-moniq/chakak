@@ -15,11 +15,12 @@ import org.json.JSONObject
 import java.security.MessageDigest
 import java.util.UUID
 
-/** Disabled until the actual Gleo signing identity and sender UID propagation are verified. */
+/** Accepts only the configured Gleo package/signature with platform-provided sender identity. */
 class GleoReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val target = trustedSender(context) ?: return
         if(intent.action !in setOf("CAPTURE_RECORD", "ADD_RECORD_MEMO")) return
+        val receivedElapsed = android.os.SystemClock.elapsedRealtime()
         val receivedAt = System.currentTimeMillis()
         val raw = intent.getStringExtra("ACTION_PARAM") ?: "{}"
         if(raw.length > 8192) return
@@ -29,7 +30,7 @@ class GleoReceiver : BroadcastReceiver() {
             var response = reply(intent.action!!, "fail", "The action could not be completed.")
             var platformStarted = false
             try {
-                withTimeout(6000) {
+                withTimeout((6000 - (android.os.SystemClock.elapsedRealtime() - receivedElapsed)).coerceAtLeast(1)) {
                     app.ready.await()
                     val decoded = org.json.JSONTokener(raw).nextValue()
                     val params = when(decoded) { is JSONObject -> decoded; is String -> JSONObject(decoded); else -> error("Invalid parameters") }
@@ -37,17 +38,17 @@ class GleoReceiver : BroadcastReceiver() {
                     require(categoryInput == null || categoryInput is String)
                     val requestInput = params.opt("requestId")
                     require(requestInput == null || (requestInput is String && requestInput.length <= 128))
-                    // Until DO approval exists, a headless request also requires confirmed parking.
+                    // Independent voice policy: approved headless DRIVE capture never opens/unlocks the UI.
                     app.platform.start()
                     platformStarted = true
-                    val allowed = withTimeoutOrNull(500) { app.platform.touchAllowed.first { it } } == true
-                    if(!allowed) { response = reply(intent.action!!, "fail", "Recording is available only when parking is confirmed."); return@withTimeout }
+                    val allowed = withTimeoutOrNull(500) { app.platform.voiceAllowed.first { it } } == true
+                    if(!allowed) { response = reply(intent.action!!, "fail", "Voice recording is not available in the current driving state."); return@withTimeout }
                     if(intent.action == "CAPTURE_RECORD") {
                         val id = params.optString("requestId").ifBlank { UUID.randomUUID().toString() }
                         val category = Category.valueOf(params.optString("category", "UNCLASSIFIED"))
-                        val created = app.engine.capture(id, category, receivedAt)
+                        val created = app.voiceEngine.capture(id, category, receivedAt)
                         val record = app.store.records.first().find { it.id == id }
-                        if(record == null) { response = reply("CAPTURE_RECORD", "fail", "This request has already been removed."); return@withTimeout }
+                        if(record == null) { response = reply("CAPTURE_RECORD", "fail", "No record is available for this request."); return@withTimeout }
                         val data = JSONObject().put("recordId", id)
                         // Follow-up remains opt-in only after schema approval; no open microphone session here.
                         if(created && context.resources.getBoolean(ai.chakak.R.bool.gleo_follow_up_approved)) {
@@ -55,7 +56,7 @@ class GleoReceiver : BroadcastReceiver() {
                             app.store.issueMemoToken(id, token, System.currentTimeMillis() + 60_000)
                             data.put("memoToken", token)
                         }
-                        val complete = record.observations.all { it.status == Status.OK }
+                        val complete = !record.collecting && record.observations.all { it.status == Status.OK }
                         response = reply("CAPTURE_RECORD", "success", if(complete) "The record has been saved." else "The record has been saved with some information unavailable.", data)
                     } else {
                         val id = params.get("recordId") as? String ?: error("Invalid record ID")
