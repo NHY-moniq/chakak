@@ -1,1 +1,13 @@
-docs/*
+# Supplied reference files remain local.
+/docs/*
+!/docs/design/
+!/docs/pleos/
+!/docs/technical/
+.gradle/
+.kotlin/
+**/build/
+local.properties
+*.jks
+*.keystore
+.idea/
+.DS_Store

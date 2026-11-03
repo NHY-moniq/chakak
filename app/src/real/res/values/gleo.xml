@@ -1,0 +1,6 @@
+<resources>
+    <bool name="gleo_receiver_enabled">false</bool>
+    <bool name="gleo_follow_up_approved">false</bool>
+    <string name="gleo_sender_package" translatable="false"></string>
+    <string name="gleo_sender_sha256" translatable="false"></string>
+</resources>

@@ -1,0 +1,10 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="pleos.car.permission.CAR_DRIVE"/>
+    <uses-permission android:name="pleos.car.permission.CAR_SAFETY"/>
+    <uses-permission android:name="android.car.permission.CAR_POWERTRAIN"/>
+    <uses-permission android:name="pleos.car.permission.PRIVATE_CAR_SAFETY"/>
+    <uses-permission android:name="pleos.car.permission.FUSED_LOCATION"/>
+    <application><uses-library android:name="android.car" android:required="false"/><receiver android:name=".gleo.GleoReceiver" android:enabled="@bool/gleo_receiver_enabled" android:exported="true">
+        <intent-filter><action android:name="CAPTURE_RECORD"/><action android:name="ADD_RECORD_MEMO"/></intent-filter>
+    </receiver></application>
+</manifest>

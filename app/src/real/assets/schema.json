@@ -1,0 +1,64 @@
+{
+  "packageName": "ai.chakak",
+  "appDescription": "Save local records of vehicle observations and location.",
+  "version": "0.1.0",
+  "actionCalls": [
+    {
+      "type": "function",
+      "function": {
+        "name": "CAPTURE_RECORD",
+        "description": "Save the current vehicle observations and location while parked.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "category": {
+              "type": "string",
+              "description": "The category of the record.",
+              "enum": [
+                                "VEHICLE_STATUS",
+                "PLACE",
+                "UNCLASSIFIED"
+              ]
+            },
+            "requestId": {
+              "type": "string",
+              "description": "An optional stable identifier for retrying the same request."
+            }
+          },
+          "required": []
+        },
+        "component": "service"
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "ADD_RECORD_MEMO",
+        "description": "Add a memo to a record using its unexpired follow-up context.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "recordId": {
+              "type": "string",
+              "description": "The identifier returned by the capture action."
+            },
+            "memoToken": {
+              "type": "string",
+              "description": "The one-time token returned by the capture action."
+            },
+            "memo": {
+              "type": "string",
+              "description": "The memo to attach to the record."
+            }
+          },
+          "required": [
+            "recordId",
+            "memoToken",
+            "memo"
+          ]
+        },
+        "component": "service"
+      }
+    }
+  ]
+}
