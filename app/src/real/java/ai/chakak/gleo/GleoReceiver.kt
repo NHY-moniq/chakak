@@ -3,8 +3,6 @@ package ai.chakak.gleo
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.os.Build
 import ai.chakak.ChakakApp
 import ai.chakak.core.Category
 import ai.chakak.core.Status
@@ -12,22 +10,35 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
 import org.json.JSONArray
 import org.json.JSONObject
-import java.security.MessageDigest
 import java.util.UUID
 
-/** Accepts only the configured Gleo package/signature with platform-provided sender identity. */
+const val CAPTURE_RECORD = "CAPTURE_RECORD"
+const val ADD_RECORD_MEMO = "ADD_RECORD_MEMO"
+
+/**
+ * Gleo sends `<packageName>.<FUNCTION>` (observed on the Pleos Connect v2.1.0 emulator); the Gleo guide documents the bare
+ * function name. Both resolve to the schema function name, which is also the callback `functionName`.
+ */
+fun gleoFunction(packageName: String, action: String?): String? =
+    action?.removePrefix("$packageName.")?.takeIf { it == CAPTURE_RECORD || it == ADD_RECORD_MEMO }
+
+/**
+ * Implements the Gleo Interface contract only: action + ACTION_PARAM in, APP_ACTION_RESPONSE out. The guide defines no
+ * caller verification, so any app can reach this receiver; memo writes stay bound to the one-time token, and responses are
+ * addressed to the Gleo package so record IDs and tokens are never broadcast to other apps.
+ */
 class GleoReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        val target = trustedSender(context) ?: return
-        if(intent.action !in setOf("CAPTURE_RECORD", "ADD_RECORD_MEMO")) return
+        val function = gleoFunction(context.packageName, intent.action) ?: return
         val receivedElapsed = android.os.SystemClock.elapsedRealtime()
         val receivedAt = System.currentTimeMillis()
         val raw = intent.getStringExtra("ACTION_PARAM") ?: "{}"
         if(raw.length > 8192) return
+        val target = context.getString(ai.chakak.R.string.gleo_package)
         val pending = goAsync()
         val app = context.applicationContext as ChakakApp
         app.scope.launch {
-            var response = reply(intent.action!!, "fail", "The action could not be completed.")
+            var response = reply(function, "fail", "The action could not be completed.")
             var platformStarted = false
             try {
                 withTimeout((6000 - (android.os.SystemClock.elapsedRealtime() - receivedElapsed)).coerceAtLeast(1)) {
@@ -41,31 +52,36 @@ class GleoReceiver : BroadcastReceiver() {
                     // Independent voice policy: approved headless DRIVE capture never opens/unlocks the UI.
                     app.platform.start()
                     platformStarted = true
-                    val allowed = withTimeoutOrNull(500) { app.platform.voiceAllowed.first { it } } == true
-                    if(!allowed) { response = reply(intent.action!!, "fail", "Voice recording is not available in the current driving state."); return@withTimeout }
-                    if(intent.action == "CAPTURE_RECORD") {
+                    // Wait only until gear and UX restrictions are known, then decide; the wait shortens the collection budget.
+                    withTimeoutOrNull(1500) { app.platform.accessResolved.first { it } }
+                    if(!app.platform.voiceAllowed.value) { response = reply(function, "fail", "Voice recording is not available in the current driving state."); return@withTimeout }
+                    if(function == CAPTURE_RECORD) {
                         val id = params.optString("requestId").ifBlank { UUID.randomUUID().toString() }
-                        val category = Category.valueOf(params.optString("category", "UNCLASSIFIED"))
+                        val category = Category.valueOf(params.optString("category").ifBlank { Category.UNCLASSIFIED.name })
                         val created = app.voiceEngine.capture(id, category, receivedAt)
                         val record = app.store.records.first().find { it.id == id }
-                        if(record == null) { response = reply("CAPTURE_RECORD", "fail", "No record is available for this request."); return@withTimeout }
+                        if(record == null) { response = reply(CAPTURE_RECORD, "fail", "No record is available for this request."); return@withTimeout }
                         val data = JSONObject().put("recordId", id)
-                        // Follow-up remains opt-in only after schema approval; no open microphone session here.
-                        if(created && context.resources.getBoolean(ai.chakak.R.bool.gleo_follow_up_approved)) {
+                        val complete = !record.collecting && record.observations.all { it.status == Status.OK }
+                        val saved = if(complete) "The record has been saved." else "The record has been saved with some information unavailable."
+                        if(created) {
+                            // The base record is already committed. "asking" lets Gleo offer one memo turn. Gleo routes the reply to
+                            // ADD_RECORD_MEMO only when it mentions a memo, and sends blank recordId/memoToken, so this record becomes
+                            // the single pending memo target. "No", silence, or expiry simply leaves the record as saved.
                             val token = UUID.randomUUID().toString()
                             app.store.issueMemoToken(id, token, System.currentTimeMillis() + 60_000)
                             data.put("memoToken", token)
-                        }
-                        val complete = !record.collecting && record.observations.all { it.status == Status.OK }
-                        response = reply("CAPTURE_RECORD", "success", if(complete) "The record has been saved." else "The record has been saved with some information unavailable.", data)
+                            response = reply(CAPTURE_RECORD, "asking", "$saved To add a memo, say memo followed by what you want to note.", data)
+                        } else response = reply(CAPTURE_RECORD, "success", saved, data)
                     } else {
-                        val id = params.get("recordId") as? String ?: error("Invalid record ID")
-                        val token = params.get("memoToken") as? String ?: error("Invalid token")
+                        val id = params.opt("recordId") as? String ?: ""
+                        val token = params.opt("memoToken") as? String ?: ""
                         val memo = params.get("memo") as? String ?: error("Invalid memo")
                         require(id.length <= 128 && token.length <= 128 && memo.length <= 2000)
-                        val saved = context.resources.getBoolean(ai.chakak.R.bool.gleo_follow_up_approved) && memo.isNotBlank() &&
-                            app.store.addMemo(id, token, System.currentTimeMillis(), memo)
-                        response = reply("ADD_RECORD_MEMO", if(saved) "success" else "fail", if(saved) "The memo has been saved." else "The memo context is invalid or expired. Edit the record while parked.")
+                        val now = System.currentTimeMillis()
+                        val saved = memo.isNotBlank() &&
+                            if(id.isNotBlank() && token.isNotBlank()) app.store.addMemo(id, token, now, memo) else app.store.addPendingMemo(now, memo)
+                        response = reply(ADD_RECORD_MEMO, if(saved) "success" else "fail", if(saved) "The memo has been saved." else "The memo context is invalid or expired. Edit the record while parked.")
                     }
                 }
             } catch (_: Exception) {
@@ -78,19 +94,8 @@ class GleoReceiver : BroadcastReceiver() {
             }
         }
     }
-    private fun reply(action: String, status: String, message: String, data: JSONObject? = null) = JSONObject()
-        .put("functionName", action).put("status", status).put("message", message).apply {
+    private fun reply(function: String, status: String, message: String, data: JSONObject? = null) = JSONObject()
+        .put("functionName", function).put("status", status).put("message", message).apply {
             if(data != null) put("data", JSONArray().put(data).toString())
         }
-    private fun trustedSender(context: Context): String? {
-        if(Build.VERSION.SDK_INT < 34 || sentFromUid < 0) return null
-        val expectedPackage = context.getString(ai.chakak.R.string.gleo_sender_package)
-        val expectedDigest = context.getString(ai.chakak.R.string.gleo_sender_sha256)
-        if(expectedPackage.isBlank() || !expectedDigest.matches(Regex("[0-9a-fA-F]{64}"))) return null
-        if(context.packageManager.getPackagesForUid(sentFromUid)?.contains(expectedPackage) != true) return null
-        return runCatching {
-            val signatures = context.packageManager.getPackageInfo(expectedPackage, PackageManager.GET_SIGNING_CERTIFICATES).signingInfo?.apkContentsSigners.orEmpty()
-            if(signatures.any { signature -> MessageDigest.getInstance("SHA-256").digest(signature.toByteArray()).joinToString("") { "%02x".format(it) }.equals(expectedDigest, true) }) expectedPackage else null
-        }.getOrNull()
-    }
 }

@@ -44,6 +44,26 @@ class RoomRecordStoreTest {
         assertFalse(store.addMemo("id", "next", 100, "expired"))
         assertEquals("saved", store.records.first().single().memo)
     }
+    @Test fun pendingMemoTargetsOnlyTheLatestUnexpiredCapture() = runTest {
+        store.begin("old", 1, Category.PLACE, Source.REAL, emptyList())
+        store.begin("new", 2, Category.PLACE, Source.REAL, emptyList())
+        store.issueMemoToken("old", "t1", 100)
+        store.issueMemoToken("new", "t2", 100)
+        assertFalse(store.addMemo("old", "t1", 5, "stale token"))
+        assertFalse(store.addPendingMemo(100, "expired"))
+        assertTrue(store.addPendingMemo(5, "park on the right"))
+        assertFalse(store.addPendingMemo(6, "second memo"))
+        val memos = store.records.first().associate { it.id to it.memo }
+        assertEquals("park on the right", memos["new"])
+        assertEquals("", memos["old"])
+    }
+    @Test fun parkedEditCancelsPendingMemo() = runTest {
+        store.begin("id", 1, Category.PLACE, Source.REAL, emptyList())
+        store.issueMemoToken("id", "token", 100)
+        store.edit("id", "edited", Category.PLACE, "parked memo")
+        assertFalse(store.addPendingMemo(2, "late voice memo"))
+        assertEquals("parked memo", store.records.first().single().memo)
+    }
     @Test fun startupRecoveryPreservesCompletedObservations() = runTest {
         store.begin("id", 1, Category.PLACE, Source.REAL, listOf("location", "tire"))
         store.observe("id", Observation("location", Status.OK, "observed"))

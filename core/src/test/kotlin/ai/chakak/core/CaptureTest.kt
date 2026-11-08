@@ -20,6 +20,7 @@ private class MemoryStore : RecordStore {
     override suspend fun delete(id: String) { records.value = records.value.filterNot { it.id == id } }
     override suspend fun issueMemoToken(id: String, token: String, expiresAt: Long) {}
     override suspend fun addMemo(id: String, token: String, now: Long, memo: String) = false
+    override suspend fun addPendingMemo(now: Long, memo: String) = false
 }
 @OptIn(ExperimentalCoroutinesApi::class)
 class CaptureTest {

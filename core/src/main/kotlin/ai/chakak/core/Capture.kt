@@ -20,8 +20,11 @@ interface RecordStore {
     suspend fun recover()
     suspend fun edit(id: String, title: String, category: Category, memo: String)
     suspend fun delete(id: String)
+    /** Replaces any outstanding memo token, so at most one record awaits a voice memo at a time. */
     suspend fun issueMemoToken(id: String, token: String, expiresAt: Long)
     suspend fun addMemo(id: String, token: String, now: Long, memo: String): Boolean
+    /** Attaches the memo to the single record still awaiting one; Gleo does not pass callback data into the next action. */
+    suspend fun addPendingMemo(now: Long, memo: String): Boolean
 }
 interface CaptureProvider { val key: String; suspend fun read(): Observation }
 class CaptureEngine(private val store: RecordStore, private val providers: List<CaptureProvider>,
