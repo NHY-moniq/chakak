@@ -31,7 +31,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 
 const val RESTRICTION_TITLE = "주차 후 이용할 수 있습니다"
-const val RESTRICTION_ACTIONS = "제한되는 기능: 현재 상태 기록 · 기록 목록 · 필터 · 상세 · 편집 · 삭제"
+const val RESTRICTION_ACTIONS = "제한되는 기능: 지금 차칵 기록 · 기록 목록 · 필터 · 상세 · 편집 · 삭제"
 const val RESTRICTION_REASON = "주행 중이거나 주차 상태를 확인할 수 없어 기록을 열지 않습니다."
 const val RESTRICTION_KEEP = "저장된 기록은 그대로 유지됩니다."
 

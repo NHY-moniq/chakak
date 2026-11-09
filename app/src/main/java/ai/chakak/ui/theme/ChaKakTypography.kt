@@ -29,12 +29,12 @@ val AstaSans: FontFamily = FontFamily(
     },
 )
 
-private fun pleosStyle(weight: FontWeight, size: Int, lineHeight: Int): TextStyle = TextStyle(
+private fun pleosStyle(weight: FontWeight, size: Int, lineHeight: Int, tracking: Float = 0f): TextStyle = TextStyle(
     fontFamily = AstaSans,
     fontWeight = weight,
     fontSize = size.sp,
     lineHeight = lineHeight.sp,
-    letterSpacing = 0.em,
+    letterSpacing = tracking.em,
     // 한국어가 음절 중간에서 줄바꿈되지 않도록 어절 단위로 끊는다(API 33+ 적용, 이하에서는 기본 동작).
     lineBreak = LineBreak.Paragraph.copy(wordBreak = LineBreak.WordBreak.Phrase),
 )
@@ -73,4 +73,27 @@ data class ChaKakTypography(
     val labelMedium: TextStyle = pleosStyle(FontWeight.Normal, 24, 28),
     /** Label Small — Regular 20/24 (최소 12sp 이상 충족) */
     val labelSmall: TextStyle = pleosStyle(FontWeight.Normal, 20, 24),
-)
+    /** Title Large ExtraBold 변형 40/52 — 주소 큰 줄 */
+    val titleLargeStrong: TextStyle = pleosStyle(FontWeight.ExtraBold, 40, 52),
+    /** Title Medium SemiBold 36/48 — 상세 운전자 메모. 시안 A 값. TBD: Pleos 원본 미확인(36의 행간 44와 다름) */
+    val memoLarge: TextStyle = pleosStyle(FontWeight.SemiBold, 36, 48),
+    /** Body Medium SemiBold 28/38 — 작은 메모 상자. 시안 A 값. TBD: Pleos 원본 미확인 */
+    val memoSmall: TextStyle = pleosStyle(FontWeight.SemiBold, 28, 38),
+    /** Label Medium Bold 24/28 — 날짜 머리·섹션 라벨·칩. TBD: Pleos 원본 미확인(Label에 Bold 변형 미추출) */
+    val labelMediumStrong: TextStyle = pleosStyle(FontWeight.Bold, 24, 28),
+    /**
+     * 누적 주행 거리 큰 숫자 ExtraBold 112/120, 자간 -3%. Pleos Driving/Speed 숫자 스타일을 본뜬 시안 A 값.
+     * TBD: Pleos 원본 미확인 — driving view 숫자 스타일 미추출.
+     */
+    val dashboardNumber: TextStyle = pleosStyle(FontWeight.ExtraBold, 112, 120, tracking = -0.03f),
+    /** 폭 700dp 미만에서 쓰는 [dashboardNumber] 축소형 80/88. TBD: Pleos 원본 미확인 */
+    val dashboardNumberCompact: TextStyle = pleosStyle(FontWeight.ExtraBold, 80, 88, tracking = -0.03f),
+    /** 칸이 좁거나 글꼴이 클 때 쓰는 [dashboardNumber] 2단계 축소형 60/68. TBD: Pleos 원본 미확인 */
+    val dashboardNumberSmall: TextStyle = pleosStyle(FontWeight.ExtraBold, 60, 68, tracking = -0.03f),
+) {
+    /**
+     * 큰 숫자가 한 줄에 들어갈 때까지 줄여 가는 순서: 112 → 80 → 60 → Title Large 40.
+     * 숫자를 줄임표로 자르거나 자릿수 중간에서 줄바꿈하지 않기 위해 쓴다.
+     */
+    val dashboardNumberSteps: List<TextStyle> = listOf(dashboardNumber, dashboardNumberCompact, dashboardNumberSmall, titleLarge)
+}

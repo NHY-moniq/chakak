@@ -73,6 +73,8 @@ data class ChaKakColors(
     /** informative/active — 완료. Light 텍스트 사용 금지 */
     val informativeActive: Color,
     val isDark: Boolean,
+    /** 차칵 브랜드 색(시안 A). Pleos 토큰이 아니다. */
+    val brand: ChaKakBrandColors,
 ) {
     /** [fill] 위에 올릴 글리프 색. textPrimary와 textOnFilled 중 대비가 높은 쪽을 고른다. */
     fun contentOn(fill: Color): Color =
@@ -113,6 +115,7 @@ data class ChaKakColors(
             informativePositive = Color(0xFF0064FF),
             informativeActive = Color(0xFF02C265),
             isDark = false,
+            brand = ChaKakBrandColors.Light,
         )
 
         val Dark = ChaKakColors(
@@ -144,6 +147,7 @@ data class ChaKakColors(
             informativePositive = Color(0xFF0082FF),
             informativeActive = Color(0xFF00E074),
             isDark = true,
+            brand = ChaKakBrandColors.Dark,
         )
     }
 }

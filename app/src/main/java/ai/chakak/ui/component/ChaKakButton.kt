@@ -44,11 +44,13 @@ import androidx.compose.ui.unit.Dp
 
 /**
  * Pleos Basic Button 변형.
- * - [Filled]: button/filled — 주요 동작(현재 상태 기록·편집·저장)
+ * - [Filled]: button/filled — 주요 동작(편집·저장)
  * - [Basic]: button/basic — 보조 동작(목록·취소)
  * - [Destructive]: button/basic + regulation/red 테두리·아이콘. 라벨은 text primary로 대비 유지
+ * - [Accent]: 차칵 브랜드 accent 채움 + 어두운 글자(시안 A "지금 차칵 기록"). Pleos 토큰 아님
+ * - [Outlined]: 투명 면 + divider/tertiary 테두리(시안 A 상세 "편집")
  */
-enum class ButtonVariant { Filled, Basic, Destructive }
+enum class ButtonVariant { Filled, Basic, Destructive, Accent, Outlined }
 
 /** Pleos 버튼 크기(foundations 5). 높이는 최소값이며 큰 글꼴에서는 늘어난다. */
 enum class ButtonSize { Large, Medium, Small }
@@ -158,13 +160,27 @@ private fun ChaKakColors.buttonPalette(variant: ButtonVariant, active: Boolean, 
             val content = if (active) textOnFilled else textQuaternary
             ButtonPalette(container, content, content, border = null)
         }
-        ButtonVariant.Basic, ButtonVariant.Destructive -> basicPalette(variant, active, pressed)
+        ButtonVariant.Accent -> accentPalette(active, pressed)
+        ButtonVariant.Basic, ButtonVariant.Destructive, ButtonVariant.Outlined -> basicPalette(variant, active, pressed)
     }
 
+/** 비활성은 Filled와 같은 button/filled/disabled + quaternary 글자(이유 문구는 버튼 아래에 따로 보인다) */
+private fun ChaKakColors.accentPalette(active: Boolean, pressed: Boolean): ButtonPalette {
+    val container = when {
+        !active -> buttonFilledDisabled
+        pressed -> brand.accentPressed
+        else -> brand.accent
+    }
+    val content = if (active) brand.onAccent else textQuaternary
+    return ButtonPalette(container, content, content, border = null)
+}
+
 private fun ChaKakColors.basicPalette(variant: ButtonVariant, active: Boolean, pressed: Boolean): ButtonPalette {
+    val outlined = variant == ButtonVariant.Outlined
     val container = when {
         !active -> buttonBasicDisabled
         pressed -> buttonBasicPressed
+        outlined -> Color.Transparent
         else -> buttonBasicEnabled
     }
     val content = if (active) textPrimary else textQuaternary
@@ -176,6 +192,7 @@ private fun ChaKakColors.basicPalette(variant: ButtonVariant, active: Boolean, p
         border = when {
             destructive -> regulationRed
             !active -> dividerSecondary
+            outlined -> dividerTertiary
             else -> null
         },
     )
@@ -185,8 +202,10 @@ private fun ChaKakColors.basicPalette(variant: ButtonVariant, active: Boolean, p
 private fun ButtonGallery() {
     Surface(color = ChaKakTheme.colors.backgroundPrimary) {
         Column(Modifier.padding(ChaKakSpacing.screen), verticalArrangement = Arrangement.spacedBy(ChaKakSpacing.item)) {
-            ChaKakButton("현재 상태 기록", {}, variant = ButtonVariant.Filled, size = ButtonSize.Large)
-            ChaKakButton("현재 상태 기록", {}, variant = ButtonVariant.Filled, size = ButtonSize.Large, loading = true, loadingText = "기록 중…")
+            ChaKakButton("지금 차칵 기록", {}, variant = ButtonVariant.Accent, size = ButtonSize.Large)
+            ChaKakButton("지금 차칵 기록", {}, variant = ButtonVariant.Accent, size = ButtonSize.Large, enabled = false)
+            ChaKakButton("편집", {}, variant = ButtonVariant.Outlined, size = ButtonSize.Small, icon = Icons.Filled.Edit)
+            ChaKakButton("지금 차칵 기록", {}, variant = ButtonVariant.Accent, size = ButtonSize.Large, loading = true, loadingText = "기록 중…")
             ChaKakButton("편집", {}, variant = ButtonVariant.Filled, icon = Icons.Filled.Edit)
             ChaKakButton("삭제", {}, variant = ButtonVariant.Destructive, icon = Icons.Filled.Delete)
             ChaKakButton("취소", {}, enabled = false)

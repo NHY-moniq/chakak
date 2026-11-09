@@ -11,6 +11,7 @@ import ai.chakak.core.Source
 import ai.chakak.ui.LibraryViewModel
 import ai.chakak.ui.app.AppWindowScaffold
 import ai.chakak.ui.app.LibraryCallbacks
+import ai.chakak.ui.app.ProvideTimelineClock
 import ai.chakak.ui.theme.ChaKakTheme
 
 class MainActivity : ComponentActivity() {
@@ -31,7 +32,7 @@ class MainActivity : ComponentActivity() {
             val state by model.uiState.collectAsStateWithLifecycle()
             val actions by model.actions.collectAsStateWithLifecycle()
             val allowed by app.platform.touchAllowed.collectAsStateWithLifecycle()
-            ChaKakTheme { AppWindowScaffold(state, actions, allowed, mock, callbacks) }
+            ChaKakTheme { ProvideTimelineClock { AppWindowScaffold(state, actions, allowed, mock, callbacks) } }
         }
     }
 }

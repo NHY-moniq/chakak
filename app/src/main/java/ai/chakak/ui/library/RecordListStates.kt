@@ -72,7 +72,7 @@ fun RecordListEmpty(modifier: Modifier = Modifier) {
     ListState(modifier) {
         StatePlaceholder(
             title = "아직 기록이 없습니다",
-            body = "사진 없이 위치와 차량 상태를 기록합니다. 주차 중에는 ‘현재 상태 기록’으로 남길 수 있습니다.",
+            body = "사진 없이 위치와 차량 상태를 기록합니다. 주차 중에는 ‘지금 차칵 기록’으로 남길 수 있습니다.",
             icon = { StateIcon(Icons.AutoMirrored.Filled.List) },
         )
     }

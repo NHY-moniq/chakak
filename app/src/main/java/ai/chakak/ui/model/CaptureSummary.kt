@@ -77,6 +77,7 @@ fun Category.label(): String = when (this) {
 /** 수집 항목 키의 표시 이름. 모르는 키는 숨기지 않고 그대로 보여준다. */
 fun observationKeyLabel(key: String): String = when (key) {
     "location" -> "위치"
+    "address" -> "주소"
     "odometer" -> "누적 주행 거리"
     "telltales" -> "경고등 상태"
     "tires" -> "타이어 상태"

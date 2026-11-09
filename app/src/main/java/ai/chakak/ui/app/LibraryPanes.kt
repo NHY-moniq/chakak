@@ -12,13 +12,19 @@ import ai.chakak.ui.model.ActionState
 import ai.chakak.ui.model.LibraryNavigation
 import ai.chakak.ui.model.LibraryUiState
 import ai.chakak.ui.theme.ChaKakSpacing
+import ai.chakak.ui.theme.JournalDimens
+import ai.chakak.ui.theme.LIST_PANE_MAX_FRACTION
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.saveable.SaveableStateHolder
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.min
 
 /** 목록 스크롤 상태의 저장 키. 기록 id(UUID)와 겹치지 않는 이름을 쓴다. */
 private const val LIBRARY_LIST_STATE_KEY = "chakak:library-list"
@@ -144,13 +150,19 @@ internal fun SinglePaneLayout(host: LibraryHost, modifier: Modifier) {
     if (record == null) host.LibraryPane(modifier) else host.RecordPane(record, showBack = true, modifier = modifier)
 }
 
-/** 넓은 창: 목록 + 선택한 기록 */
+/**
+ * 넓은 창: 목록 + 선택한 기록(시안 A). 목록 열은 [JournalDimens.listPaneMaxWidth](720)까지,
+ * 남은 폭의 절반을 넘지 않게 하고 나머지를 상세에 준다.
+ */
 @Composable
 internal fun TwoPaneLayout(host: LibraryHost, modifier: Modifier) {
-    Row(modifier, horizontalArrangement = Arrangement.spacedBy(ChaKakSpacing.pane)) {
-        host.LibraryPane(Modifier.weight(1f).fillMaxHeight())
-        val record = host.selected
-        val detailModifier = Modifier.weight(1f).fillMaxHeight()
-        if (record == null) NoSelectionPlaceholder(detailModifier) else host.RecordPane(record, showBack = false, modifier = detailModifier)
+    BoxWithConstraints(modifier) {
+        val listWidth = min(JournalDimens.listPaneMaxWidth, (maxWidth - ChaKakSpacing.pane) * LIST_PANE_MAX_FRACTION)
+        Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.spacedBy(ChaKakSpacing.pane)) {
+            host.LibraryPane(Modifier.width(listWidth).fillMaxHeight())
+            val record = host.selected
+            val detailModifier = Modifier.weight(1f).fillMaxHeight()
+            if (record == null) NoSelectionPlaceholder(detailModifier) else host.RecordPane(record, showBack = false, modifier = detailModifier)
+        }
     }
 }

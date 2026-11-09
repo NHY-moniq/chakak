@@ -27,7 +27,7 @@ const val OBSERVATION_NOTICE = "수집 시점의 관측값입니다. 진단 결�
 
 /**
  * 차량 상태 항목 목록(spec 9.4). 미지원·조회 실패도 숨기지 않고 항목별 상태로 보여준다.
- * 위치는 [LocationSection]에서 보여주므로 호출 측이 제외해서 넘긴다.
+ * 위치·주소·전용 영역이 있는 항목은 호출 측이 제외해서 넘긴다(정해진 영역이 없는 항목만).
  */
 @Composable
 fun VehicleObservationList(observations: List<Observation>, modifier: Modifier = Modifier) {

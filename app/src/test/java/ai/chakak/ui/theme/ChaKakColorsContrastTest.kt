@@ -32,6 +32,50 @@ class ChaKakColorsContrastTest {
         }
     }
 
+    private fun assertLargeIcon(name: String, ratio: Float) =
+        assertTrue("$name contrast $ratio < 3.0", ratio >= 3.0f)
+
+    // 차칵 브랜드(시안 A) 색 쌍
+
+    @Test fun textOnAccentFill() = themes.forEach { c ->
+        val b = c.brand
+        assertContrast("dark=${c.isDark} onAccent/accent", contrastRatio(b.onAccent, b.accent))
+        assertContrast("dark=${c.isDark} onAccent/accentPressed", contrastRatio(b.onAccent, b.accentPressed))
+    }
+
+    @Test fun accentDeepAsTextOnDetailSurfaces() = themes.forEach { c ->
+        listOf(c.backgroundPrimary, c.backgroundSecondary, c.surfaceBasic).forEach { bg ->
+            assertContrast("dark=${c.isDark} accentDeep/$bg", contrastRatio(c.brand.accentDeep, bg))
+        }
+    }
+
+    @Test fun selectedBorderAndRailAreVisible() = themes.forEach { c ->
+        // surfaceHigh: 선택 탭 테두리가 놓이는 탭 바탕
+        listOf(c.backgroundPrimary, c.surfaceBasic, c.surfaceHigh).forEach { bg ->
+            assertLargeIcon("dark=${c.isDark} accentDeep border/$bg", contrastRatio(c.brand.accentDeep, bg))
+        }
+    }
+
+    @Test fun categoryTintLabelsAndIcons() = themes.forEach { c ->
+        val b = c.brand
+        mapOf("place" to b.place, "vehicle" to b.vehicle, "neutral" to b.neutral, "caution" to b.caution).forEach { (name, tint) ->
+            assertContrast("dark=${c.isDark} $name content/fill", contrastRatio(tint.content, tint.fill))
+        }
+    }
+
+    @Test fun telltaleChipTextAndIcon() = themes.forEach { c ->
+        assertContrast("dark=${c.isDark} text/caution", contrastRatio(c.textPrimary, c.brand.caution.fill))
+        assertLargeIcon("dark=${c.isDark} caution icon", contrastRatio(c.brand.caution.content, c.brand.caution.fill))
+    }
+
+    @Test fun iconOnLocationTile() = themes.forEach { c ->
+        assertLargeIcon("dark=${c.isDark} onAccent icon", contrastRatio(c.brand.onAccent, c.brand.accent))
+    }
+
+    @Test fun destructiveIconOnDetailSurface() = themes.forEach { c ->
+        assertLargeIcon("dark=${c.isDark} regulationRed/backgroundSecondary", contrastRatio(c.regulationRed, c.backgroundSecondary))
+    }
+
     @Test fun quaternaryIsKnownToFail() = themes.forEach { c ->
         assertTrue(contrastRatio(c.textQuaternary, c.backgroundPrimary) < 4.5f)
     }

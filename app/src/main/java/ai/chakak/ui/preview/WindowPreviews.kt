@@ -11,6 +11,7 @@ import ai.chakak.ui.model.ActionState
 import ai.chakak.ui.model.LOAD_TIMEOUT_MESSAGE
 import ai.chakak.ui.model.LibraryNavigation
 import ai.chakak.ui.model.LibraryUiState
+import ai.chakak.ui.model.LocalTimelineClock
 import ai.chakak.ui.model.message
 import ai.chakak.ui.theme.ChaKakSpacing
 import ai.chakak.ui.theme.ChaKakTheme
@@ -20,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,7 +42,9 @@ private fun AppPreview(
     nav: LibraryNavigation = LibraryNavigation(),
     actions: ActionState = ActionState(),
 ) = ChaKakTheme(darkTheme = dark) {
-    AppWindowScaffold(state, actions, allowed, mock = true, callbacks = LibraryCallbacks(), initialNavigation = nav)
+    CompositionLocalProvider(LocalTimelineClock provides PreviewData.clock) {
+        AppWindowScaffold(state, actions, allowed, mock = true, callbacks = LibraryCallbacks(), initialNavigation = nav)
+    }
 }
 
 private val captureDone = ActionState(message = ActionOutcome(ActionKind.Capture, null, ActionResult.Done).message())
@@ -48,17 +52,17 @@ private val editFailed = ActionOutcome(ActionKind.Edit, PreviewData.vehicleParti
 private fun detailOf(id: String) = LibraryNavigation(selectedId = id)
 private fun editOf(id: String) = LibraryNavigation(selectedId = id, editing = true)
 
-@Preview(name = "01 목록 · S-17 portrait · Light", widthDp = 840, heightDp = 1184)
+@Preview(name = "01 타임라인(오늘·어제·11월 6일) · S-17 portrait · Light", widthDp = 840, heightDp = 1184)
 @Composable private fun ListPortraitLight() = AppPreview(dark = false, actions = captureDone)
 
 @Preview(name = "02 목록 · L portrait · Dark · font 1.5", widthDp = 628, heightDp = 855, fontScale = 1.5f)
 @Composable private fun ListSmallDarkLargeFont() = AppPreview(dark = true)
 
-@Preview(name = "03 목록+장소 상세 · S-17 landscape · Light · 기록 중", widthDp = 1700, heightDp = 1184)
+@Preview(name = "03 목록+장소 상세(주소 있음) · S-17 landscape · Light · 기록 중", widthDp = 1700, heightDp = 1184)
 @Composable private fun TwoPanePlaceLight() =
     AppPreview(dark = false, nav = detailOf(PreviewData.placeOk.id), actions = ActionState(running = ActionKind.Capture))
 
-@Preview(name = "04 목록+부분 저장 상세 · WF landscape · Dark · font 1.5", widthDp = 1256, heightDp = 800, fontScale = 1.5f)
+@Preview(name = "04 목록+차량 상태 부분 저장 · WF landscape · Dark · font 1.5", widthDp = 1256, heightDp = 800, fontScale = 1.5f)
 @Composable private fun TwoPanePartialDarkLargeFont() = AppPreview(dark = true, nav = detailOf(PreviewData.vehiclePartial.id))
 
 @Preview(name = "05 빈 목록 · L portrait · Light", widthDp = 628, heightDp = 855)
@@ -80,8 +84,8 @@ private fun editOf(id: String) = LibraryNavigation(selectedId = id, editing = tr
 @Preview(name = "10 주행 제한 · WF landscape · Dark", widthDp = 1256, heightDp = 800)
 @Composable private fun RestrictedDark() = AppPreview(dark = true, allowed = false)
 
-@Preview(name = "11 장소 상세 · L portrait · Light", widthDp = 628, heightDp = 855)
-@Composable private fun PlaceDetailLight() = AppPreview(dark = false, nav = detailOf(PreviewData.placeOk.id))
+@Preview(name = "11 장소 상세(주소 없음) · L portrait · Light", widthDp = 628, heightDp = 855)
+@Composable private fun PlaceDetailLight() = AppPreview(dark = false, nav = detailOf(PreviewData.placeNoAddress.id))
 
 @Preview(name = "12 부분 저장 상세(권한 없음·시간 초과) · S-17 portrait · Dark · font 1.5", widthDp = 840, heightDp = 1184, fontScale = 1.5f)
 @Composable private fun PartialDetailDarkLargeFont() = AppPreview(dark = true, nav = detailOf(PreviewData.vehiclePartial.id))
@@ -104,6 +108,24 @@ private fun editOf(id: String) = LibraryNavigation(selectedId = id, editing = tr
     dark = true,
     actions = ActionState(running = ActionKind.Delete, runningRecordId = PreviewData.vehiclePartial.id),
 )
+
+@Preview(name = "17 목록+장소 상세(주소 있음) · S-17 landscape · Dark", widthDp = 1700, heightDp = 1184)
+@Composable private fun TwoPanePlaceDark() = AppPreview(dark = true, nav = detailOf(PreviewData.placeOk.id))
+
+@Preview(name = "18 목록+차량 상태(타이어 1개 값 없음·위치 권한 없음) · S-17 landscape · Light", widthDp = 1700, heightDp = 1184)
+@Composable private fun TwoPaneVehicleLight() = AppPreview(dark = false, nav = detailOf(PreviewData.vehiclePartial.id))
+
+@Preview(name = "19 목록+차량 상태(타이어 시간 초과) · S-17 landscape · Dark", widthDp = 1700, heightDp = 1184)
+@Composable private fun TwoPaneVehicleTimeoutDark() = AppPreview(dark = true, nav = detailOf(PreviewData.vehicleTimeout.id))
+
+@Preview(name = "20 장소 상세(주소 실패) · S-17 portrait · Dark", widthDp = 840, heightDp = 1184)
+@Composable private fun PlaceAddressFailedDark() = AppPreview(dark = true, nav = detailOf(PreviewData.placeAddressFailed.id))
+
+@Preview(name = "21 차량 상태 상세 · L portrait · Light · 좁은 폭", widthDp = 628, heightDp = 855)
+@Composable private fun VehicleDetailNarrowLight() = AppPreview(dark = false, nav = detailOf(PreviewData.vehiclePartial.id))
+
+@Preview(name = "22 타임라인 · S-17 portrait · Dark", widthDp = 840, heightDp = 1184)
+@Composable private fun ListPortraitDark() = AppPreview(dark = true)
 
 @Composable
 private fun DeletePreview(dark: Boolean, deleting: Boolean, failed: Boolean) = ChaKakTheme(darkTheme = dark) {
