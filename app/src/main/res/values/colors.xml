@@ -1,0 +1,4 @@
+<resources>
+    <!-- Figma background/primary (Light). ChaKakColors.Light.backgroundPrimary와 같은 값 유지. -->
+    <color name="chakak_background_primary">#FFF7F8FA</color>
+</resources>
