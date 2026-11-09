@@ -1,0 +1,740 @@
+> 자동 추출본 — 출처: docs/Pleos_Connect_display_guide_215.fig 'Form factors & Display' 페이지 노드 트리 (tools/display.mjs)
+> 추출일: 2026-11-09. 값은 원본 그대로이며 앱 토큰으로 확정된 것이 아님. 요약은 ../design-foundations.md 참고.
+
+- SECTION Screen Content 5920×6748
+  - TEXT Component 1322×120 "Connect S - Light Mode"
+  - TEXT Component 1984×96 "Landscape : 좌측 운전자 보조 스크린 영역과 앱이 실행될 화면이 1:2 로 구성됩니다."
+  - FRAME ivi_standard_window 2560×1440
+    - INSTANCE background 2560×1440
+    - INSTANCE ivi_statusbar 2560×96
+    - FRAME body 2560×1184
+      - INSTANCE driving_view 840×1280
+      - INSTANCE application 1700×1184
+      - TEXT Landscape 247×68 "Landscape"
+      - ROUNDED_RECTANGLE Rectangle 346244409 20×1184
+    - INSTANCE ivi_gnb/horizontal 2560×160
+  - TEXT Component 1658×96 "Portrait : 앱 실행 시, 실행된 앱은 중앙에 배치되어 1:1:1로 구성됩니다."
+  - TEXT component name 737×120 "17’ (Connect-S)"
+  - TEXT 12.9 (Connect-L) 796×120 "12.9 (Connect-L)"
+  - FRAME ivi_standard_window 2560×1440
+    - INSTANCE background 2560×1440
+    - INSTANCE ivi_statusbar 2560×96
+    - FRAME body 2560×1184
+      - INSTANCE application 840×1184
+      - TEXT App 95×68 "App"
+      - FRAME Frame 1707486250 20×1184
+        - INSTANCE ivi_window_bar 20×200
+      - INSTANCE application 840×1184
+      - FRAME Group 1707486251 20×1184
+        - ROUNDED_RECTANGLE Rectangle 346244409 20×1184
+        - INSTANCE ivi_window_bar 20×200
+      - TEXT App 95×68 "App"
+      - INSTANCE driving_view 840×1280
+    - INSTANCE ivi_gnb/horizontal 2560×160
+  - FRAME ivi_lite_window 1920×1080
+    - INSTANCE background 1920×1080
+    - INSTANCE ivi_statusbar 1920×84
+    - FRAME body 1920×855
+      - INSTANCE driving_view 628×939
+      - INSTANCE application 1274×855
+      - TEXT Landscape 247×68 "Landscape"
+      - ROUNDED_RECTANGLE Rectangle 346244409 18×855
+    - FRAME ivi_gnb/horizontal 1920×141
+      - FRAME left 548×141
+        - INSTANCE gnb_button/standard 109×109
+        - FRAME Frame 1707486411 256×109
+        - INSTANCE gnb_button/standard 109×109
+        - INSTANCE gnb_button/standard 109×109
+      - FRAME center 784×141
+        - FRAME center 784×141
+        - INSTANCE ivi_osd 704×106
+      - FRAME right 548×141
+        - INSTANCE gnb_button/standard 109×109
+        - INSTANCE gnb_button/standard 109×109
+        - FRAME Frame 1707486411 256×109
+        - INSTANCE gnb_button/standard 109×109
+  - FRAME ivi_lite_window 1920×1080
+    - INSTANCE background 1920×1080
+    - INSTANCE ivi_statusbar 1920×84
+    - FRAME body 1920×855
+      - INSTANCE driving_view 628×939
+      - INSTANCE application 628×855
+      - FRAME Frame 1707486250 18×855
+        - INSTANCE ivi_window_bar 18×176
+      - INSTANCE application 628×855
+      - TEXT Portrait 168×68 "Portrait"
+      - TEXT Portrait 168×68 "Portrait"
+      - ROUNDED_RECTANGLE Rectangle 346244409 18×855
+    - FRAME ivi_gnb/horizontal 1920×141
+      - FRAME left 548×141
+        - INSTANCE gnb_button/standard 109×109
+        - FRAME Frame 1707486411 256×109
+        - INSTANCE gnb_button/standard 109×109
+        - INSTANCE gnb_button/standard 109×109
+      - FRAME center 784×141
+        - FRAME center 784×141
+        - INSTANCE ivi_osd 704×106
+      - FRAME right 548×141
+        - INSTANCE gnb_button/standard 109×109
+        - INSTANCE gnb_button/standard 109×109
+        - FRAME Frame 1707486411 256×109
+        - INSTANCE gnb_button/standard 109×109
+  - TEXT 14.6’ (Connect-S) 836×120 "14.6’ (Connect-S)"
+  - FRAME ivi_standard_window 2048×1152
+    - INSTANCE background 2048×1152
+    - FRAME ivi_statusbar 2048×76
+      - TEXT Status bar 231×64 "Status bar"
+      - TEXT status-bar-ic-time-24 154×44 "11:29 AM"
+    - FRAME body 2048×948
+      - INSTANCE driving_view 672×1024
+      - INSTANCE application 1360×948
+      - TEXT Landscape 247×68 "Landscape"
+      - ROUNDED_RECTANGLE Rectangle 346244409 16×947
+    - FRAME ivi_gnb/horizontal 2048×128
+      - FRAME left 650×128
+        - INSTANCE gnb_button/standard 124×124
+        - FRAME Frame 1707486411 324×124
+        - INSTANCE gnb_button/standard 124×124
+        - INSTANCE gnb_button/standard 99×99
+      - FRAME center 728×128
+        - FRAME center 728×128
+        - INSTANCE ivi_osd 531×96
+      - FRAME right 650×128
+        - INSTANCE gnb_button/standard 124×124
+        - FRAME Frame 1707486411 324×124
+        - INSTANCE gnb_button/standard 124×124
+  - FRAME ivi_standard_window 2048×1152
+    - INSTANCE background 2048×1152
+    - FRAME ivi_statusbar 2048×76
+      - TEXT Status bar 231×64 "Status bar"
+      - TEXT status-bar-ic-time-24 154×44 "11:29 AM"
+    - FRAME body 2048×948
+      - INSTANCE driving_view 672×1024
+      - INSTANCE application 672×948
+      - TEXT Portrait 168×68 "Portrait"
+      - FRAME Frame 1707486250 16×947
+        - INSTANCE ivi_window_bar 16×160
+      - INSTANCE application 672×948
+      - FRAME Group 1707486251 16×947
+        - ROUNDED_RECTANGLE Rectangle 346244409 16×947
+        - INSTANCE ivi_window_bar 16×160
+      - TEXT Portrait 168×68 "Portrait"
+    - FRAME ivi_gnb/horizontal 2048×128
+      - FRAME left 650×128
+        - INSTANCE gnb_button/standard 124×124
+        - FRAME Frame 1707486411 324×124
+        - INSTANCE gnb_button/standard 124×124
+        - INSTANCE gnb_button/standard 99×99
+      - FRAME center 728×128
+        - FRAME center 728×128
+        - INSTANCE ivi_osd 531×96
+      - FRAME right 650×128
+        - INSTANCE gnb_button/standard 124×124
+        - FRAME Frame 1707486411 324×124
+        - INSTANCE gnb_button/standard 124×124
+- SECTION Screen Content 5920×6748
+  - TEXT Component 1311×120 "Connect S - Dark Mode"
+  - TEXT Component 1984×96 "Landscape : 좌측 운전자 보조 스크린 영역과 앱이 실행될 화면이 1:2 로 구성됩니다."
+  - TEXT Component 1658×96 "Portrait : 앱 실행 시, 실행된 앱은 중앙에 배치되어 1:1:1로 구성됩니다."
+  - TEXT component name 737×120 "17’ (Connect-S)"
+  - FRAME ivi_standard_window 2560×1440
+    - INSTANCE background 2560×1440
+    - INSTANCE ivi_statusbar 2560×96
+    - FRAME body 2560×1184
+      - INSTANCE driving_view 840×1280
+      - INSTANCE application 1700×1184
+      - TEXT Landscape 247×68 "Landscape"
+      - ROUNDED_RECTANGLE Rectangle 346244409 20×1184
+    - INSTANCE ivi_gnb/horizontal 2560×160
+  - TEXT 12.9 (Connect-L) 796×120 "12.9 (Connect-L)"
+  - FRAME ivi_standard_window 2560×1440
+    - INSTANCE background 2560×1440
+    - INSTANCE ivi_statusbar 2560×96
+    - FRAME body 2560×1184
+      - INSTANCE driving_view 840×1280
+      - INSTANCE application 840×1184
+      - TEXT Portrait 168×68 "Portrait"
+      - FRAME Frame 1707486250 20×1184
+        - INSTANCE ivi_window_bar 20×200
+      - INSTANCE application 840×1184
+      - FRAME Group 1707486251 20×1184
+        - ROUNDED_RECTANGLE Rectangle 346244409 20×1184
+        - INSTANCE ivi_window_bar 20×200
+      - TEXT Portrait 168×68 "Portrait"
+    - INSTANCE ivi_gnb/horizontal 2560×160
+  - FRAME ivi_lite_window 1920×1080
+    - INSTANCE background 1920×1080
+    - INSTANCE ivi_statusbar 1920×84
+    - FRAME body 1920×855
+      - INSTANCE driving_view 628×939
+      - INSTANCE application 1274×855
+      - TEXT Landscape 247×68 "Landscape"
+      - ROUNDED_RECTANGLE Rectangle 346244409 18×855
+    - FRAME ivi_gnb/horizontal 1920×141
+      - FRAME left 548×141
+        - INSTANCE gnb_button/standard 109×109
+        - FRAME Frame 1707486411 256×109
+        - INSTANCE gnb_button/standard 109×109
+        - INSTANCE gnb_button/standard 109×109
+      - FRAME center 784×141
+        - FRAME center 784×141
+        - INSTANCE ivi_osd 704×106
+      - FRAME right 548×141
+        - INSTANCE gnb_button/standard 109×109
+        - INSTANCE gnb_button/standard 109×109
+        - FRAME Frame 1707486411 256×109
+        - INSTANCE gnb_button/standard 109×109
+  - FRAME ivi_lite_window 1920×1080
+    - INSTANCE background 1920×1080
+    - INSTANCE ivi_statusbar 1920×84
+    - FRAME body 1920×855
+      - INSTANCE driving_view 628×939
+      - INSTANCE application 628×855
+      - FRAME Frame 1707486250 18×855
+        - INSTANCE ivi_window_bar 18×176
+      - INSTANCE application 628×855
+      - TEXT Portrait 168×68 "Portrait"
+      - TEXT Portrait 168×68 "Portrait"
+      - ROUNDED_RECTANGLE Rectangle 346244409 18×855
+    - FRAME ivi_gnb/horizontal 1920×141
+      - FRAME left 548×141
+        - INSTANCE gnb_button/standard 109×109
+        - FRAME Frame 1707486411 256×109
+        - INSTANCE gnb_button/standard 109×109
+        - INSTANCE gnb_button/standard 109×109
+      - FRAME center 784×141
+        - FRAME center 784×141
+        - INSTANCE ivi_osd 704×106
+      - FRAME right 548×141
+        - INSTANCE gnb_button/standard 109×109
+        - INSTANCE gnb_button/standard 109×109
+        - FRAME Frame 1707486411 256×109
+        - INSTANCE gnb_button/standard 109×109
+  - TEXT 14.6’ (Connect-S) 836×120 "14.6’ (Connect-S)"
+  - FRAME ivi_standard_window 2048×1152
+    - INSTANCE background 2048×1152
+    - FRAME ivi_statusbar 2048×76
+      - TEXT Status bar 231×64 "Status bar"
+      - TEXT status-bar-ic-time-24 154×44 "11:29 AM"
+    - FRAME body 2048×948
+      - INSTANCE driving_view 672×1024
+      - INSTANCE application 1360×948
+      - TEXT Landscape 247×68 "Landscape"
+      - ROUNDED_RECTANGLE Rectangle 346244409 16×947
+    - FRAME ivi_gnb/horizontal 2048×128
+      - FRAME left 650×128
+        - INSTANCE gnb_button/standard 124×124
+        - FRAME Frame 1707486411 324×124
+        - INSTANCE gnb_button/standard 124×124
+        - INSTANCE gnb_button/standard 99×99
+      - FRAME center 728×128
+        - FRAME center 728×128
+        - INSTANCE ivi_osd 531×96
+      - FRAME right 650×128
+        - INSTANCE gnb_button/standard 124×124
+        - FRAME Frame 1707486411 324×124
+        - INSTANCE gnb_button/standard 124×124
+  - FRAME ivi_standard_window 2048×1152
+    - INSTANCE background 2048×1152
+    - FRAME ivi_statusbar 2048×76
+      - TEXT Status bar 231×64 "Status bar"
+      - TEXT status-bar-ic-time-24 154×44 "11:29 AM"
+    - FRAME body 2048×948
+      - INSTANCE driving_view 672×1024
+      - INSTANCE application 672×948
+      - TEXT Portrait 168×68 "Portrait"
+      - FRAME Frame 1707486250 16×947
+        - INSTANCE ivi_window_bar 16×160
+      - INSTANCE application 672×948
+      - FRAME Group 1707486251 16×947
+        - ROUNDED_RECTANGLE Rectangle 346244409 16×947
+        - INSTANCE ivi_window_bar 16×160
+      - TEXT Portrait 168×68 "Portrait"
+    - FRAME ivi_gnb/horizontal 2048×128
+      - FRAME left 650×128
+        - INSTANCE gnb_button/standard 124×124
+        - FRAME Frame 1707486411 324×124
+        - INSTANCE gnb_button/standard 124×124
+        - INSTANCE gnb_button/standard 99×99
+      - FRAME center 728×128
+        - FRAME center 728×128
+        - INSTANCE ivi_osd 531×96
+      - FRAME right 650×128
+        - INSTANCE gnb_button/standard 124×124
+        - FRAME Frame 1707486411 324×124
+        - INSTANCE gnb_button/standard 124×124
+- SECTION Screen Content 4440×4550
+  - TEXT component name 700×120 "Wide Standard"
+  - TEXT component name 716×120 "Wide Extended"
+  - TEXT component name 1365×120 "Connect W - Light Mode"
+  - FRAME platform_layout 3840×850
+    - FRAME driving_view_temp 970×850
+      - TEXT Driving View 273×60 "Driving View"
+      - TEXT 42 156×92 "42"
+    - FRAME ivi_gnb/vertical 140×850
+      - FRAME upper_area 135×568
+        - INSTANCE gnb_button/wide 135×200
+        - FRAME gnb_button/wide 118×118
+        - FRAME gnb_button/wide 118×118
+        - FRAME gnb_button/wide 118×118
+        - FRAME gnb_button/wide 118×118
+      - FRAME Divider 60×3
+        - ROUNDED_RECTANGLE divider 60×3
+      - FRAME gnb_button/wide 118×118
+        - FRAME placeholder 120×120
+        - INSTANCE edit_button 50×50
+        - ROUNDED_RECTANGLE Active for Driver 10×10
+        - ROUNDED_RECTANGLE Active for Passenger 10×10
+      - FRAME lower_area 118×118
+        - INSTANCE gnb_button/wide 118×118
+    - FRAME body 2590×850
+      - INSTANCE background 2590×850
+      - FRAME App 2570×850
+        - INSTANCE ivi_statusbar_wide 100×850
+        - INSTANCE application 1640×810
+        - TEXT Landscape 247×68 "Landscape"
+        - INSTANCE ivi_window_bar 30×240
+        - INSTANCE application 800×810
+        - TEXT Portrait 168×68 "Portrait"
+    - INSTANCE ivi_gnb/vertical 140×850
+  - FRAME platform_layout 3840×1440
+    - FRAME driving_view_temp 970×1440
+      - TEXT Driving View 273×60 "Driving View"
+      - TEXT 42 156×92 "42"
+    - FRAME body 2590×1440
+      - INSTANCE background 2590×1440
+      - FRAME App 2570×1440
+        - INSTANCE ivi_statusbar_wide 100×1440
+        - INSTANCE application 1640×1400
+        - TEXT Landscape 247×68 "Landscape"
+        - INSTANCE ivi_window_bar 30×240
+        - INSTANCE application 800×1400
+        - TEXT Portrait 168×68 "Portrait"
+    - INSTANCE ivi_gnb/vertical 140×1440
+    - FRAME ivi_gnb/vertical 140×1440
+      - FRAME upper_area 135×1110
+        - INSTANCE gnb_button/wide 135×200
+        - FRAME center 120×905
+        - FRAME gnb_button/wide 118×118
+      - FRAME bottom_area 118×257
+        - FRAME Divider 60×3
+        - FRAME gnb_button/wide 118×118
+        - FRAME lower_area 118×118
+- SECTION Screen Content 3672×2978
+  - TEXT component name 428×120 "Waterfall"
+  - TEXT component name 1257×120 "Waterfall - Light Mode"
+  - FRAME platform_layout 3072×816
+    - FRAME driving_view_temp 832×816
+      - TEXT Driving View 273×60 "Driving View"
+    - FRAME ivi_gnb/vertical 112×816
+      - FRAME upper_area 108×552
+        - INSTANCE gnb_button/wide 108×160
+        - INSTANCE gnb_button/wide 94×94
+        - INSTANCE gnb_button/wide 94×94
+        - FRAME gnb_button/wide 94×94
+        - FRAME gnb_button/wide 94×94
+        - FRAME gnb_button/wide 94×94
+        - FRAME gnb_button/wide 94×94
+      - FRAME Divider 48×2
+        - ROUNDED_RECTANGLE divider 48×2
+      - FRAME lower_area 94×192
+        - FRAME recent_area 94×94
+        - INSTANCE gnb_button/wide 94×94
+    - FRAME body 2016×816
+      - INSTANCE background 2016×816
+      - FRAME App 2008×816
+        - INSTANCE ivi_statusbar_wide 80×816
+        - INSTANCE application 1256×800
+        - TEXT Landscape 247×68 "Landscape"
+        - INSTANCE ivi_window_bar 24×192
+        - INSTANCE application 648×800
+        - TEXT Portrait 168×68 "Portrait"
+    - INSTANCE ivi_gnb/vertical 112×816
+- SECTION Screen Content 4440×4550
+  - TEXT component name 1354×120 "Connect W - Dark Mode"
+  - TEXT component name 700×120 "Wide Standard"
+  - TEXT component name 716×120 "Wide Extended"
+  - FRAME platform_layout 3840×850
+    - FRAME driving_view_temp 970×850
+      - TEXT Driving View 273×60 "Driving View"
+      - TEXT 42 156×92 "42"
+    - FRAME ivi_gnb/vertical 140×850
+      - FRAME upper_area 135×568
+        - INSTANCE gnb_button/wide 135×200
+        - FRAME gnb_button/wide 118×118
+        - FRAME gnb_button/wide 118×118
+        - FRAME gnb_button/wide 118×118
+        - FRAME gnb_button/wide 118×118
+      - FRAME Divider 60×3
+        - ROUNDED_RECTANGLE divider 60×3
+      - FRAME gnb_button/wide 118×118
+        - FRAME placeholder 120×120
+        - INSTANCE edit_button 50×50
+        - ROUNDED_RECTANGLE Active for Driver 10×10
+        - ROUNDED_RECTANGLE Active for Passenger 10×10
+      - FRAME lower_area 118×118
+        - INSTANCE gnb_button/wide 118×118
+    - FRAME body 2590×850
+      - INSTANCE background 2590×850
+      - FRAME App 2570×850
+        - INSTANCE ivi_statusbar_wide 100×850
+        - INSTANCE application 1640×810
+        - TEXT Landscape 247×68 "Landscape"
+        - INSTANCE ivi_window_bar 30×240
+        - INSTANCE application 800×810
+        - TEXT Portrait 168×68 "Portrait"
+    - INSTANCE ivi_gnb/vertical 140×850
+  - FRAME platform_layout 3840×1440
+    - FRAME driving_view_temp 970×1440
+      - TEXT Driving View 273×60 "Driving View"
+      - TEXT 42 156×92 "42"
+    - FRAME body 2590×1440
+      - INSTANCE background 2590×1440
+      - FRAME App 2570×1440
+        - INSTANCE ivi_statusbar_wide 100×1440
+        - INSTANCE application 1640×1400
+        - TEXT Landscape 247×68 "Landscape"
+        - INSTANCE ivi_window_bar 30×240
+        - INSTANCE application 800×1400
+        - TEXT Portrait 168×68 "Portrait"
+    - INSTANCE ivi_gnb/vertical 140×1440
+    - FRAME ivi_gnb/vertical 140×1440
+      - FRAME upper_area 135×1110
+        - INSTANCE gnb_button/wide 135×200
+        - FRAME center 120×905
+        - FRAME gnb_button/wide 118×118
+      - FRAME bottom_area 118×257
+        - FRAME Divider 60×3
+        - FRAME gnb_button/wide 118×118
+        - FRAME lower_area 118×118
+- SECTION Screen Content 3672×2978
+  - TEXT component name 1246×120 "Waterfall - Dark Mode"
+  - TEXT component name 428×120 "Waterfall"
+  - FRAME platform_layout 3072×816
+    - FRAME driving_view_temp 832×816
+      - TEXT Driving View 273×60 "Driving View"
+    - FRAME ivi_gnb/vertical 112×816
+      - FRAME upper_area 108×552
+        - INSTANCE gnb_button/wide 108×160
+        - INSTANCE gnb_button/wide 94×94
+        - INSTANCE gnb_button/wide 94×94
+        - FRAME gnb_button/wide 94×94
+        - FRAME gnb_button/wide 94×94
+        - FRAME gnb_button/wide 94×94
+        - FRAME gnb_button/wide 94×94
+      - FRAME Divider 48×2
+        - ROUNDED_RECTANGLE divider 48×2
+      - FRAME lower_area 94×192
+        - FRAME recent_area 94×94
+        - INSTANCE gnb_button/wide 94×94
+    - FRAME body 2016×816
+      - INSTANCE background 2016×816
+      - FRAME App 2008×816
+        - INSTANCE ivi_statusbar_wide 80×816
+        - INSTANCE application 1256×800
+        - TEXT Landscape 247×68 "Landscape"
+        - INSTANCE ivi_window_bar 24×192
+        - INSTANCE application 648×800
+        - TEXT Portrait 168×68 "Portrait"
+    - INSTANCE ivi_gnb/vertical 112×816
+- SECTION All Formfactor 8907×8800
+  - TEXT Component 1385×120 "Connect Standard (16:9)"
+  - TEXT Component 797×120 "Connect Wide"
+  - TEXT component name 737×120 "17’ (Connect-S)"
+  - TEXT component name 836×120 "14.6’ (Connect-S)"
+  - TEXT component name 1359×120 "24.6’ (Connect-W-Standard)"
+  - TEXT component name 1426×120 "18.5’ (Connect-WF : Waterfall)"
+  - TEXT component name 1375×120 "24.6’ (Connect-W-Extended)"
+  - TEXT 12.9’ (Connect-L) 822×120 "12.9’ (Connect-L)"
+  - FRAME ivi_lite_window 1920×1080
+    - INSTANCE background 1920×1080
+    - INSTANCE ivi_statusbar 1920×84
+    - FRAME body 1920×855
+      - INSTANCE driving_view 628×939
+      - INSTANCE application 1274×855
+      - TEXT Landscape 247×68 "Landscape"
+      - ROUNDED_RECTANGLE Rectangle 346244409 18×855
+    - FRAME ivi_gnb/horizontal 1920×141
+      - FRAME left 548×141
+        - INSTANCE gnb_button/standard 109×109
+        - FRAME Frame 1707486411 256×109
+        - INSTANCE gnb_button/standard 109×109
+        - INSTANCE gnb_button/standard 109×109
+      - FRAME center 784×141
+        - FRAME center 784×141
+        - INSTANCE ivi_osd 704×106
+      - FRAME right 548×141
+        - INSTANCE gnb_button/standard 109×109
+        - INSTANCE gnb_button/standard 109×109
+        - FRAME Frame 1707486411 256×109
+        - INSTANCE gnb_button/standard 109×109
+  - FRAME ivi_standard_window 2560×1440
+    - INSTANCE background 2560×1440
+    - INSTANCE ivi_statusbar 2560×96
+    - FRAME body 2560×1184
+      - INSTANCE driving_view 840×1280
+      - INSTANCE application 1700×1184
+      - TEXT Landscape 247×68 "Landscape"
+      - ROUNDED_RECTANGLE Rectangle 346244409 20×1184
+    - INSTANCE ivi_gnb/horizontal 2560×160
+  - FRAME ivi_standard_window 2048×1152
+    - INSTANCE background 2048×1152
+    - FRAME ivi_statusbar 2048×76
+      - TEXT Status bar 231×64 "Status bar"
+      - TEXT status-bar-ic-time-24 154×44 "11:29 AM"
+    - FRAME body 2048×948
+      - INSTANCE driving_view 672×1024
+      - INSTANCE application 1360×948
+      - TEXT Landscape 247×68 "Landscape"
+      - ROUNDED_RECTANGLE Rectangle 346244409 16×947
+    - FRAME ivi_gnb/horizontal 2048×128
+      - FRAME left 650×128
+        - INSTANCE gnb_button/standard 124×124
+        - FRAME Frame 1707486411 324×124
+        - INSTANCE gnb_button/standard 124×124
+        - INSTANCE gnb_button/standard 99×99
+      - FRAME center 728×128
+        - FRAME center 728×128
+        - INSTANCE ivi_osd 531×96
+      - FRAME right 650×128
+        - INSTANCE gnb_button/standard 124×124
+        - FRAME Frame 1707486411 324×124
+        - INSTANCE gnb_button/standard 124×124
+  - FRAME ivi_standard_window 2560×1440
+    - INSTANCE background 2560×1440
+    - INSTANCE ivi_statusbar 2560×96
+    - FRAME body 2560×1184
+      - INSTANCE driving_view 840×1280
+      - INSTANCE application 840×1184
+      - TEXT Portrait 168×68 "Portrait"
+      - FRAME Frame 1707486250 20×1184
+        - INSTANCE ivi_window_bar 20×200
+      - INSTANCE application 840×1184
+      - FRAME Group 1707486251 20×1184
+        - ROUNDED_RECTANGLE Rectangle 346244409 20×1184
+        - INSTANCE ivi_window_bar 20×200
+      - TEXT Portrait 168×68 "Portrait"
+    - INSTANCE ivi_gnb/horizontal 2560×160
+  - FRAME ivi_standard_window 2048×1152
+    - INSTANCE background 2048×1152
+    - FRAME ivi_statusbar 2048×76
+      - TEXT Status bar 231×64 "Status bar"
+      - TEXT status-bar-ic-time-24 154×44 "11:29 AM"
+    - FRAME body 2048×948
+      - INSTANCE driving_view 672×1024
+      - INSTANCE application 672×948
+      - TEXT Portrait 168×68 "Portrait"
+      - FRAME Frame 1707486250 16×947
+        - INSTANCE ivi_window_bar 16×160
+      - INSTANCE application 672×948
+      - FRAME Group 1707486251 16×947
+        - ROUNDED_RECTANGLE Rectangle 346244409 16×947
+        - INSTANCE ivi_window_bar 16×160
+      - TEXT Portrait 168×68 "Portrait"
+    - FRAME ivi_gnb/horizontal 2048×128
+      - FRAME left 650×128
+        - INSTANCE gnb_button/standard 124×124
+        - FRAME Frame 1707486411 324×124
+        - INSTANCE gnb_button/standard 124×124
+        - INSTANCE gnb_button/standard 99×99
+      - FRAME center 728×128
+        - FRAME center 728×128
+        - INSTANCE ivi_osd 531×96
+      - FRAME right 650×128
+        - INSTANCE gnb_button/standard 124×124
+        - FRAME Frame 1707486411 324×124
+        - INSTANCE gnb_button/standard 124×124
+  - FRAME ivi_lite_window 1920×1080
+    - INSTANCE background 1920×1080
+    - INSTANCE ivi_statusbar 1920×84
+    - FRAME body 1920×855
+      - INSTANCE driving_view 628×939
+      - INSTANCE application 628×855
+      - FRAME Frame 1707486250 18×855
+        - INSTANCE ivi_window_bar 18×176
+      - INSTANCE application 628×855
+      - TEXT Portrait 168×68 "Portrait"
+      - TEXT Portrait 168×68 "Portrait"
+      - ROUNDED_RECTANGLE Rectangle 346244409 18×855
+    - FRAME ivi_gnb/horizontal 1920×141
+      - FRAME left 548×141
+        - INSTANCE gnb_button/standard 109×109
+        - FRAME Frame 1707486411 256×109
+        - INSTANCE gnb_button/standard 109×109
+        - INSTANCE gnb_button/standard 109×109
+      - FRAME center 784×141
+        - FRAME center 784×141
+        - INSTANCE ivi_osd 704×106
+      - FRAME right 548×141
+        - INSTANCE gnb_button/standard 109×109
+        - INSTANCE gnb_button/standard 109×109
+        - FRAME Frame 1707486411 256×109
+        - INSTANCE gnb_button/standard 109×109
+  - FRAME platform_layout 3840×850
+    - FRAME driving_view_temp 970×850
+      - TEXT Driving View 273×60 "Driving View"
+      - TEXT 42 156×92 "42"
+    - FRAME ivi_gnb/vertical 140×850
+      - FRAME upper_area 135×568
+        - INSTANCE gnb_button/wide 135×200
+        - FRAME gnb_button/wide 118×118
+        - FRAME gnb_button/wide 118×118
+        - FRAME gnb_button/wide 118×118
+        - FRAME gnb_button/wide 118×118
+      - FRAME Divider 60×3
+        - ROUNDED_RECTANGLE divider 60×3
+      - FRAME gnb_button/wide 118×118
+        - FRAME placeholder 120×120
+        - INSTANCE edit_button 50×50
+        - ROUNDED_RECTANGLE Active for Driver 10×10
+        - ROUNDED_RECTANGLE Active for Passenger 10×10
+      - FRAME lower_area 118×118
+        - INSTANCE gnb_button/wide 118×118
+    - FRAME body 2590×850
+      - INSTANCE background 2590×850
+      - FRAME App 2570×850
+        - INSTANCE ivi_statusbar_wide 100×850
+        - INSTANCE application 1640×810
+        - TEXT Landscape 247×68 "Landscape"
+        - INSTANCE ivi_window_bar 30×240
+        - INSTANCE application 800×810
+        - TEXT Portrait 168×68 "Portrait"
+    - INSTANCE ivi_gnb/vertical 140×850
+  - FRAME platform_layout 3840×1440
+    - FRAME driving_view_temp 970×1440
+      - TEXT Driving View 273×60 "Driving View"
+      - TEXT 42 156×92 "42"
+    - FRAME body 2590×1440
+      - INSTANCE background 2590×1440
+      - FRAME App 2570×1440
+        - INSTANCE ivi_statusbar_wide 100×1440
+        - INSTANCE application 1640×1400
+        - TEXT Landscape 247×68 "Landscape"
+        - INSTANCE ivi_window_bar 30×240
+        - INSTANCE application 800×1400
+        - TEXT Portrait 168×68 "Portrait"
+    - INSTANCE ivi_gnb/vertical 140×1440
+    - FRAME ivi_gnb/vertical 140×1440
+      - FRAME upper_area 135×1110
+        - INSTANCE gnb_button/wide 135×200
+        - FRAME center 120×905
+        - FRAME gnb_button/wide 118×118
+      - FRAME bottom_area 118×257
+        - FRAME Divider 60×3
+        - FRAME gnb_button/wide 118×118
+        - FRAME lower_area 118×118
+  - FRAME platform_layout 3072×816
+    - FRAME driving_view_temp 832×816
+      - TEXT Driving View 273×60 "Driving View"
+    - FRAME ivi_gnb/vertical 112×816
+      - FRAME upper_area 108×552
+        - INSTANCE gnb_button/wide 108×160
+        - INSTANCE gnb_button/wide 94×94
+        - INSTANCE gnb_button/wide 94×94
+        - FRAME gnb_button/wide 94×94
+        - FRAME gnb_button/wide 94×94
+        - FRAME gnb_button/wide 94×94
+        - FRAME gnb_button/wide 94×94
+      - FRAME Divider 48×2
+        - ROUNDED_RECTANGLE divider 48×2
+      - FRAME lower_area 94×192
+        - FRAME recent_area 94×94
+        - INSTANCE gnb_button/wide 94×94
+    - FRAME body 2016×816
+      - INSTANCE background 2016×816
+      - FRAME App 2008×816
+        - INSTANCE ivi_statusbar_wide 80×816
+        - INSTANCE application 1256×800
+        - TEXT Landscape 247×68 "Landscape"
+        - INSTANCE ivi_window_bar 24×192
+        - INSTANCE application 648×800
+        - TEXT Portrait 168×68 "Portrait"
+    - INSTANCE ivi_gnb/vertical 112×816
+- SECTION Form factors 5422×3316
+  - FRAME H2 716×176
+  - TEXT Connect-S는 OS의 기본 사이즈로 제공되는 디스플레이로써 S는 Standard의 줄임말입니다. Connect-W는 Wide 디스플레이로 S에 비해 좌/우가 긴 형태로 주로 고급 차종에 들어가게 되며 차량 상태에 따라 상하의 높이가 확장될 수 있습니다. Waterfall은 S에 비해 작은 디스플레이 비율로 작지만, 차량 내 꼭 필요한 기능을 제공할 수 있습니다. 4822×306 "Connect-S는 OS의 기본 사이즈로 제공되는 디스플레이로써 S는 Standard의 줄임말입니다. ⏎ Connect-W는 Wide 디스플레이로 S에 비해 좌/"
+  - TEXT Component 709×120 "Form factors"
+  - FRAME Table 4811×1120
+    - FRAME column 804×1120
+      - INSTANCE Table 804×160
+      - INSTANCE Table 804×480
+      - INSTANCE Table 1018×160
+      - INSTANCE Table 804×480
+    - FRAME Divider/Table 4×1120
+      - ROUNDED_RECTANGLE divider 4×156
+      - ROUNDED_RECTANGLE divider 4×960
+    - FRAME column 804×1120
+      - INSTANCE Table 804×160
+      - INSTANCE Table 804×160
+      - INSTANCE Table 1018×160
+      - INSTANCE Table 804×160
+      - INSTANCE Table 804×160
+      - INSTANCE Table 804×160
+      - INSTANCE Table 804×160
+      - INSTANCE Table 804×160
+    - FRAME Divider/Table 4×1120
+      - ROUNDED_RECTANGLE divider 4×1120
+    - FRAME column 529×1120
+      - INSTANCE Table 529×160
+      - INSTANCE Table 529×160
+      - INSTANCE Table 628×160
+      - INSTANCE Table 529×160
+      - INSTANCE Table 529×160
+      - INSTANCE Table 529×160
+      - INSTANCE Table 529×160
+      - INSTANCE Table 529×160
+    - FRAME Divider/Table 4×1120
+      - ROUNDED_RECTANGLE divider 4×1120
+    - FRAME column 529×1120
+      - INSTANCE Table 529×160
+      - INSTANCE Table 529×160
+      - INSTANCE Table 628×160
+      - INSTANCE Table 529×160
+      - INSTANCE Table 529×160
+      - INSTANCE Table 529×160
+      - INSTANCE Table 529×160
+      - INSTANCE Table 529×160
+    - FRAME Divider/Table 4×1120
+      - ROUNDED_RECTANGLE divider 4×1120
+    - FRAME column 529×1120
+      - INSTANCE Table 529×160
+      - INSTANCE Table 529×160
+      - INSTANCE Table 628×160
+      - INSTANCE Table 529×160
+      - INSTANCE Table 529×160
+      - INSTANCE Table 529×160
+      - INSTANCE Table 529×160
+      - INSTANCE Table 529×160
+    - FRAME Divider/Table 4×1120
+      - ROUNDED_RECTANGLE divider 4×1120
+    - FRAME column 529×1120
+      - INSTANCE Table 529×160
+      - INSTANCE Table 529×160
+      - INSTANCE Table 628×160
+      - INSTANCE Table 529×160
+      - INSTANCE Table 529×160
+      - INSTANCE Table 529×160
+      - INSTANCE Table 529×160
+      - INSTANCE Table 529×160
+    - FRAME Divider/Table 4×1120
+      - ROUNDED_RECTANGLE divider 4×1120
+    - FRAME column 529×1120
+      - INSTANCE Table 529×160
+      - INSTANCE Table 529×160
+      - INSTANCE Table 628×160
+      - INSTANCE Table 529×160
+      - INSTANCE Table 529×160
+      - INSTANCE Table 529×160
+      - INSTANCE Table 529×160
+      - INSTANCE Table 529×160
+    - FRAME Divider/Table 4×1120
+      - ROUNDED_RECTANGLE divider 4×1120
+    - FRAME column 529×1120
+      - INSTANCE Table 529×160
+      - INSTANCE Table 529×160
+      - INSTANCE Table 628×160
+      - INSTANCE Table 529×160
+      - INSTANCE Table 529×160
+      - INSTANCE Table 529×160
+      - INSTANCE Table 529×160
+      - INSTANCE Table 529×160
