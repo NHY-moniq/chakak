@@ -1,0 +1,79 @@
+package ai.chakak.ui.detail
+
+import ai.chakak.core.Category
+import ai.chakak.core.Record
+import ai.chakak.core.Source
+import ai.chakak.ui.component.MockBanner
+import ai.chakak.ui.component.ScreenTopBar
+import ai.chakak.ui.theme.ChaKakSpacing
+import ai.chakak.ui.theme.ChaKakTheme
+import ai.chakak.ui.theme.JournalDimens
+import ai.chakak.ui.theme.JournalShapes
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+
+const val DETAIL_TITLE = "기록 상세"
+const val BACK_TO_LIST = "목록"
+
+/**
+ * 기록 상세(읽기 전용, spec 9.3·9.4, 시안 A). 상세 면 안에서:
+ * 분류 칩 + 편집·삭제 → 테스트 데이터 배너 → 분류별 본문(장소·미분류: [PlaceDetailBody], 차량 상태: [VehicleDetailBody]).
+ * [onBack]이 null이면(두 열) 상단 "목록" 줄을 숨긴다.
+ * 폭이 [JournalDimens.detailCompactWidth]보다 좁으면 여백·큰 숫자를 줄이고 타이어 패널·두 칸 묶음을 세로로 쌓는다.
+ */
+@Composable
+fun RecordDetailScreen(
+    record: Record,
+    onBack: (() -> Unit)?,
+    onEdit: () -> Unit,
+    onDelete: () -> Unit,
+    actionsEnabled: Boolean,
+    modifier: Modifier = Modifier,
+    showMockBanner: Boolean = true,
+) {
+    Column(modifier, verticalArrangement = Arrangement.spacedBy(ChaKakSpacing.item)) {
+        if (onBack != null) ScreenTopBar(title = DETAIL_TITLE, backLabel = BACK_TO_LIST, onBack = onBack)
+        BoxWithConstraints(Modifier.weight(1f).fillMaxWidth()) {
+            val compact = maxWidth < JournalDimens.detailCompactWidth
+            DetailSurface(compact) {
+                DetailTopRow(record.category, onEdit, onDelete, actionsEnabled)
+                if (showMockBanner && record.source == Source.MOCK) MockBanner()
+                if (record.category == Category.VEHICLE_STATUS) {
+                    VehicleDetailBody(record, compact)
+                } else {
+                    PlaceDetailBody(record, compact)
+                }
+            }
+        }
+    }
+}
+
+/**
+ * 상세 면: background/secondary(Light 흰색, Dark basic_900). 안쪽 위치·타이어 패널은 background/primary라
+ * 두 테마 모두 면이 구분된다. 내용은 면 안에서 스크롤한다.
+ */
+@Composable
+private fun DetailSurface(compact: Boolean, content: @Composable ColumnScope.() -> Unit) {
+    val shape = if (compact) JournalShapes.detailSurfaceCompact else JournalShapes.detailSurface
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .clip(shape)
+            .background(ChaKakTheme.colors.backgroundSecondary, shape)
+            .verticalScroll(rememberScrollState())
+            .padding(if (compact) ChaKakSpacing.panel else JournalDimens.detailPadding),
+        verticalArrangement = Arrangement.spacedBy(JournalDimens.detailGap),
+        content = content,
+    )
+}

@@ -1,0 +1,10 @@
+import fs from 'fs';
+const N = JSON.parse(fs.readFileSync(process.argv[2])).nodeChanges;
+const gid = g => g ? `${g.sessionID}:${g.localID}` : '';
+const kids = new Map(); N.forEach(n => { const p = gid(n.parentIndex?.guid); if(!kids.has(p)) kids.set(p, []); kids.get(p).push(n); });
+const page = N.find(n => n.type==='CANVAS' && n.name.startsWith('Form'));
+let md=''; const walk=(n,d,max)=>{ if(n.type==='VECTOR'||n.type==='BOOLEAN_OPERATION'||n.type==='ELLIPSE') return;
+ const t = n.type==='TEXT' ? ` "${(n.textData?.characters||'').replace(/\n/g,' ⏎ ').slice(0,90)}"` : '';
+ md += '  '.repeat(d)+`- ${n.type} ${n.name} ${n.size?Math.round(n.size.x)+'×'+Math.round(n.size.y):''}${t}\n`; if(d<max)(kids.get(gid(n.guid))||[]).forEach(c=>walk(c,d+1,max)); };
+(kids.get(gid(page.guid))||[]).forEach(s=>walk(s,0,4));
+fs.writeFileSync(process.argv[3], md); console.log(md.split('\n').length);

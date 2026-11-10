@@ -1,0 +1,993 @@
+> 자동 추출본 — 출처: docs/Pleos_Connect_design_assets_215.fig ❖ Components 페이지 (tools/comps.mjs). 크기·패딩 단위는 Figma px(connect-s 기준)
+> 추출일: 2026-11-09. 값은 원본 그대로이며 앱 토큰으로 확정된 것이 아님. 요약은 ../design-foundations.md 참고.
+
+
+## Buttons
+- SYMBOL Type=Primary, Size=Large, State=Enabled 160×100 r32 pad[h40 v16 r40 b16] gap16 fill:button/basic/enabled
+  - INSTANCE ic_beam 52×52
+  - TEXT Label 80×40 fill:text/dark/primary "Label" 32/Bold
+  - INSTANCE ic_arrow 52×52
+- SYMBOL Type=Primary, Size=Large, State=Pressed 160×100 r32 pad[h40 v16 r40 b16] gap16 fill:button/basic/pressed
+  - INSTANCE ic_beam 52×52
+  - TEXT Label 80×40 fill:text/dark/primary "Label" 32/Bold
+  - INSTANCE ic_arrow 52×52
+- SYMBOL Type=Primary, Size=Large, State=Disabled 160×100 r32 pad[h40 v16 r40 b16] gap16 fill:button/basic/disabled stroke2:divider/secondary
+  - INSTANCE ic_beam 52×52
+  - TEXT Label 80×40 fill:text/dark/quaternary "Label" 32/Bold
+  - INSTANCE ic_arrow 52×52
+- SYMBOL Type=Primary, Size=Medium, State=Enabled 139×80 r24 pad[h32 v16 r32 b16] gap14 fill:button/basic/enabled
+  - INSTANCE ic_beam 40×40
+  - TEXT Label 75×38 fill:text/dark/primary "Label" 30/Bold
+  - INSTANCE ic_arrow 40×40
+- SYMBOL Type=Primary, Size=Medium, State=Pressed 139×80 r24 pad[h32 v16 r32 b16] gap14 fill:button/basic/pressed
+  - INSTANCE ic_beam 40×40
+  - TEXT Label 75×38 fill:text/dark/primary "Label" 30/Bold
+  - INSTANCE ic_arrow 40×40
+- SYMBOL Type=Primary, Size=Medium, State=Disabled 139×80 r24 pad[h32 v16 r32 b16] gap14 fill:button/basic/disabled stroke2:divider/secondary
+  - INSTANCE ic_beam 40×40
+  - TEXT Label 75×38 fill:text/dark/quaternary "Label" 30/Bold
+  - INSTANCE ic_arrow 40×40
+- SYMBOL Type=Primary, Size=Small, State=Enabled 113×64 r16 pad[h24 v8 r24 b8] gap12 fill:button/basic/enabled
+  - INSTANCE ic_beam 32×32
+  - TEXT Label 65×34 fill:text/dark/primary "Label" 26/Bold
+  - INSTANCE ic_arrow 32×32
+- SYMBOL Type=Primary, Size=Small, State=Pressed 113×64 r16 pad[h24 v8 r24 b8] gap12 fill:button/basic/pressed
+  - INSTANCE ic_beam 32×32
+  - TEXT Label 65×34 fill:text/dark/primary "Label" 26/Bold
+  - INSTANCE ic_arrow 32×32
+- SYMBOL Type=Primary, Size=Small, State=Disabled 113×64 r16 pad[h24 v8 r24 b8] gap12 fill:button/basic/disabled stroke2:divider/secondary
+  - INSTANCE ic_beam 32×32
+  - TEXT Label 65×34 fill:text/dark/quaternary "Label" 26/Bold
+  - INSTANCE ic_arrow 32×32
+- SYMBOL Type=Secondary, Size=Large, State=Enabled 160×100 r32 pad[h40 v16 r40 b16] gap16 fill:button/filled/enabled
+  - INSTANCE ic_beam 52×52
+  - TEXT Label 80×40 fill:text/light/primary "Label" 32/Bold
+  - INSTANCE ic_arrow 52×52
+- SYMBOL Type=Secondary, Size=Large, State=Pressed 160×100 r32 pad[h40 v16 r40 b16] gap16 fill:button/filled/pressed
+  - INSTANCE ic_beam 52×52
+  - TEXT Label 80×40 fill:text/light/primary "Label" 32/Bold
+  - INSTANCE ic_arrow 52×52
+- SYMBOL Type=Secondary, Size=Large, State=Disabled 160×100 r32 pad[h40 v16 r40 b16] gap16 fill:button/filled/disabled stroke2:divider/secondary
+  - INSTANCE ic_beam 52×52
+  - TEXT Label 80×40 fill:text/dark/quaternary "Label" 32/Bold
+  - INSTANCE ic_arrow 52×52
+- SYMBOL Type=Secondary, Size=Medium, State=Enabled 139×80 r24 pad[h32 v16 r32 b16] gap14 fill:button/filled/enabled
+  - INSTANCE ic_beam 40×40
+  - TEXT Label 75×38 fill:text/light/primary "Label" 30/Bold
+  - INSTANCE ic_arrow 40×40
+- SYMBOL Type=Secondary, Size=Medium, State=Pressed 139×80 r24 pad[h32 v16 r32 b16] gap14 fill:button/filled/pressed
+  - INSTANCE ic_beam 40×40
+  - TEXT Label 75×38 fill:text/light/primary "Label" 30/Bold
+  - INSTANCE ic_arrow 40×40
+- SYMBOL Type=Secondary, Size=Medium, State=Disabled 139×80 r24 pad[h32 v16 r32 b16] gap14 fill:button/filled/disabled stroke2:divider/secondary
+  - INSTANCE ic_beam 40×40
+  - TEXT Label 75×38 fill:text/dark/quaternary "Label" 30/Bold
+  - INSTANCE ic_arrow 40×40
+- SYMBOL Type=Secondary, Size=Small, State=Enabled 113×64 r16 pad[h24 v8 r24 b8] gap12 fill:button/filled/enabled
+  - INSTANCE ic_beam 32×32
+  - TEXT Label 65×34 fill:text/light/primary "Label" 26/Bold
+  - INSTANCE ic_arrow 32×32
+- SYMBOL Type=Secondary, Size=Small, State=Pressed 113×64 r16 pad[h24 v8 r24 b8] gap12 fill:button/filled/pressed
+  - INSTANCE ic_beam 32×32
+  - TEXT Label 65×34 fill:text/light/primary "Label" 26/Bold
+  - INSTANCE ic_arrow 32×32
+- SYMBOL Type=Secondary, Size=Small, State=Disabled 113×64 r16 pad[h24 v8 r24 b8] gap12 fill:button/filled/disabled stroke2:divider/secondary
+  - INSTANCE ic_beam 32×32
+  - TEXT Label 65×34 fill:text/dark/quaternary "Label" 26/Bold
+  - INSTANCE ic_arrow 32×32
+- SYMBOL Size=Large, State=Enabled, On active=false 160×100 r32 pad[h40 v16 r40 b16] gap16 fill:button/basic/enabled
+  - INSTANCE ic_beam 52×52
+  - TEXT Label 80×40 fill:text/dark/secondary "Label" 32/Bold
+  - INSTANCE ic_arrow 52×52
+- SYMBOL Size=Large, State=Pressed, On active=false 160×100 r32 pad[h40 v16 r40 b16] gap16 fill:button/basic/pressed
+  - INSTANCE ic_beam 52×52
+  - TEXT Label 80×40 fill:text/dark/secondary "Label" 32/Bold
+  - INSTANCE ic_arrow 52×52
+- SYMBOL Size=Large, State=Disabled, On active=false 160×100 r32 pad[h40 v16 r40 b16] gap16 fill:button/basic/disabled stroke2:divider/secondary
+  - INSTANCE ic_beam 52×52
+  - TEXT Label 80×40 fill:text/dark/quaternary "Label" 32/Bold
+  - INSTANCE ic_arrow 52×52
+- SYMBOL Size=Medium, State=Enabled, On active=false 139×80 r24 pad[h32 v16 r32 b16] gap14 fill:button/basic/enabled
+  - INSTANCE ic_beam 40×40
+  - TEXT Label 75×38 fill:text/dark/secondary "Label" 30/Bold
+  - INSTANCE ic_arrow 40×40
+- SYMBOL Size=Medium, State=Pressed, On active=false 139×80 r24 pad[h32 v16 r32 b16] gap14 fill:button/basic/pressed
+  - INSTANCE ic_beam 40×40
+  - TEXT Label 75×38 fill:text/dark/secondary "Label" 30/Bold
+  - INSTANCE ic_arrow 40×40
+- SYMBOL Size=Medium, State=Disabled, On active=false 139×80 r24 pad[h32 v16 r32 b16] gap14 fill:button/basic/disabled stroke2:divider/secondary
+  - INSTANCE ic_beam 40×40
+  - TEXT Label 75×38 fill:text/dark/quaternary "Label" 30/Bold
+  - INSTANCE ic_arrow 40×40
+- SYMBOL Size=Small, State=Enabled, On active=false 113×64 r16 pad[h24 v8 r24 b8] gap12 fill:button/basic/enabled
+  - INSTANCE ic_beam 32×32
+  - TEXT Label 65×34 fill:text/dark/secondary "Label" 26/Bold
+  - INSTANCE ic_arrow 32×32
+- SYMBOL Size=Small, State=Pressed, On active=false 113×64 r16 pad[h24 v8 r24 b8] gap12 fill:button/basic/pressed
+  - INSTANCE ic_beam 32×32
+  - TEXT Label 65×34 fill:text/dark/secondary "Label" 26/Bold
+  - INSTANCE ic_arrow 32×32
+- SYMBOL Size=Small, State=Disabled, On active=false 113×64 r16 pad[h24 v8 r24 b8] gap12 fill:button/basic/disabled stroke2:divider/secondary
+  - INSTANCE ic_beam 32×32
+  - TEXT Label 65×34 fill:text/dark/quaternary "Label" 26/Bold
+  - INSTANCE ic_arrow 32×32
+- SYMBOL Size=Large, State=Enabled, On active=true 160×100 r32 pad[h40 v16 r40 b16] gap16 fill:button/switch/enabled
+  - INSTANCE ic_beam 52×52
+  - TEXT Label 80×40 fill:text/dark/primary "Label" 32/Bold
+  - INSTANCE ic_arrow 52×52
+- SYMBOL Size=Large, State=Pressed, On active=true 160×100 r32 pad[h40 v16 r40 b16] gap16 fill:button/switch/pressed
+  - INSTANCE ic_beam 52×52
+  - TEXT Label 80×40 fill:text/dark/primary "Label" 32/Bold
+  - INSTANCE ic_arrow 52×52
+- SYMBOL Size=Large, State=Disabled, On active=true 160×100 r32 pad[h40 v16 r40 b16] gap16 fill:button/switch/disabled stroke2:divider/secondary
+  - INSTANCE ic_beam 52×52
+  - TEXT Label 80×40 fill:text/dark/quaternary "Label" 32/Bold
+  - INSTANCE ic_arrow 52×52
+- SYMBOL Size=Medium, State=Enabled, On active=true 139×80 r24 pad[h32 v16 r32 b16] gap14 fill:button/switch/enabled
+  - INSTANCE common/add/l 64×64
+  - INSTANCE ic_beam 40×40
+  - TEXT Label 75×38 fill:text/dark/primary "Label" 30/Bold
+  - INSTANCE common/add/l 64×64
+  - INSTANCE ic_arrow 40×40
+- SYMBOL Size=Medium, State=Pressed, On active=true 139×80 r24 pad[h32 v16 r32 b16] gap14 fill:button/switch/pressed
+  - INSTANCE common/add/l 64×64
+  - INSTANCE ic_beam 40×40
+  - TEXT Label 75×38 fill:text/dark/primary "Label" 30/Bold
+  - INSTANCE common/add/l 64×64
+  - INSTANCE ic_arrow 40×40
+- SYMBOL Size=Medium, State=Disabled, On active=true 139×80 r24 pad[h32 v16 r32 b16] gap14 fill:button/switch/disabled stroke2:divider/secondary
+  - INSTANCE common/add/l 64×64
+  - INSTANCE ic_beam 40×40
+  - TEXT Label 75×38 fill:text/dark/quaternary "Label" 30/Bold
+  - INSTANCE common/add/l 64×64
+  - INSTANCE ic_arrow 40×40
+- SYMBOL Size=Small, State=Enabled, On active=true 113×64 r16 pad[h24 v8 r24 b8] gap12 fill:button/switch/enabled
+  - INSTANCE ic_beam 32×32
+  - TEXT Label 65×34 fill:text/dark/primary "Label" 26/Bold
+  - INSTANCE ic_arrow 32×32
+- SYMBOL Size=Small, State=Pressed, On active=true 113×64 r16 pad[h24 v8 r24 b8] gap12 fill:button/switch/pressed
+  - INSTANCE ic_beam 32×32
+  - TEXT Label 65×34 fill:text/dark/primary "Label" 26/Bold
+  - INSTANCE ic_arrow 32×32
+- SYMBOL Size=Small, State=Disabled, On active=true 113×64 r16 pad[h24 v8 r24 b8] gap12 fill:button/basic/disabled stroke2:divider/secondary
+  - INSTANCE ic_beam 32×32
+  - TEXT Label 65×34 fill:text/dark/quaternary "Label" 26/Bold
+  - INSTANCE ic_arrow 32×32
+- SYMBOL Size=Medium, State=Enabled 75×38 gap8
+  - INSTANCE ic_arrow 32×32
+  - TEXT Label 75×38 fill:informative/positive "Label" 30/Bold
+  - INSTANCE ic_arrow 32×32
+- SYMBOL Size=Medium, State=Pressed 75×38 gap8
+  - INSTANCE ic_arrow 32×32
+  - TEXT Label 75×38 fill:informative/positive "Label" 30/Bold
+  - INSTANCE ic_arrow 32×32
+- SYMBOL Size=Medium, State=Disabled 75×38 gap8
+  - INSTANCE ic_arrow 32×32
+  - TEXT Label 75×38 fill:text/dark/quaternary "Label" 30/Bold
+  - INSTANCE ic_arrow 32×32
+- SYMBOL Size=Small, State=Enabled 65×34 gap4
+  - INSTANCE ic_arrow 28×28
+  - TEXT Label 65×34 fill:informative/positive "Label" 26/Bold
+  - INSTANCE ic_arrow 28×28
+- SYMBOL Size=Small, State=Pressed 65×34 gap4
+  - INSTANCE ic_arrow 28×28
+  - TEXT Label 65×34 fill:informative/positive "Label" 26/Bold
+  - INSTANCE ic_arrow 28×28
+- SYMBOL Size=Small, State=Disabled 65×34 gap4
+  - INSTANCE ic_arrow 28×28
+  - TEXT Label 65×34 fill:text/dark/quaternary "Label" 26/Bold
+  - INSTANCE ic_arrow 28×28
+- SYMBOL Type=Basic, State=Enabled, Size=Medium 80×80 r20 fill:button/basic/enabled
+  - INSTANCE ic_plus 56×56
+- SYMBOL Type=Basic, State=Pressed, Size=Medium 80×80 r20 fill:button/basic/pressed
+  - INSTANCE ic_plus 56×56
+- SYMBOL Type=Basic, State=Diabled, Size=Medium 80×80 r20 fill:button/basic/disabled
+  - INSTANCE ic_plus 56×56
+- SYMBOL Type=Basic, State=Enabled, Size=Small 64×64 r16 fill:button/basic/enabled
+  - INSTANCE ic_plus 44×44
+- SYMBOL Type=Basic, State=Pressed, Size=Small 64×64 r16 fill:button/basic/pressed
+  - INSTANCE ic_plus 44×44
+- SYMBOL Type=Basic, State=Diabled, Size=Small 64×64 r16 fill:button/basic/disabled
+  - INSTANCE ic_plus 44×44
+- SYMBOL Type=Plain, State=Enabled, Size=Medium 80×80 r20
+  - INSTANCE ic_plus 56×56
+- SYMBOL Type=Plain, State=Pressed, Size=Medium 80×80 r20 fill:button/basic/pressed
+  - INSTANCE ic_plus 56×56
+- SYMBOL Type=Plain, State=Diabled, Size=Medium 80×80 r20
+  - INSTANCE ic_plus 56×56
+- SYMBOL Type=Plain, State=Enabled, Size=Small 64×64 r16
+  - INSTANCE ic_plus 44×44
+- SYMBOL Type=Plain, State=Pressed, Size=Small 64×64 r16 fill:button/basic/pressed
+  - INSTANCE ic_plus 44×44
+- SYMBOL Type=Plain, State=Diabled, Size=Small 64×64 r16
+  - INSTANCE ic_plus 44×44
+- SYMBOL Type=Circle, State=Enabled, Size=Medium 80×80 r999 fill:button/basic/enabled
+  - INSTANCE ic_plus 56×56
+- SYMBOL Type=Circle, State=Pressed, Size=Medium 80×80 r999 fill:button/basic/pressed
+  - INSTANCE ic_plus 56×56
+- SYMBOL Type=Circle, State=Diabled, Size=Medium 80×80 r999 fill:button/basic/disabled
+  - INSTANCE ic_plus 56×56
+- SYMBOL Type=Circle, State=Enabled, Size=Small 64×64 r999 fill:button/basic/enabled
+  - INSTANCE ic_plus 44×44
+- SYMBOL Type=Circle, State=Pressed, Size=Small 64×64 r999 fill:button/basic/pressed
+  - INSTANCE ic_plus 44×44
+- SYMBOL Type=Circle, State=Diabled, Size=Small 64×64 r999 fill:button/basic/disabled
+  - INSTANCE ic_plus 44×44
+- SYMBOL Type=Number, State=Enabled 200×108 r32 fill:keyboard/normal/primary_normal stroke4:divider/secondary
+  - TEXT 1 200×72 fill:text/dark/primary "1" 56/ExtraBold
+- SYMBOL Type=Delete, State=Enabled 200×108 r32 fill:surface/accent stroke4:divider/secondary
+  - INSTANCE ic_close 48×48
+- SYMBOL Type=Clear, State=Enabled 200×108 r32 fill:surface/accent stroke4:divider/secondary
+  - TEXT Clear 200×52 fill:text/dark/primary "Clear" 40/Bold
+- SYMBOL Type=Number, State=Pressed 200×108 r32 fill:keyboard/normal/primary_pressed stroke4:divider/secondary
+  - TEXT 1 200×72 fill:text/dark/primary "1" 56/ExtraBold
+- SYMBOL Type=Delete, State=Pressed 200×108 r32 fill:surface/accent+dim/dark/tertiary stroke4:divider/secondary
+  - INSTANCE ic_close 48×48
+- SYMBOL Type=Clear, State=Pressed 200×108 r32 fill:surface/accent+dim/dark/tertiary stroke4:divider/secondary
+  - TEXT Clear 200×52 fill:text/dark/primary "Clear" 40/Bold
+- SYMBOL Type=Delete, State=Disabled 200×108 r32 fill:surface/accent stroke4:divider/secondary
+  - INSTANCE ic_close 48×48
+- SYMBOL Type=Clear, State=Disabled 200×108 r32 fill:surface/accent stroke4:divider/secondary
+  - TEXT Clear 200×52 fill:text/dark/quaternary "Clear" 40/Bold
+- SYMBOL Type=Primary, State=Enabled, On=False 100×80 r20 fill:keyboard/normal/primary_normal
+  - TEXT A 100×52 fill:text/dark/primary "A" 40/Regular
+- SYMBOL Type=Primary, State=Pressed, On=False 100×80 r20 fill:keyboard/normal/primary_pressed
+  - TEXT A 100×52 fill:text/dark/primary "A" 40/Regular
+- SYMBOL Type=Delete, State=Enabled, On=False 120×80 r20 pad[h20 v0 r20 b] fill:keyboard/normal/secondary_normal
+  - INSTANCE ic_keyboard 44×44
+- SYMBOL Type=Delete, State=Pressed, On=False 120×80 r20 pad[h20 v0 r20 b] fill:keyboard/normal/secondary_pressed
+  - INSTANCE ic_keyboard 44×44
+- SYMBOL Type=Shift, State=Enabled, On=False 165×80 r20 pad[h20 v0 r20 b] fill:keyboard/normal/secondary_normal
+  - INSTANCE ic_keyboard 44×44
+- SYMBOL Type=Shift, On=False, State=Pressed 165×80 r20 pad[h20 v0 r20 b] fill:keyboard/normal/secondary_pressed
+  - INSTANCE ic_keyboard 44×44
+- SYMBOL Type=Shift, State=Enabled, On=True 165×80 r20 pad[h20 v0 r20 b] fill:keyboard/normal/active_normal
+  - INSTANCE ic_keyboard 44×44
+- SYMBOL Type=Shift, On=True, State=Pressed 165×80 r20 pad[h20 v0 r20 b] fill:keyboard/normal/active_pressed
+  - INSTANCE ic_keyboard 44×44
+- SYMBOL Type=Secondary, State=Enabled, On=False 120×80 r20 fill:keyboard/normal/secondary_normal
+  - TEXT 한/A 67×44 fill:text/dark/primary "한/A" 36/Regular
+- SYMBOL Type=Secondary, State=Pressed, On=False 120×80 r20 fill:keyboard/normal/secondary_pressed
+  - TEXT 한/A 67×44 fill:text/dark/primary "한/A" 36/Regular
+- SYMBOL Type=Mic, State=Enabled, On=False 120×80 r20 fill:keyboard/normal/secondary_normal
+  - INSTANCE ic_mic 44×44
+- SYMBOL Type=Mic, State=Pressed, On=False 120×80 r20 fill:keyboard/normal/secondary_pressed
+  - INSTANCE ic_mic 44×44
+- SYMBOL Type=Hyphen, State=Enabled, On=False 120×80 r20 fill:keyboard/normal/secondary_normal
+  - TEXT - 17×52 fill:text/dark/primary "-" 40/Regular
+- SYMBOL Type=Hyphen, State=Pressed, On=False 120×80 r20 fill:keyboard/normal/secondary_pressed
+  - TEXT - 17×52 fill:text/dark/primary "-" 40/Regular
+- SYMBOL Type=Space, State=Enabled, On=False 300×80 r20 fill:keyboard/normal/primary_normal
+  - TEXT 스페이스 300×40 fill:text/dark/primary "스페이스" 32/Regular
+- SYMBOL Type=Space, State=Pressed, On=False 300×80 r20 fill:keyboard/normal/primary_pressed
+  - TEXT 스페이스 300×40 fill:text/dark/primary "스페이스" 32/Regular
+- SYMBOL Type=Enter, State=Enabled, On=False 200×80 r20 pad[h20 v0 r20 b] fill:keyboard/normal/accents_normal
+  - INSTANCE ic_keyboard 44×44
+- SYMBOL Type=Enter, State=Pressed, On=False 200×80 r20 pad[h20 v0 r20 b] fill:keyboard/normal/accents_pressed
+  - INSTANCE ic_keyboard 44×44
+
+## Sliders
+- SYMBOL Type=Button, OFF=False 532×100 r32 pad[h10 v10 r10 b10] gap16 fill:climate/slider_background stroke3:climate/button_border_enabled
+  - INSTANCE ivi_icon_button 80×80 r20
+  - INSTANCE slider_track 320×8 r999 fill:GRADIENT_LINEAR
+  - INSTANCE ivi_icon_button 80×80 r20
+- SYMBOL Type=Basic, OFF=False 400×100 r32 pad[h40 v12 r40 b12] gap16 fill:climate/slider_background stroke3:climate/button_border_enabled
+  - INSTANCE slider_track 320×8 r999 fill:GRADIENT_LINEAR
+- SYMBOL Type=Number, OFF=False 529×100 r32 pad[h40 v12 r40 b12] gap16 fill:climate/slider_background stroke3:climate/button_border_enabled
+  - FRAME temp 113×76
+    - TEXT 20 75×76 fill:text/dark/primary "20" 60/Bold
+    - TEXT .0 38×62 fill:text/dark/primary ".0" 40/ExtraBold
+  - INSTANCE slider_track 320×8 r999 fill:GRADIENT_LINEAR
+- SYMBOL Type=Button, OFF=True 532×100 r32 pad[h10 v10 r10 b10] gap16 fill:climate/slider_background stroke3:climate/button_border_enabled
+  - INSTANCE ivi_icon_button 80×80 r20
+  - INSTANCE slider_track 320×8 r999 fill:basic/200
+  - INSTANCE ivi_icon_button 80×80 r20
+- SYMBOL Type=Basic, OFF=True 400×100 r32 pad[h40 v12 r40 b12] gap16 fill:climate/slider_background stroke3:climate/button_border_enabled
+  - INSTANCE slider_track 320×8 r999 fill:basic/200
+- SYMBOL Type=Number, OFF=True 529×100 r32 pad[h40 v12 r40 b12] gap16 fill:climate/slider_background stroke3:climate/button_border_enabled
+  - FRAME temp 113×76
+    - TEXT 20 75×76 fill:text/dark/primary "20" 60/Bold
+    - TEXT .0 38×62 fill:text/dark/primary ".0" 40/ExtraBold
+  - INSTANCE slider_track 320×8 r999 fill:basic/200
+- SYMBOL State=Min, OFF=False 320×8 r999 fill:GRADIENT_LINEAR
+  - INSTANCE slider_knob 48×48 r1000
+- SYMBOL State=Mid, OFF=False 320×8 r999 fill:GRADIENT_LINEAR
+  - INSTANCE slider_knob 48×48 r1000
+- SYMBOL State=Max, OFF=False 320×8 r999 fill:GRADIENT_LINEAR
+  - INSTANCE slider_knob 48×48 r1000
+- SYMBOL State=Min, OFF=True 320×8 r999 fill:basic/200
+  - INSTANCE slider_knob 48×48 r1000
+- SYMBOL State=Mid, OFF=True 320×8 r999 fill:basic/200
+  - INSTANCE slider_knob 48×48 r1000
+- SYMBOL State=Max, OFF=True 320×8 r999 fill:basic/200
+  - INSTANCE slider_knob 48×48 r1000
+- SYMBOL State=Enabled 48×48 r1000
+  - ELLIPSE Ellipse 7731 48×48 r1000 fill:basic/700 stroke4:climate/slider_background
+- SYMBOL State=Pressed 56×56 r1000
+  - ELLIPSE Ellipse 7731 56×56 r1000 fill:basic/700 stroke4:climate/slider_background
+- SYMBOL Size=Large, Type=Basic 808×100 r32 pad[h20 v10 r20 b10] gap16 fill:dim/dark/primary
+  - TEXT Label 180×40 fill:text/dark/secondary "Sound" 32/Bold
+  - INSTANCE ivi_icon_button 80×80 r20
+  - INSTANCE slider_track 576×80 r24 pad[h4 v4 r4 b4] fill:controller/slider/normal
+  - INSTANCE ivi_icon_button 80×80 r20
+- SYMBOL Size=Large, Type=Floating 808×100 r32 pad[h20 v10 r20 b10] gap16 fill:background/popup stroke2:divider/secondary
+  - TEXT Label 180×40 fill:text/dark/secondary "Sound" 32/Bold
+  - INSTANCE ivi_icon_button 80×80 r20
+  - INSTANCE slider_track 576×80 r24 pad[h4 v4 r4 b4] fill:controller/slider/normal
+  - INSTANCE ivi_icon_button 80×80 r20
+- SYMBOL Size=Medium, Type=Basic 560×80 r24 pad[h10 v8 r10 b8] gap12 fill:dim/dark/primary
+  - INSTANCE ivi_icon_button 64×64 r16
+  - INSTANCE slider_track 388×64 r20 pad[h4 v4 r4 b4] fill:controller/slider/normal
+  - INSTANCE ivi_icon_button 64×64 r16
+- SYMBOL Size=Medium, Type=Floating 560×80 r24 pad[h10 v8 r10 b8] gap12 fill:background/popup stroke2:divider/secondary
+  - TEXT Label 180×38 fill:text/dark/secondary "Sound" 30/Bold
+  - INSTANCE ivi_icon_button 64×64 r16
+  - INSTANCE slider_track 388×64 r20 pad[h4 v4 r4 b4] fill:controller/slider/normal
+  - INSTANCE ivi_icon_button 64×64 r16
+- SYMBOL Size=Medium, State=Enabled, Level=Max 580×80 r24 pad[h4 v4 r4 b4] fill:controller/slider/normal
+  - FRAME Knob 572×72 r20 fill:controller/slider/knop
+  - INSTANCE ic_sound 48×48
+- SYMBOL Size=Small, State=Enabled, Level=Max 320×72 r20 pad[h4 v4 r4 b4] fill:controller/slider/normal
+  - FRAME Knob 312×64 r16 fill:controller/slider/knop
+  - INSTANCE ic_sound 40×40
+- SYMBOL Size=Medium, State=Enabled, Level=High 580×80 r24 pad[h4 v4 r4 b4] fill:controller/slider/normal
+  - FRAME Knob 516×72 r20 fill:controller/slider/knop
+  - INSTANCE ic_sound 48×48
+- SYMBOL Size=Small, State=Enabled, Level=High 320×72 r20 pad[h4 v4 r4 b4] fill:controller/slider/normal
+  - FRAME Knob 276×64 r16 fill:controller/slider/knop
+  - INSTANCE ic_sound 40×40
+- SYMBOL Size=Medium, State=Enabled, Level=Mid 580×80 r24 pad[h4 v4 r4 b4] fill:controller/slider/normal
+  - FRAME Knob 290×72 r20 fill:controller/slider/knop
+  - INSTANCE ic_sound 48×48
+- SYMBOL Size=Small, State=Enabled, Level=Mid 320×72 r20 pad[h4 v4 r4 b4] fill:controller/slider/normal
+  - FRAME Knob 160×64 r16 fill:controller/slider/knop
+  - INSTANCE ic_sound 40×40
+- SYMBOL Size=Medium, State=Enabled, Level=Low 580×80 r24 pad[h4 v4 r4 b4] fill:controller/slider/normal
+  - FRAME Knob 90×72 r20 fill:controller/slider/knop
+  - INSTANCE ic_sound 48×48
+- SYMBOL Size=Small, State=Enabled, Level=Low 320×72 r20 pad[h4 v4 r4 b4] fill:controller/slider/normal
+  - FRAME Knob 70×64 r16 fill:controller/slider/knop
+  - INSTANCE ic_sound 40×40
+- SYMBOL Size=Medium, State=Enabled, Level=Min 580×80 r24 pad[h4 v4 r4 b4] fill:controller/slider/normal
+  - INSTANCE ic_sound 48×48
+- SYMBOL Size=Small, State=Enabled, Level=Min 320×72 r20 pad[h4 v4 r4 b4] fill:controller/slider/normal
+  - INSTANCE ic_sound 40×40
+- SYMBOL Size=Medium, State=Pressed, Level=Max 580×80 r24 pad[h4 v4 r4 b4] fill:controller/slider/pressed
+  - FRAME Knob 572×72 r20 fill:controller/slider/knop
+  - INSTANCE ic_sound 48×48
+- SYMBOL Size=Small, State=Pressed, Level=Max 320×72 r20 pad[h4 v4 r4 b4] fill:controller/slider/pressed
+  - FRAME Knob 312×64 r16 fill:controller/slider/knop
+  - INSTANCE ic_sound 40×40
+- SYMBOL Size=Medium, State=Pressed, Level=High 580×80 r24 pad[h4 v4 r4 b4] fill:controller/slider/pressed
+  - FRAME Knob 516×72 r20 fill:controller/slider/knop
+  - INSTANCE ic_sound 48×48
+- SYMBOL Size=Small, State=Pressed, Level=High 320×72 r20 pad[h4 v4 r4 b4] fill:controller/slider/pressed
+  - FRAME Knob 276×64 r16 fill:controller/slider/knop
+  - INSTANCE ic_sound 40×40
+- SYMBOL Size=Medium, State=Pressed, Level=Mid 580×80 r24 pad[h4 v4 r4 b4] fill:controller/slider/pressed
+  - FRAME Knob 290×72 r20 fill:controller/slider/knop
+  - INSTANCE ic_sound 48×48
+- SYMBOL Size=Small, State=Pressed, Level=Mid 320×72 r20 pad[h4 v4 r4 b4] fill:controller/slider/pressed
+  - FRAME Knob 160×64 r16 fill:controller/slider/knop
+  - INSTANCE ic_sound 40×40
+- SYMBOL Size=Medium, State=Pressed, Level=Low 580×80 r24 pad[h4 v4 r4 b4] fill:controller/slider/pressed
+  - FRAME Knob 90×72 r20 fill:controller/slider/knop
+  - INSTANCE ic_sound 48×48
+- SYMBOL Size=Small, State=Pressed, Level=Low 320×72 r20 pad[h4 v4 r4 b4] fill:controller/slider/pressed
+  - FRAME Knob 70×64 r16 fill:controller/slider/knop
+  - INSTANCE ic_sound 40×40
+- SYMBOL Size=Medium, State=Pressed, Level=Min 580×80 r24 pad[h4 v4 r4 b4] fill:controller/slider/pressed
+  - INSTANCE ic_sound 48×48
+- SYMBOL Size=Small, State=Pressed, Level=Min 320×72 r20 pad[h4 v4 r4 b4] fill:controller/slider/pressed
+  - INSTANCE ic_sound 40×40
+- SYMBOL Size=Medium, State=Enabled, Direction=down 80×80 r24
+  - INSTANCE ic_arrow 56×56
+- SYMBOL Size=Medium, State=Enabled, Direction=up 80×80 r24
+  - INSTANCE ic_arrow 56×56
+- SYMBOL Size=Medium, State=Disabled, Direction=down 80×80 r24
+  - INSTANCE ic_arrow 56×56
+- SYMBOL Size=Medium, State=Disabled, Direction=up 80×80 r24
+  - INSTANCE ic_arrow 56×56
+- SYMBOL Size=Medium, State=Pressed, Direction=down 80×80 r24 fill:dim/dark/secondary
+  - INSTANCE ic_arrow 56×56
+- SYMBOL Size=Medium, State=Pressed, Direction=up 80×80 r24 fill:dim/dark/secondary
+  - INSTANCE ic_arrow 56×56
+- SYMBOL Size=Small, State=Enabled, Direction=down 72×72 r20
+  - INSTANCE ic_arrow 48×48
+- SYMBOL Size=Small, State=Enabled, Direction=up 72×72 r20
+  - INSTANCE ic_arrow 48×48
+- SYMBOL Size=Small, State=Disabled, Direction=down 72×72 r20
+  - INSTANCE ic_arrow 48×48
+- SYMBOL Size=Small, State=Disabled, Direction=up 72×72 r20
+  - INSTANCE ic_arrow 48×48
+- SYMBOL Size=Small, State=Pressed, Direction=down 72×72 r20 fill:dim/dark/secondary
+  - INSTANCE ic_arrow 48×48
+- SYMBOL Size=Small, State=Pressed, Direction=up 72×72 r20 fill:dim/dark/secondary
+  - INSTANCE ic_arrow 48×48
+
+## Steppers
+
+## Dropdown Menu
+- SYMBOL Size=Medium 600×100 gap8
+  - INSTANCE dropdown_button 600×100 r32 pad[h20 v0 r20 b] fill:dropdown/normal stroke2:divider/secondary
+  - INSTANCE ivi_dropdown_menus 600×364 r32 pad[h16 v16 r16 b16] gap16 fill:surface/basic stroke2:divider/secondary
+- SYMBOL Size=Small 600×80 gap8
+  - INSTANCE dropdown_button 600×80 r28 pad[h16 v0 r16 b] fill:dropdown/normal stroke2:divider/secondary
+  - INSTANCE ivi_dropdown_menus 600×304 r28 pad[h16 v16 r16 b16] gap16 fill:surface/basic stroke2:divider/secondary
+- SYMBOL Size=Medium, State=Enabled 600×100 r32 pad[h20 v0 r20 b] fill:dropdown/normal stroke2:divider/secondary
+  - FRAME title 512×38
+    - INSTANCE app_icon 56×56 r16
+    - FRAME Prefix 56×56 pad[h12 v12 r12 b12]
+    - FRAME Label 512×38 pad[h16 v0 r16 b]
+  - INSTANCE Suffix 48×48
+- SYMBOL Size=Medium, State=Pressed 600×100 r32 pad[h20 v0 r20 b] fill:dropdown/pressed stroke2:divider/secondary
+  - FRAME title 512×38
+    - INSTANCE ic_app 56×56 r16
+    - FRAME Prefix 56×56 pad[h12 v12 r12 b12]
+    - FRAME Label 512×38 pad[h16 v0 r16 b]
+  - INSTANCE Suffix 48×48
+- SYMBOL Size=Medium, State=Disabled 600×100 r32 pad[h20 v0 r20 b] fill:dropdown/normal stroke2:divider/secondary
+  - FRAME title 512×38
+    - INSTANCE ic_app 56×56 r16
+    - FRAME Prefix 56×56 pad[h12 v12 r12 b12]
+    - FRAME Label 512×38 pad[h16 v0 r16 b]
+  - INSTANCE Suffix 48×48
+- SYMBOL Size=Small, State=Enabled 600×80 r28 pad[h16 v0 r16 b] fill:dropdown/normal stroke2:divider/secondary
+  - FRAME title 520×38
+    - INSTANCE ic_app 56×56 r16
+    - FRAME Prefix 56×56 pad[h12 v12 r12 b12]
+    - FRAME Label 520×38 pad[h12 v0 r12 b]
+  - INSTANCE Suffix 48×48
+- SYMBOL Size=Small, State=Pressed 600×80 r28 pad[h16 v0 r16 b] fill:dropdown/pressed stroke2:divider/secondary
+  - FRAME title 520×38
+    - INSTANCE ic_app 56×56 r16
+    - FRAME Prefix 56×56 pad[h12 v12 r12 b12]
+    - FRAME Label 520×38 pad[h12 v0 r12 b]
+  - INSTANCE Suffix 48×48
+- SYMBOL Size=Small, State=Disabled 600×80 r28 pad[h16 v0 r16 b] fill:dropdown/normal stroke2:divider/secondary
+  - FRAME Frame 4 520×38
+    - INSTANCE ic_app 56×56 r16
+    - FRAME Prefix 56×56 pad[h12 v12 r12 b12]
+    - FRAME Label 520×38 pad[h12 v0 r12 b]
+  - INSTANCE Suffix 48×48
+- SYMBOL Size=Medium, State=Selected 568×100 r32 pad[h20 v0 r20 b] fill:dim/dark/primary
+  - FRAME title 480×38
+    - INSTANCE ic_app 56×56 r16
+    - FRAME Prefix 56×56 r16 pad[h12 v12 r12 b12]
+    - FRAME Label 480×38 pad[h12 v0 r12 b]
+  - INSTANCE ic_check 48×48
+  - INSTANCE ivi_switch 64×40 r12 pad[h6 v6 r6 b6] fill:switch/on
+  - VECTOR New 16×16 fill:informative/active
+- SYMBOL Size=Medium, State=Footer 568×97 r32 pad[h20 v0 r20 b] gap16
+  - ROUNDED_RECTANGLE Rectangle 346244179 528×1 fill:divider/tertiary
+  - FRAME Container 528×80 gap20
+    - FRAME Prefix 80×80 r999 pad[h12 v12 r12 b12] fill:dim/dark/primary
+    - TEXT Label 428×38 fill:text/dark/primary "Label" 30/Bold
+- SYMBOL Size=Small, State=Selected 568×80 r28 pad[h16 v0 r16 b] fill:dim/dark/primary
+  - FRAME title 488×38
+    - INSTANCE ic_app 56×56 r16
+    - FRAME Prefix 56×56 r12 pad[h12 v12 r12 b12]
+    - FRAME Label 488×38 pad[h12 v0 r12 b]
+  - INSTANCE ic_check 48×48
+  - INSTANCE ivi_switch 64×40 r12 pad[h6 v6 r6 b6] fill:switch/on
+  - VECTOR New 16×16 fill:informative/active
+- SYMBOL Size=Small, State=Footer 568×81 r28 pad[h16 v0 r16 b] gap16
+  - ROUNDED_RECTANGLE Rectangle 346244179 536×1 fill:divider/tertiary
+  - FRAME Container 536×64 gap20
+    - FRAME Prefix 64×64 r999 pad[h12 v12 r12 b12] fill:dim/dark/primary
+    - TEXT Label 452×38 fill:text/dark/primary "Label" 30/Bold
+
+## Fields
+- SYMBOL Size=Small, State=Enabled 700×80 gap12
+  - FRAME Text Fields 700×80 r24 pad[h24 v0 r24 b] gap12 fill:field/background stroke2:divider/secondary
+    - TEXT Place holder 652×38 fill:text/dark/tertiary "Place holder" 30/Regular
+    - INSTANCE ic_close 40×40
+    - INSTANCE ic_eye 40×40
+  - FRAME Help Text 700×34 pad[h16 v0 r16 b]
+    - TEXT Description 668×34 fill:text/dark/secondary "Help Text" 26/Regular
+- SYMBOL Size=Medium, State=Enabled 700×100 gap16
+  - FRAME Text Fields 700×100 r24 pad[h32 v0 r32 b] gap16 fill:field/background stroke2:divider/secondary
+    - TEXT Place holder 636×44 fill:text/dark/tertiary "Place holder" 36/Regular
+    - INSTANCE ic_close 48×48
+    - INSTANCE ic_eye 48×48
+  - FRAME Help Text 700×34 pad[h16 v0 r16 b]
+    - TEXT Description 668×34 fill:text/dark/secondary "Help Text" 26/Regular
+- SYMBOL Size=Small, State=Focused 700×80 gap12
+  - FRAME Text Fields 700×80 r24 pad[h24 v0 r24 b] gap12 fill:field/background stroke3:field/focused
+    - FRAME Text area 652×38
+    - INSTANCE ic_eye 40×40
+  - FRAME Help Text 700×34 pad[h16 v0 r16 b]
+    - TEXT Description 668×34 fill:text/dark/secondary "Help Text" 26/Regular
+- SYMBOL Size=Medium, State=Focused 700×100 gap16
+  - FRAME Text Fields 700×100 r24 pad[h32 v0 r32 b] gap16 fill:field/background stroke3:field/focused
+    - FRAME Text area 636×44
+    - INSTANCE ic_eye 48×48
+  - FRAME Help Text 700×34 pad[h16 v0 r16 b]
+    - TEXT Description 668×34 fill:text/dark/secondary "Help Text" 26/Regular
+- SYMBOL Size=Small, State=Typing 700×80 gap12
+  - FRAME Text Fields 700×80 r24 pad[h24 v0 r24 b] gap12 fill:field/background stroke3:field/focused
+    - FRAME Text area 600×38 gap4
+    - INSTANCE ic_close 40×40
+    - INSTANCE ic_eye 40×40
+  - FRAME Help Text 700×34 pad[h16 v0 r16 b]
+    - TEXT Description 668×34 fill:text/dark/secondary "Help Text" 26/Regular
+- SYMBOL Size=Medium, State=Typing 700×100 gap16
+  - FRAME Text Fields 700×100 r24 pad[h32 v0 r32 b] gap16 fill:field/background stroke3:field/focused
+    - FRAME Text area 572×44
+    - INSTANCE ic_close 48×48
+    - INSTANCE ic_eye 48×48
+  - FRAME Help Text 700×34 pad[h16 v0 r16 b]
+    - TEXT Description 668×34 fill:text/dark/secondary "Help Text" 26/Regular
+- SYMBOL Size=Small, State=Entered 700×80 gap12
+  - FRAME Text Fields 700×80 r24 pad[h24 v0 r24 b] gap12 fill:field/background stroke2:divider/secondary
+    - TEXT Place holder 652×38 fill:text/dark/primary "Place holder" 30/Regular
+    - INSTANCE ic_eye 40×40
+  - FRAME Help Text 700×34 pad[h16 v0 r16 b]
+    - TEXT Description 668×34 fill:text/dark/secondary "Help Text" 26/Regular
+- SYMBOL Size=Medium, State=Entered 700×100 gap16
+  - FRAME Text Fields 700×100 r24 pad[h32 v0 r32 b] gap16 fill:field/background stroke2:divider/secondary
+    - TEXT Place holder 636×44 fill:text/dark/primary "Place holder" 36/Regular
+    - INSTANCE ic_eye 48×48
+  - FRAME Help Text 700×34 pad[h16 v0 r16 b]
+    - TEXT Description 668×34 fill:text/dark/secondary "Help Text" 26/Regular
+- SYMBOL Size=Small, State=Read Only 700×80 gap12
+  - FRAME Text Fields 700×80 r24 pad[h24 v0 r24 b] gap12 fill:surface/high stroke2:divider/secondary
+    - TEXT Place holder 652×38 fill:text/dark/primary "Place holder" 30/Regular
+  - FRAME Help Text 700×34 pad[h16 v0 r16 b]
+    - TEXT Description 668×34 fill:text/dark/secondary "Help Text" 26/Regular
+- SYMBOL Size=Medium, State=Read Only 700×100 gap16
+  - FRAME Text Fields 700×100 r24 pad[h32 v0 r32 b] gap16 fill:surface/high stroke2:divider/secondary
+    - TEXT Place holder 636×44 fill:text/dark/primary "Place holder" 36/Regular
+  - FRAME Help Text 700×34 pad[h16 v0 r16 b]
+    - TEXT Description 668×34 fill:text/dark/secondary "Help Text" 26/Regular
+- SYMBOL Size=Small, State=Error 700×126 gap12
+  - FRAME Text Fields 700×80 r24 pad[h24 v0 r24 b] gap12 fill:field/background stroke3:regulation/red
+    - TEXT Place holder 652×38 fill:text/dark/primary "Place holder" 30/Regular
+    - INSTANCE ic_close 40×40
+    - INSTANCE ic_eye 40×40
+  - FRAME Help Text 700×34 pad[h16 v0 r16 b]
+    - TEXT Description 668×34 fill:regulation/red "Please enter a valid email for" 26/Regular
+- SYMBOL Size=Medium, State=Error 700×150 gap16
+  - FRAME Text Fields 700×100 r24 pad[h32 v0 r32 b] gap16 fill:field/background stroke3:regulation/red
+    - TEXT Place holder 636×44 fill:text/dark/primary "Place holder" 36/Regular
+    - INSTANCE ic_close 48×48
+    - INSTANCE ic_eye 48×48
+  - FRAME Help Text 700×34 pad[h16 v0 r16 b]
+    - TEXT Description 668×34 fill:regulation/red "Please enter a valid email for" 26/Regular
+- SYMBOL Size=Large, State=Enabled 140×180 r32 stroke4:divider/secondary
+  - TEXT l 128×192 fill:#252525 "l" 56/Bold
+- SYMBOL Size=Large, State=Focused 140×180 r32 fill:dim/dark/secondary stroke4:field/focused
+  - ROUNDED_RECTANGLE cursor 4×48 fill:icon/dark/primary
+- SYMBOL Size=Large, State=Error 140×180 r32 stroke4:regulation/red
+  - TEXT 3 140×180 fill:text/dark/primary "3" 60/ExtraBold
+- SYMBOL Size=Large, State=Entered 140×180 r32 stroke4:divider/secondary
+  - TEXT 3 140×180 fill:text/dark/primary "3" 60/ExtraBold
+
+## Page Navigation
+- SYMBOL Type=Radio 1355×144 pad[h0 v40 r b24] fill:surface/basic stroke1:divider/tertiary
+  - INSTANCE Title 1355×80 pad[h40 v0 r24 b] gap40
+- SYMBOL Type=Radio_Segmented_control 1355×232 pad[h0 v40 r b] gap12 fill:surface/basic stroke1:divider/tertiary
+  - INSTANCE Title 1355×80 pad[h40 v0 r24 b] gap40
+  - FRAME segmented_control_group 1355×100 pad[h0 v0 r24 b] gap24
+    - INSTANCE ivi_segmented_control/line 1331×100 pad[h28 v0 r28 b] gap24 stroke1:divider/secondary
+    - INSTANCE ivi_icon_button 64×64 r16
+- SYMBOL Type=Phone 1355×144 pad[h0 v40 r b24] fill:surface/basic stroke1:divider/tertiary
+  - INSTANCE Title 1355×80 pad[h40 v0 r24 b] gap40
+- SYMBOL Type=Phone_Segmented_control 1355×232 pad[h0 v40 r b] gap12 fill:surface/basic stroke1:divider/tertiary
+  - INSTANCE Title 1355×80 pad[h40 v0 r24 b] gap40
+  - FRAME segmented_control_group 1355×100 pad[h0 v0 r24 b] gap24
+    - INSTANCE ivi_segmented_control/line 1331×100 pad[h28 v0 r28 b] gap24 stroke1:divider/secondary
+    - INSTANCE ivi_icon_button 64×64 r16
+- SYMBOL Type=Music 1355×144 pad[h0 v40 r b24] stroke1:divider/tertiary
+  - INSTANCE ivi_app_bar 320×60 pad[h0 v16 r b]
+  - INSTANCE Title 1355×80 pad[h40 v0 r24 b] gap40
+- SYMBOL Type=Music_background 1355×144 pad[h0 v40 r b24] fill:surface/basic stroke1:divider/tertiary
+  - INSTANCE ivi_app_bar 320×60 pad[h0 v16 r b]
+  - INSTANCE Title 1355×80 pad[h40 v0 r24 b] gap40
+- SYMBOL Type=Main 988×80 pad[h40 v0 r24 b] gap24
+  - FRAME title_group 636×80 gap48
+    - FRAME menu_group 404×80 gap16
+    - INSTANCE ivi_segmented_control/line 505×108 gap24
+  - FRAME suffix 264×80 gap12
+    - INSTANCE btn1 80×80 r20
+    - INSTANCE btn2 80×80 r20
+    - INSTANCE btn3 80×80 r20
+- SYMBOL Type=Depth 988×80 pad[h40 v0 r24 b] gap24
+  - FRAME Title 636×56 gap24
+    - INSTANCE ic_arrow 56×56
+    - INSTANCE ic_app 80×80 r20 stroke1:divider/secondary
+    - FRAME Title 556×56 gap4
+  - FRAME suffix 264×80 gap12
+    - INSTANCE btn1 80×80 r20
+    - INSTANCE btn2 80×80 r20
+    - INSTANCE btn3 80×80 r20
+- SYMBOL Type=Search 988×100 pad[h40 v0 r24 b] gap24
+  - FRAME Title 820×100 gap24
+    - INSTANCE ic_arrow 56×56
+    - FRAME Title 740×100 pad[h0 v0 r26 b] gap4
+  - INSTANCE ivi_icon_button 80×80 r20
+
+## Popup
+- SYMBOL Size=Medium, Extended=False 808×366 r48 pad[h48 v48 r48 b48] gap40 fill:background/popup stroke2:divider/primary
+  - INSTANCE system_popup/header 712×130 pad[h0 v0 r b16]
+  - INSTANCE system_popup/content 712×496 gap24
+  - INSTANCE system_popup/buttons 712×100 gap24
+- SYMBOL Size=Large, Extended=False 1200×366 r48 pad[h48 v48 r48 b48] gap40 fill:background/popup stroke2:divider/primary
+  - INSTANCE system_popup/header 1104×130 pad[h0 v0 r b16]
+  - INSTANCE system_popup/content 904×520 gap24
+  - INSTANCE system_popup/buttons 1104×100 gap24
+- SYMBOL Size=Medium, Extended=True 720×308 r40 pad[h40 v40 r40 b40] gap33 fill:background/popup stroke2:divider/primary
+  - INSTANCE system_popup/header 640×111 pad[h0 v0 r b12]
+  - INSTANCE system_popup/content 712×496 gap24
+  - INSTANCE system_popup/buttons 640×84 gap24
+- SYMBOL Size=Large, Extended=True 1000×308 r40 pad[h40 v40 r40 b40] gap33 fill:background/popup stroke2:divider/primary
+  - INSTANCE system_popup/header 920×111 pad[h0 v0 r b12]
+  - INSTANCE system_popup/content 904×520 gap24
+  - INSTANCE system_popup/buttons 920×84 gap24
+- SYMBOL Size=Medium 680×234 pad[h0 v0 r b16]
+  - FRAME Close btn 680×48
+    - INSTANCE ic_close 48×48
+  - FRAME Title 680×218 gap24
+    - INSTANCE ic_annotation 80×80
+    - TEXT Title 680×52 fill:text/dark/primary "Title" 40/ExtraBold
+    - TEXT Subtitle 568×44 fill:text/dark/secondary "Subtitle" 36/Bold
+    - TEXT Description 680×38 fill:text/dark/secondary "Description" 30/Regular
+- SYMBOL Size=Large 680×234 pad[h0 v0 r b16]
+  - FRAME Close btn 680×48
+    - INSTANCE ic_close 48×48
+  - FRAME Title 680×218 pad[h32 v0 r32 b] gap24
+    - INSTANCE ic_annotation 80×80
+    - TEXT Title 616×52 fill:text/dark/primary "Title" 40/ExtraBold
+    - TEXT Subtitle 568×44 fill:text/dark/secondary "Subtitle" 36/Bold
+    - TEXT Description 616×38 fill:text/dark/secondary "Description" 30/Regular
+- SYMBOL Type=Horizontal 760×100 gap24
+  - INSTANCE ivi_basic_button 368×100 r32 pad[h40 v16 r40 b16] gap16 fill:button/filled/enabled
+  - INSTANCE ivi_basic_button 368×100 r32 pad[h40 v16 r40 b16] gap16 fill:button/basic/enabled
+- SYMBOL Type=Vertical 760×224 gap24
+  - INSTANCE ivi_basic_button 760×100 r32 pad[h40 v16 r40 b16] gap16 fill:button/filled/enabled
+  - INSTANCE ivi_basic_button 760×100 r32 pad[h40 v16 r40 b16] gap16 fill:button/basic/enabled
+- SYMBOL system_popup/content 680×496 gap24
+  - INSTANCE vehicle_setting_popup_content/List 680×496 r32 pad[h20 v24 r20 b24] fill:dim/dark/primary
+  - INSTANCE spinner_wheels 680×384 gap16
+  - INSTANCE ivi_text_field 680×100 gap16
+- SYMBOL Margin(Default)=off 261×82 r16 pad[h40 v24 r40 b24] gap16 fill:basic/600
+  - INSTANCE ic_app 48×48 r12 stroke1:divider/secondary
+  - INSTANCE ic_bluetooth 48×48 r12
+  - TEXT Toast Message 181×34 fill:basic/00 "Toast Message" 26/Bold
+- SYMBOL Margin(Default)=on 309×106 pad[h24 v0 r24 b24]
+  - FRAME toast_container 261×82 r16 pad[h40 v24 r40 b24] gap16 fill:basic/600
+    - INSTANCE ic_bluetooth 48×48 r12
+    - INSTANCE ic_app 48×48 r12 stroke1:divider/secondary
+    - TEXT Toast Message 181×34 fill:basic/00 "Toast Message" 26/Bold
+
+## Tabs
+- SYMBOL Size=Large, Segments=6 1176×100 r32 pad[h8 v8 r8 b8] fill:controller/tab_background
+  - INSTANCE segmented_controls/goast_button 192×84 r24 pad[h28 v16 r28 b16] gap14 fill:button/switch/enabled
+  - ROUNDED_RECTANGLE divider 2×36 fill:divider/secondary
+  - INSTANCE segmented_controls/goast_button 192×84 r24 pad[h28 v16 r28 b16] gap14
+  - ROUNDED_RECTANGLE divider 2×36 fill:divider/secondary
+  - INSTANCE segmented_controls/goast_button 192×84 r24 pad[h28 v16 r28 b16] gap14
+  - ROUNDED_RECTANGLE divider 2×36 fill:divider/secondary
+  - INSTANCE segmented_controls/goast_button 192×84 r24 pad[h28 v16 r28 b16] gap14
+  - ROUNDED_RECTANGLE divider 2×36 fill:divider/secondary
+  - INSTANCE segmented_controls/goast_button 192×84 r24 pad[h28 v16 r28 b16] gap14
+  - ROUNDED_RECTANGLE divider 2×36 fill:divider/secondary
+  - INSTANCE segmented_controls/goast_button 192×84 r24 pad[h28 v16 r28 b16] gap14
+- SYMBOL Size=Large, Segments=5 1176×100 r32 pad[h8 v8 r8 b8] fill:controller/tab_background
+  - INSTANCE segmented_controls/goast_button 230×84 r24 pad[h28 v16 r28 b16] gap14 fill:button/switch/enabled
+  - ROUNDED_RECTANGLE divider 2×36 fill:divider/secondary
+  - INSTANCE segmented_controls/goast_button 230×84 r24 pad[h28 v16 r28 b16] gap14
+  - ROUNDED_RECTANGLE divider 2×36 fill:divider/secondary
+  - INSTANCE segmented_controls/goast_button 230×84 r24 pad[h28 v16 r28 b16] gap14
+  - ROUNDED_RECTANGLE divider 2×36 fill:divider/secondary
+  - INSTANCE segmented_controls/goast_button 230×84 r24 pad[h28 v16 r28 b16] gap14
+  - ROUNDED_RECTANGLE divider 2×36 fill:divider/secondary
+  - INSTANCE segmented_controls/goast_button 230×84 r24 pad[h28 v16 r28 b16] gap14
+- SYMBOL Size=Large, Segments=4 1176×100 r32 pad[h8 v8 r8 b8] fill:controller/tab_background
+  - INSTANCE segmented_controls/goast_button 289×84 r24 pad[h28 v16 r28 b16] gap14 fill:button/switch/enabled
+  - ROUNDED_RECTANGLE divider 2×36 fill:divider/secondary
+  - INSTANCE segmented_controls/goast_button 289×84 r24 pad[h28 v16 r28 b16] gap14
+  - ROUNDED_RECTANGLE divider 2×36 fill:divider/secondary
+  - INSTANCE segmented_controls/goast_button 289×84 r24 pad[h28 v16 r28 b16] gap14
+  - ROUNDED_RECTANGLE divider 2×36 fill:divider/secondary
+  - INSTANCE segmented_controls/goast_button 289×84 r24 pad[h28 v16 r28 b16] gap14
+- SYMBOL Size=Large, Segments=3 880×100 r32 pad[h8 v8 r8 b8] fill:controller/tab_background
+  - INSTANCE segmented_controls/goast_button 287×84 r24 pad[h28 v16 r28 b16] gap14 fill:button/switch/enabled
+  - ROUNDED_RECTANGLE divider 2×36 fill:divider/secondary
+  - INSTANCE segmented_controls/goast_button 287×84 r24 pad[h28 v16 r28 b16] gap14
+  - ROUNDED_RECTANGLE divider 2×36 fill:divider/secondary
+  - INSTANCE segmented_controls/goast_button 287×84 r24 pad[h28 v16 r28 b16] gap14
+- SYMBOL Size=Large, Segments=2 880×100 r32 pad[h8 v8 r8 b8] fill:controller/tab_background
+  - INSTANCE segmented_controls/goast_button 431×84 r24 pad[h28 v16 r28 b16] gap14 fill:button/switch/enabled
+  - ROUNDED_RECTANGLE divider 2×36 fill:divider/secondary
+  - INSTANCE segmented_controls/goast_button 431×84 r24 pad[h28 v16 r28 b16] gap14
+- SYMBOL Size=Medium, Segments=5 1176×80 r24 pad[h8 v8 r8 b8] fill:controller/tab_background
+  - INSTANCE segmented_controls/goast_button 230×64 r16 pad[h18 v12 r18 b12] gap8 fill:button/switch/enabled
+  - ROUNDED_RECTANGLE divider 2×36 fill:divider/secondary
+  - INSTANCE segmented_controls/goast_button 230×64 r16 pad[h18 v12 r18 b12] gap8
+  - ROUNDED_RECTANGLE divider 2×36 fill:divider/secondary
+  - INSTANCE segmented_controls/goast_button 230×64 r16 pad[h18 v12 r18 b12] gap8
+  - ROUNDED_RECTANGLE divider 2×36 fill:divider/secondary
+  - INSTANCE segmented_controls/goast_button 230×64 r16 pad[h18 v12 r18 b12] gap8
+  - ROUNDED_RECTANGLE divider 2×36 fill:divider/secondary
+  - INSTANCE segmented_controls/goast_button 230×64 r16 pad[h18 v12 r18 b12] gap8
+- SYMBOL Size=Medium, Segments=4 960×80 r24 pad[h8 v8 r8 b8] fill:controller/tab_background
+  - INSTANCE segmented_controls/goast_button 235×64 r16 pad[h18 v12 r18 b12] gap8 fill:button/switch/enabled
+  - ROUNDED_RECTANGLE divider 2×36 fill:divider/secondary
+  - INSTANCE segmented_controls/goast_button 235×64 r16 pad[h18 v12 r18 b12] gap8
+  - ROUNDED_RECTANGLE divider 2×36 fill:divider/secondary
+  - INSTANCE segmented_controls/goast_button 235×64 r16 pad[h18 v12 r18 b12] gap8
+  - ROUNDED_RECTANGLE divider 2×36 fill:divider/secondary
+  - INSTANCE segmented_controls/goast_button 235×64 r16 pad[h18 v12 r18 b12] gap8
+- SYMBOL Size=Medium, Segments=3 780×80 r24 pad[h8 v8 r8 b8] fill:controller/tab_background
+  - INSTANCE segmented_controls/goast_button 253×64 r16 pad[h18 v12 r18 b12] gap8 fill:button/switch/enabled
+  - ROUNDED_RECTANGLE divider 2×36 fill:divider/secondary
+  - INSTANCE segmented_controls/goast_button 253×64 r16 pad[h18 v12 r18 b12] gap8
+  - ROUNDED_RECTANGLE divider 2×36 fill:divider/secondary
+  - INSTANCE segmented_controls/goast_button 253×64 r16 pad[h18 v12 r18 b12] gap8
+- SYMBOL Size=Medium, Segments=2 780×80 r24 pad[h8 v8 r8 b8] fill:controller/tab_background
+  - INSTANCE segmented_controls/goast_button 381×64 r16 pad[h18 v12 r18 b12] gap8 fill:button/switch/enabled
+  - ROUNDED_RECTANGLE divider 2×36 fill:divider/secondary
+  - INSTANCE segmented_controls/goast_button 381×64 r16 pad[h18 v12 r18 b12] gap8
+- SYMBOL Size=Large, State=Enabled, Focused=false 200×84 r24 pad[h28 v16 r28 b16] gap14
+  - INSTANCE ic_light 52×52
+  - TEXT Label 80×40 fill:text/dark/secondary "Label" 32/Bold
+- SYMBOL Size=Large, State=Pressed, Focused=false 200×84 r24 pad[h28 v16 r28 b16] gap14 fill:button/basic/pressed
+  - INSTANCE ic_light 52×52
+  - TEXT Label 80×40 fill:text/dark/secondary "Label" 32/Bold
+- SYMBOL Size=Large, State=Disabled, Focused=false 200×84 r24 pad[h28 v16 r28 b16] gap14
+  - INSTANCE ic_light 52×52
+  - TEXT Label 80×40 fill:text/dark/quaternary "Label" 32/Bold
+- SYMBOL Size=Large, State=Enabled, Focused=true 200×84 r24 pad[h28 v16 r28 b16] gap14 fill:button/switch/enabled
+  - INSTANCE ic_light 52×52
+  - TEXT Label 80×40 fill:text/dark/primary "Label" 32/Bold
+- SYMBOL Size=Large, State=Disabled, Focused=true 200×84 r24 pad[h28 v16 r28 b16] gap14 fill:button/switch/enabled
+  - INSTANCE ic_light 52×52
+  - TEXT Label 80×40 fill:text/dark/quaternary "Label" 32/Bold
+- SYMBOL Size=Medium, State=Enabled, Focused=false 160×64 r16 pad[h18 v12 r18 b12] gap8
+  - INSTANCE ic_light 40×40
+  - TEXT Label 75×38 fill:text/dark/secondary "Label" 30/Bold
+- SYMBOL Size=Medium, State=Pressed, Focused=false 160×64 r16 pad[h18 v12 r18 b12] gap8 fill:button/basic/pressed
+  - INSTANCE ic_light 40×40
+  - TEXT Label 75×38 fill:text/dark/secondary "Label" 30/Bold
+- SYMBOL Size=Medium, State=Disabled, Focused=false 160×64 r16 pad[h18 v12 r18 b12] gap8
+  - INSTANCE ic_light 40×40
+  - TEXT Label 75×38 fill:text/dark/quaternary "Label" 30/Bold
+- SYMBOL Size=Medium, State=Enabled, Focused=true 160×64 r16 pad[h18 v12 r18 b12] gap8 fill:button/switch/enabled
+  - INSTANCE ic_light 40×40
+  - TEXT Label 75×38 fill:text/dark/primary "Label" 30/Bold
+- SYMBOL Size=Medium, State=Disabled, Focused=true 160×64 r16 pad[h18 v12 r18 b12] gap8 fill:button/switch/enabled
+  - INSTANCE ic_light 40×40
+  - TEXT Label 75×38 fill:text/dark/quaternary "Label" 30/Bold
+- SYMBOL Bottom line=True 1107×100 pad[h28 v0 r28 b] gap24 stroke1:divider/secondary
+  - INSTANCE segmented_controls/line_button 191×100 pad[h0 v12 r b12] stroke1:text/dark/primary
+  - INSTANCE segmented_controls/line_button 191×100 pad[h0 v12 r b12]
+  - INSTANCE segmented_controls/line_button 191×100 pad[h0 v12 r b12]
+  - INSTANCE segmented_controls/line_button 191×100 pad[h0 v12 r b12]
+  - INSTANCE segmented_controls/line_button 191×100 pad[h0 v12 r b12]
+- SYMBOL Bottom line=False 1107×128 gap24
+  - INSTANCE segmented_controls/line_button 191×128 pad[h0 v26 r b26] stroke1:text/dark/primary
+  - INSTANCE segmented_controls/line_button 191×128 pad[h0 v26 r b26]
+  - INSTANCE segmented_controls/line_button 191×128 pad[h0 v26 r b26]
+  - INSTANCE segmented_controls/line_button 191×128 pad[h0 v26 r b26]
+  - INSTANCE segmented_controls/line_button 191×128 pad[h0 v26 r b26]
+- SYMBOL State=Enabled, Margin=Medium 191×100 pad[h0 v12 r b12]
+  - FRAME Button 191×76 r12 pad[h14 v18 r14 b18] gap8
+    - INSTANCE ic_check 40×40
+    - TEXT Button text 163×40 fill:text/dark/secondary "Button text" 32/Bold
+- SYMBOL State=Pressed, Margin=Medium 191×100 pad[h0 v12 r b12]
+  - FRAME Button 191×76 r12 pad[h14 v18 r14 b18] gap8 fill:dim/dark/primary
+    - INSTANCE ic_check 40×40
+    - TEXT Button text 163×40 fill:text/dark/secondary "Button text" 32/Bold
+- SYMBOL State=Selected, Margin=Medium 191×100 pad[h0 v12 r b12] stroke1:text/dark/primary
+  - FRAME Button 191×76 r12 pad[h14 v18 r14 b18] gap8
+    - INSTANCE ic_check 40×40
+    - TEXT Button text 163×40 fill:text/dark/primary "Button text" 32/Bold
+- SYMBOL State=Disabled, Margin=Medium 191×100 pad[h0 v12 r b12]
+  - FRAME Button 191×76 r12 pad[h14 v18 r14 b18] gap8
+    - INSTANCE ic_check 40×40
+    - TEXT Button text 163×40 fill:text/dark/quaternary "Button text" 32/Bold
+- SYMBOL State=Enabled, Margin=Large(Page Nav Only)) 191×128 pad[h0 v26 r b26]
+  - FRAME Button 191×76 r12 pad[h14 v18 r14 b18] gap8
+    - INSTANCE ic_check 40×40
+    - TEXT Button text 163×40 fill:text/dark/secondary "Button text" 32/Bold
+- SYMBOL State=Pressed, Margin=Large(Page Nav Only)) 191×128 pad[h0 v26 r b26]
+  - FRAME Button 191×76 r12 pad[h14 v18 r14 b18] gap8 fill:dim/dark/primary
+    - INSTANCE ic_check 40×40
+    - TEXT Button text 163×40 fill:text/dark/secondary "Button text" 32/Bold
+- SYMBOL State=Selected, Margin=Large(Page Nav Only)) 191×128 pad[h0 v26 r b26] stroke1:text/dark/primary
+  - FRAME Button 191×76 r12 pad[h14 v18 r14 b18] gap8
+    - INSTANCE ic_check 40×40
+    - TEXT Button text 163×40 fill:text/dark/primary "Button text" 32/Bold
+- SYMBOL State=Disabled, Margin=Large(Page Nav Only)) 191×128 pad[h0 v26 r b26]
+  - FRAME Button 191×76 r12 pad[h14 v18 r14 b18] gap8
+    - INSTANCE ic_check 40×40
+    - TEXT Button text 163×40 fill:text/dark/quaternary "Button text" 32/Bold
+
+## Selections
+- SYMBOL Active=False, State=Enabled 64×64
+  - FRAME Box 48×48 r12 stroke4:divider/tertiary
+- SYMBOL Active=False, State=Pressed 64×64
+  - FRAME Box 48×48 r12 fill:dim/dark/secondary stroke4:divider/tertiary
+- SYMBOL Active=False, State=Disabled 64×64
+  - FRAME Box 48×48 r12 fill:dim/dark/primary stroke4:divider/secondary
+- SYMBOL Active=True, State=Enabled 64×64
+  - FRAME Box 48×48 r12 fill:switch/on
+    - INSTANCE ic_check 44×44
+- SYMBOL Active=True, State=Pressed 64×64
+  - FRAME Box 48×48 r12 fill:switch/on+dim/dark/secondary
+    - INSTANCE ic_check 44×44
+- SYMBOL Active=True, State=Disabled 64×64
+  - FRAME Box 48×48 r12 fill:switch/disabled
+    - INSTANCE ic_check 44×44
+- SYMBOL Active=Indeterminate, State=Enabled 64×64
+  - FRAME Box 48×48 r12 fill:switch/on
+    - INSTANCE ic_minus 44×44
+- SYMBOL Active=Indeterminate, State=Pressed 64×64
+  - FRAME Box 48×48 r12 fill:switch/on+dim/dark/secondary
+    - INSTANCE ic_minus 44×44
+- SYMBOL Active=Indeterminate, State=Disabled 64×64
+  - FRAME Box 48×48 r12 fill:switch/disabled
+    - INSTANCE ic_minus 44×44
+- SYMBOL Active=true, State=Enabled 64×64
+  - FRAME radio 48×48 r999 fill:switch/knob_on stroke12:informative/active
+- SYMBOL Active=true, State=Pressed 64×64
+  - FRAME radio 48×48 r999 fill:switch/knob_on stroke12:informative/active+dim/dark/secondary
+- SYMBOL Active=true, State=Disabled 64×64
+  - FRAME radio 48×48 r999 fill:switch/knob_disabled stroke12:switch/disabled
+- SYMBOL Active=false, State=Enabled 64×64
+  - FRAME radio 48×48 r999 stroke4:divider/tertiary
+- SYMBOL Active=false, State=Pressed 64×64
+  - FRAME radio 48×48 r999 fill:dim/dark/secondary stroke4:divider/tertiary
+- SYMBOL Active=false, State=Disabled 64×64
+  - FRAME radio 48×48 r999 fill:dim/dark/primary stroke4:divider/primary
+- SYMBOL Active=true, Size=Medium, State=Enabled 80×48 r16 pad[h8 v8 r8 b8] fill:switch/on
+  - ROUNDED_RECTANGLE Rectangle 346243665 32×32 r8 fill:switch/knob_on
+- SYMBOL Active=true, Size=Medium, State=Pressed 80×48 r16 pad[h8 v8 r8 b8] fill:switch/on+dim/dark/secondary
+  - ROUNDED_RECTANGLE Rectangle 346243665 32×32 r8 fill:switch/knob_on
+- SYMBOL Active=true, Size=Medium, State=Disabled 80×48 r16 pad[h8 v8 r8 b8] fill:switch/disabled
+  - ROUNDED_RECTANGLE Rectangle 346243665 32×32 r8 fill:switch/knob_on
+- SYMBOL Active=false, Size=Medium, State=Enabled 80×48 r16 pad[h8 v8 r8 b8] fill:switch/off
+  - ROUNDED_RECTANGLE Rectangle 346243665 32×32 r8 fill:switch/knob_off
+- SYMBOL Active=false, Size=Medium, State=Pressed 80×48 r16 pad[h8 v8 r8 b8] fill:switch/off+dim/dark/secondary
+  - ROUNDED_RECTANGLE Rectangle 346243665 32×32 r8 fill:switch/knob_off
+- SYMBOL Active=false, Size=Medium, State=Disabled 80×48 r16 pad[h8 v8 r8 b8] fill:switch/disabled
+  - ROUNDED_RECTANGLE Rectangle 346243665 32×32 r8 fill:switch/knob_disabled
+- SYMBOL Active=true, Size=Small, State=Enabled 64×40 r12 pad[h6 v6 r6 b6] fill:switch/on
+  - ROUNDED_RECTANGLE Rectangle 346243665 28×28 r8 fill:switch/knob_on
+- SYMBOL Active=true, Size=Small, State=Pressed 64×40 r12 pad[h6 v6 r6 b6] fill:switch/on+dim/dark/secondary
+  - ROUNDED_RECTANGLE Rectangle 346243665 28×28 r8 fill:switch/knob_on
+- SYMBOL Active=true, Size=Small, State=Disabled 64×40 r12 pad[h6 v6 r6 b6] fill:switch/disabled
+  - ROUNDED_RECTANGLE Rectangle 346243665 28×28 r8 fill:switch/knob_on
+- SYMBOL Active=false, Size=Small, State=Enabled 64×40 r12 pad[h6 v6 r6 b6] fill:switch/off
+  - ROUNDED_RECTANGLE Rectangle 346243665 28×28 r8 fill:switch/knob_off
+- SYMBOL Active=false, Size=Small, State=Pressed 64×40 r12 pad[h6 v6 r6 b6] fill:switch/off+dim/dark/secondary
+  - ROUNDED_RECTANGLE Rectangle 346243665 28×28 r8 fill:switch/knob_off
+- SYMBOL Active=false, Size=Small, State=Disabled 64×40 r12 pad[h6 v6 r6 b6] fill:switch/disabled
+  - ROUNDED_RECTANGLE Rectangle 346243665 28×28 r8 fill:switch/knob_disabled
+
+## Spinner
+- SYMBOL Type=Date, Size=Large 540×384 r32 pad[h16 v0 r16 b] fill:background/primary
+  - FRAME Top 508×60 gap20
+    - TEXT 10 110×88 fill:text/dark/quaternary "10" 48/Bold
+    - TEXT 23 110×88 fill:text/dark/quaternary "23" 48/Bold
+    - TEXT 2022 200×88 fill:text/dark/quaternary "2022" 48/Bold
+  - FRAME Prev 508×88 gap20
+    - TEXT 11 110×88 fill:text/dark/quaternary "11" 48/Bold
+    - TEXT 24 110×88 fill:text/dark/quaternary "24" 48/Bold
+    - TEXT 2023 200×88 fill:text/dark/quaternary "2023" 48/Bold
+  - FRAME Focused 508×88 r24 gap20 fill:dim/dark/primary
+    - TEXT 12 110×88 fill:text/dark/primary "12" 60/Bold
+    - TEXT 25 110×88 fill:text/dark/primary "25" 60/Bold
+    - TEXT 2024 200×88 fill:text/dark/primary "2024" 60/Bold
+  - FRAME Next 508×88 gap20
+    - TEXT 1 110×88 fill:text/dark/quaternary "1" 48/Bold
+    - TEXT 26 110×88 fill:text/dark/quaternary "26" 48/Bold
+    - TEXT 2025 200×88 fill:text/dark/quaternary "2025" 48/Bold
+  - FRAME Bottom 508×60 gap20
+    - TEXT 2 110×88 fill:text/dark/quaternary "2" 48/Bold
+    - TEXT 27 110×88 fill:text/dark/quaternary "27" 48/Bold
+    - TEXT 2026 200×88 fill:text/dark/quaternary "2026" 48/Bold
+  - ROUNDED_RECTANGLE Mask-top 540×60 fill:GRADIENT_LINEAR
+  - ROUNDED_RECTANGLE Mask-bottm 540×60 fill:GRADIENT_LINEAR
+- SYMBOL Type=Time, Size=Large 480×384 r32 pad[h16 v0 r16 b] fill:background/primary
+  - FRAME Top 448×60 gap20
+    - TEXT 6 110×88 fill:text/dark/quaternary "6" 48/Bold
+    - TEXT 58 110×88 fill:text/dark/quaternary "58" 48/Bold
+    - ROUNDED_RECTANGLE Empty frame 140×88
+  - FRAME Prev 448×88 gap20
+    - TEXT 7 110×88 fill:text/dark/quaternary "7" 48/Bold
+    - TEXT 59 110×88 fill:text/dark/quaternary "59" 48/Bold
+    - TEXT AM 140×88 fill:text/dark/quaternary "AM" 48/Bold
+  - FRAME Focused 448×88 r24 gap20 fill:dim/dark/primary
+    - TEXT 8 110×88 fill:text/dark/primary "8" 60/Bold
+    - TEXT 00 110×88 fill:text/dark/primary "00" 60/Bold
+    - TEXT PM 140×88 fill:text/dark/primary "PM" 60/Bold
+  - FRAME Next 448×88 gap20
+    - TEXT 9 110×88 fill:text/dark/quaternary "9" 48/Bold
+    - TEXT 01 110×88 fill:text/dark/quaternary "01" 48/Bold
+    - ROUNDED_RECTANGLE Empty frame 140×88
+  - FRAME Bottom 448×60 gap20
+    - TEXT 10 110×88 fill:text/dark/quaternary "10" 48/Bold
+    - TEXT 02 110×88 fill:text/dark/quaternary "02" 48/Bold
+    - ROUNDED_RECTANGLE Empty frame 140×88
+  - ROUNDED_RECTANGLE Mask-top 480×60 fill:GRADIENT_LINEAR
+  - ROUNDED_RECTANGLE Mask-bottm 480×60 fill:GRADIENT_LINEAR
+- SYMBOL Type=Date, Size=Medium 540×288 r32 pad[h16 v0 r16 b] fill:background/primary
+  - ROUNDED_RECTANGLE Focused 508×88 r24 fill:dim/dark/primary
+  - FRAME Prev 508×96 gap20
+    - TEXT 11 110×88 fill:text/dark/quaternary "11" 48/Bold
+    - TEXT 24 110×88 fill:text/dark/quaternary "24" 48/Bold
+    - TEXT 2023 200×88 fill:text/dark/quaternary "2023" 48/Bold
+  - FRAME Center 508×96 r24 gap20 fill:dim/dark/primary
+    - TEXT 12 110×88 fill:text/dark/primary "12" 60/Bold
+    - TEXT 25 110×88 fill:text/dark/primary "25" 60/Bold
+    - TEXT 2024 200×88 fill:text/dark/primary "2024" 60/Bold
+  - FRAME Next 508×96 gap20
+    - TEXT 1 110×88 fill:text/dark/quaternary "1" 48/Bold
+    - TEXT 26 110×88 fill:text/dark/quaternary "26" 48/Bold
+    - TEXT 2025 200×88 fill:text/dark/quaternary "2025" 48/Bold
+  - ROUNDED_RECTANGLE Mask-top 540×60 fill:GRADIENT_LINEAR
+  - ROUNDED_RECTANGLE Mask-bottm 540×60 fill:GRADIENT_LINEAR
+- SYMBOL Type=Time, Size=Medium 480×288 r32 pad[h16 v0 r16 b] fill:background/primary
+  - FRAME Prev 448×96 gap20
+    - TEXT 7 110×88 fill:text/dark/quaternary "7" 48/Bold
+    - TEXT 59 110×88 fill:text/dark/quaternary "59" 48/Bold
+    - TEXT AM 140×88 fill:text/dark/quaternary "AM" 48/Bold
+  - FRAME Focused 448×96 r24 gap20 fill:dim/dark/primary
+    - TEXT 8 110×88 fill:text/dark/primary "8" 60/Bold
+    - TEXT 00 110×88 fill:text/dark/primary "00" 60/Bold
+    - TEXT PM 140×88 fill:text/dark/primary "PM" 60/Bold
+  - FRAME Next 448×96 gap20
+    - TEXT 9 110×88 fill:text/dark/quaternary "9" 48/Bold
+    - TEXT 01 110×88 fill:text/dark/quaternary "01" 48/Bold
+    - ROUNDED_RECTANGLE Empty frame 140×96
+  - ROUNDED_RECTANGLE Mask-top 480×60 fill:GRADIENT_LINEAR
+  - ROUNDED_RECTANGLE Mask-bottm 480×60 fill:GRADIENT_LINEAR
+- SYMBOL Type=Date 540×384 gap16
+  - FRAME Title 540×60 pad[h0 v16 r b]
+    - TEXT Date 540×44 fill:text/dark/secondary "Date" 36/Bold
+  - INSTANCE ivi_spinner 540×384 r32 pad[h16 v0 r16 b] fill:background/primary
+- SYMBOL Type=Time 480×384 gap16
+  - FRAME Title 480×60 pad[h0 v16 r b]
+    - TEXT Time 480×44 fill:text/dark/secondary "Time" 36/Bold
+  - INSTANCE ivi_spinner 480×384 r32 pad[h16 v0 r16 b] fill:background/primary
+- SYMBOL Type=Date+Time 1104×384 gap24
+  - FRAME Date 540×384 gap16
+    - FRAME Title 540×60 pad[h0 v16 r b]
+    - INSTANCE ivi_spinner 540×384 r32 pad[h16 v0 r16 b] fill:background/primary
+  - FRAME Time 540×384 gap16
+    - FRAME Title 480×60 pad[h0 v16 r b]
+    - INSTANCE ivi_spinner 540×384 r32 pad[h16 v0 r16 b] fill:background/primary
+
+## System Notification
+- SYMBOL Type=Image+Text 700×276 r48 fill:gleo/Olf/surface_primary stroke1:divider/secondary
+  - FRAME Header 700×148 pad[h32 v32 r32 b16] gap24
+    - INSTANCE system_notification/images 100×100 r24
+    - FRAME text_group 512×94 pad[h0 v4 r b] gap12
+  - INSTANCE system_notification/button 700×128 pad[h24 v24 r24 b24] gap16
+- SYMBOL Type=Only Text 700×270 r48 fill:gleo/Olf/surface_primary stroke1:divider/secondary
+  - FRAME Header 700×142 pad[h32 v32 r32 b16] gap24
+    - INSTANCE system_notification/images 100×100 r24
+    - FRAME text_group 636×94 pad[h8 v4 r8 b] gap12
+  - INSTANCE system_notification/button 700×128 pad[h24 v24 r24 b24] gap16
+- SYMBOL Type=Call 700×276 r48 fill:gleo/Olf/surface_primary stroke1:divider/secondary
+  - FRAME Header 700×148 pad[h32 v32 r32 b16] gap24
+    - INSTANCE system_notification/images 100×100
+    - FRAME text_group 512×94 pad[h0 v4 r b] gap12
+  - INSTANCE system_notification/button 700×128 pad[h24 v24 r24 b24] gap16
+- SYMBOL Type=Single 1405×128 pad[h24 v24 r24 b24]
+  - INSTANCE ivi_basic_button 1357×80 r24 pad[h32 v16 r32 b16] gap14 fill:button/basic/enabled
+- SYMBOL Type=Vertical 1405×224 pad[h24 v24 r24 b24] gap16
+  - INSTANCE ivi_basic_button 1357×80 r24 pad[h32 v16 r32 b16] gap14 fill:button/filled/enabled
+  - INSTANCE ivi_basic_button 1357×80 r24 pad[h32 v16 r32 b16] gap14 fill:button/basic/enabled
+- SYMBOL Type=Horizontal 1405×128 pad[h24 v24 r24 b24] gap16
+  - INSTANCE ivi_basic_button 670×80 r24 pad[h32 v16 r32 b16] gap14 fill:button/filled/enabled
+  - INSTANCE ivi_basic_button 670×80 r24 pad[h32 v16 r32 b16] gap14 fill:button/basic/enabled
+- SYMBOL Type=App 100×100 r24
+  - INSTANCE img_app 100×100 r16
+- SYMBOL Type=Profile 100×100
+  - INSTANCE imagery_profile 100×100 r999 fill:IMAGE
+  - INSTANCE ic_app 48×48 r16 stroke1:divider/secondary
+- SYMBOL Type=Image 100×100 r24
+  - INSTANCE imagery_image 100×100 r16 fill:button/basic/enabled

@@ -1,0 +1,109 @@
+package ai.chakak.ui.detail
+
+import ai.chakak.core.Record
+import ai.chakak.ui.component.IconTile
+import ai.chakak.ui.component.InfoNote
+import ai.chakak.ui.component.StatusBadge
+import ai.chakak.ui.model.currentTimelineClock
+import ai.chakak.ui.model.LocationDisplay
+import ai.chakak.ui.model.ObservationKeys
+import ai.chakak.ui.model.locationDisplay
+import ai.chakak.ui.model.observation
+import ai.chakak.ui.theme.ChaKakDimens
+import ai.chakak.ui.theme.ChaKakIcons
+import ai.chakak.ui.theme.ChaKakSpacing
+import ai.chakak.ui.theme.ChaKakTheme
+import ai.chakak.ui.theme.JournalDimens
+import ai.chakak.ui.theme.JournalShapes
+import ai.chakak.ui.theme.Tint
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextStyle
+
+const val VEHICLE_LOCATION_LABEL = "기록 당시 차량 위치"
+const val SHORT_LOCATION_LABEL = "기록 당시 위치"
+
+/** 기록의 위치·주소 항목을 패널 내용으로 바꾼다 */
+@Composable
+fun rememberLocationDisplay(record: Record): LocationDisplay {
+    val clock = currentTimelineClock()
+    return remember(record, clock) {
+        locationDisplay(record.observation(ObservationKeys.LOCATION), record.observation(ObservationKeys.ADDRESS), record.createdAt, clock)
+    }
+}
+
+/**
+ * 장소 상세 위치 패널(시안 A). 큰 accent 타일 + "기록 당시 차량 위치" + 주소(또는 좌표) 큰 줄 + 작은 줄 + 안내.
+ * [emphasized]가 false(미분류)면 강조 면 대신 테두리 패널과 무채색 타일, 한 단계 작은 글꼴을 쓴다.
+ * 안내 문구는 항상 보인다(차량 위치이며 시설 위치와 다를 수 있음).
+ */
+@Composable
+fun LocationPanel(display: LocationDisplay, emphasized: Boolean, modifier: Modifier = Modifier) {
+    val colors = ChaKakTheme.colors
+    val shape = if (emphasized) JournalShapes.panel else JournalShapes.card
+    val surface = if (emphasized) {
+        Modifier.background(colors.backgroundPrimary, shape).padding(ChaKakSpacing.panel)
+    } else {
+        Modifier.border(ChaKakDimens.dividerThick, colors.dividerSecondary, shape).padding(JournalDimens.cardPadding)
+    }
+    Row(
+        modifier = modifier.fillMaxWidth().then(surface),
+        horizontalArrangement = Arrangement.spacedBy(if (emphasized) JournalDimens.detailGap else JournalDimens.timelineGap),
+    ) {
+        if (emphasized) {
+            IconTile(ChaKakIcons.Pin, Tint(colors.brand.accent, colors.brand.onAccent), JournalDimens.locationTile, JournalDimens.locationGlyph)
+        } else {
+            IconTile(ChaKakIcons.Pin, colors.brand.neutral, JournalDimens.categoryTile, JournalDimens.categoryGlyph)
+        }
+        LocationLines(
+            display = display,
+            label = VEHICLE_LOCATION_LABEL,
+            headlineStyle = if (emphasized) ChaKakTheme.typography.titleLargeStrong else ChaKakTheme.typography.titleSmall,
+            modifier = Modifier.weight(1f),
+        )
+    }
+}
+
+/** 차량 상태 상세 하단의 작은 위치 상자. 같은 판정을 작은 글꼴로 보여준다 */
+@Composable
+fun LocationBox(display: LocationDisplay, modifier: Modifier = Modifier) {
+    val colors = ChaKakTheme.colors
+    Column(
+        modifier = modifier
+            .border(ChaKakDimens.dividerThick, colors.dividerSecondary, JournalShapes.card)
+            .padding(JournalDimens.cardPadding),
+        verticalArrangement = Arrangement.spacedBy(ChaKakSpacing.tight),
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(ChaKakSpacing.tight)) {
+            Icon(ChaKakIcons.Pin, contentDescription = null, tint = colors.iconSecondary, modifier = Modifier.size(JournalDimens.chipGlyph))
+            SectionLabel(SHORT_LOCATION_LABEL)
+        }
+        LocationLines(display, label = null, headlineStyle = ChaKakTheme.typography.bodyMedium)
+    }
+}
+
+/** 라벨 · 큰 줄(또는 상태 배지) · 작은 줄들 · 안내 */
+@Composable
+private fun LocationLines(display: LocationDisplay, label: String?, headlineStyle: TextStyle, modifier: Modifier = Modifier) {
+    val colors = ChaKakTheme.colors
+    Column(modifier.semantics(mergeDescendants = true) {}, verticalArrangement = Arrangement.spacedBy(ChaKakSpacing.tight)) {
+        label?.let { SectionLabel(it) }
+        display.headline?.let { Text(it, style = headlineStyle, color = colors.textPrimary) }
+        display.headlineStatus?.let { StatusBadge(it) }
+        display.details.forEach { Text(it, style = ChaKakTheme.typography.labelMedium, color = colors.textTertiary) }
+        InfoNote(display.notice, ChaKakIcons.Info, modifier = Modifier.padding(top = ChaKakSpacing.tight))
+    }
+}
