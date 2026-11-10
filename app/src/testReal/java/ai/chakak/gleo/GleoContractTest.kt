@@ -22,16 +22,14 @@ class GleoContractTest {
         assertEquals("ai.chakak", schema.getString("packageName"))
         assertEquals("차칵", schema.getString("invokeWord"))
         val actions = schema.getJSONArray("actionCalls")
-        assertEquals(2, actions.length())
+        assertEquals(1, actions.length())
         val capture = actions.getJSONObject(0).getJSONObject("function")
-        val memo = actions.getJSONObject(1).getJSONObject("function")
         assertEquals(CAPTURE_RECORD, capture.getString("name"))
-        assertEquals(ADD_RECORD_MEMO, memo.getString("name"))
-        listOf(capture, memo).forEach { assertEquals("service", it.getString("component")) }
+        assertEquals("service", capture.getString("component"))
+        val properties = capture.getJSONObject("parameters").getJSONObject("properties")
+        assertEquals(setOf("category"), properties.keys().asSequence().toSet())
         val categories = capture.getJSONObject("parameters").getJSONObject("properties").getJSONObject("category").getJSONArray("enum")
         assertEquals(Category.entries.map { it.name }.toSet(), (0 until categories.length()).map { categories.getString(it) }.toSet())
-        val required = memo.getJSONObject("parameters").getJSONArray("required")
-        assertEquals(setOf("memo"), (0 until required.length()).map { required.getString(it) }.toSet())
     }
     @Test fun configuredFlagsAndCallbackTarget() {
         assertFalse(context.resources.getBoolean(R.bool.gleo_in_motion_approved))
@@ -41,7 +39,7 @@ class GleoContractTest {
     }
     @Test fun acceptsObservedPrefixedAndDocumentedBareActions() {
         assertEquals(CAPTURE_RECORD, gleoFunction("ai.chakak", "ai.chakak.CAPTURE_RECORD"))
-        assertEquals(ADD_RECORD_MEMO, gleoFunction("ai.chakak", "ai.chakak.ADD_RECORD_MEMO"))
+        assertNull(gleoFunction("ai.chakak", "ai.chakak.ADD_RECORD_MEMO"))
         assertEquals(CAPTURE_RECORD, gleoFunction("ai.chakak", "CAPTURE_RECORD"))
         assertNull(gleoFunction("ai.chakak", "other.app.CAPTURE_RECORD"))
         assertNull(gleoFunction("ai.chakak", "ai.chakak.DELETE_RECORD"))
