@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>차칵 A 차량 상태 상세</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Asta+Sans:wght@400;600;700;800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#0F766E}a:hover{color:#115E59}
+</style>
+</helmet>
+<div style="width: 1700px; height: 1184px; box-sizing: border-box; padding: 40px; display: flex; gap: 40px; background: #F7F8FA; color: #131417; font-family: 'Asta Sans', system-ui, sans-serif;">
+
+  <section style="width: 720px; flex-shrink: 0; display: flex; flex-direction: column; gap: 24px;" aria-label="기록 목록">
+    <div style="display: flex; align-items: center; gap: 20px;">
+      <div style="width: 72px; height: 72px; border-radius: 24px; background: {{accent}}; color: #131417; display: flex; align-items: center; justify-content: center;">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 3l3 8M21 12l-8 3M12 21l-3-8M3 12l8-3"></path></svg>
+      </div>
+      <div style="display: flex; flex-direction: column;">
+        <h1 style="margin: 0; font-size: 40px; line-height: 52px; font-weight: 800;">차칵</h1>
+        <p style="margin: 0; font-size: 24px; line-height: 28px; color: #5C5E64;">운전 중 남긴 순간들</p>
+      </div>
+    </div>
+
+    <button type="button" style="height: 100px; border: 0; border-radius: 32px; background: {{accent}}; color: #131417; font: inherit; font-size: 32px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 16px; cursor: pointer;">
+      <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="4"></circle></svg>
+      지금 차칵 기록
+    </button>
+
+    <div role="group" aria-label="분류" style="height: 100px; box-sizing: border-box; padding: 8px; border-radius: 32px; background: #EDEEF2; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px;">
+      <button type="button" aria-pressed="false" style="border: 0; border-radius: 24px; background: transparent; font: inherit; font-size: 26px; color: #44464E;">전체 12</button>
+      <button type="button" aria-pressed="false" style="border: 0; border-radius: 24px; background: transparent; font: inherit; font-size: 26px; color: #44464E;">장소 7</button>
+      <button type="button" aria-pressed="true" style="border: 0; border-radius: 24px; background: #FFFFFF; font: inherit; font-size: 26px; font-weight: 700; color: #131417; box-shadow: 0 2px 2px rgba(0,0,0,0.08);">차량 상태 4</button>
+      <button type="button" aria-pressed="false" style="border: 0; border-radius: 24px; background: transparent; font: inherit; font-size: 26px; color: #44464E;">미분류 1</button>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 16px; overflow: hidden;">
+      <h2 style="margin: 8px 0 0; font-size: 24px; line-height: 28px; font-weight: 700; color: #44464E;">오늘 · 11월 9일 일요일</h2>
+
+      <div style="display: flex; gap: 20px; align-items: stretch;">
+        <div style="width: 112px; flex-shrink: 0; padding-top: 28px; font-size: 24px; color: #5C5E64; text-align: right;">오전 8:12</div>
+        <div style="width: 4px; flex-shrink: 0; background: {{accentDeep}}; border-radius: 2px;"></div>
+        <div style="flex-grow: 1; box-sizing: border-box; padding: 24px; border-radius: 24px; background: #FFFFFF; border: 4px solid {{accentDeep}}; display: flex; gap: 20px; align-items: center;">
+          <div style="width: 64px; height: 64px; flex-shrink: 0; border-radius: 20px; background: #DCE8FF; color: #0050CC; display: flex; align-items: center; justify-content: center;">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15l1.5-5a2 2 0 0 1 1.9-1.4h9.2a2 2 0 0 1 1.9 1.4L20 15v3H4z"></path><circle cx="7.5" cy="15.5" r="1"></circle><circle cx="16.5" cy="15.5" r="1"></circle></svg>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0;">
+            <div style="font-size: 30px; line-height: 38px; font-weight: 700;">방지턱 이후 소음</div>
+            <div style="font-size: 24px; line-height: 28px; color: #44464E;">차량 상태 · 일부 정보 없음 3/4</div>
+          </div>
+        </div>
+      </div>
+
+      <h2 style="margin: 16px 0 0; font-size: 24px; line-height: 28px; font-weight: 700; color: #44464E;">11월 6일 목요일</h2>
+
+      <div style="display: flex; gap: 20px; align-items: stretch;">
+        <div style="width: 112px; flex-shrink: 0; padding-top: 28px; font-size: 24px; color: #5C5E64; text-align: right;">오후 5:02</div>
+        <div style="width: 4px; flex-shrink: 0; background: #E0E1E6; border-radius: 2px;"></div>
+        <div style="flex-grow: 1; box-sizing: border-box; padding: 24px; border-radius: 24px; background: #FFFFFF; border: 2px solid #E0E1E6; display: flex; gap: 20px; align-items: center;">
+          <div style="width: 64px; height: 64px; flex-shrink: 0; border-radius: 20px; background: #DCE8FF; color: #0050CC; display: flex; align-items: center; justify-content: center;">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15l1.5-5a2 2 0 0 1 1.9-1.4h9.2a2 2 0 0 1 1.9 1.4L20 15v3H4z"></path><circle cx="7.5" cy="15.5" r="1"></circle><circle cx="16.5" cy="15.5" r="1"></circle></svg>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0;">
+            <div style="font-size: 30px; line-height: 38px; font-weight: 700;">경고등 깜빡임</div>
+            <div style="font-size: 24px; line-height: 28px; color: #44464E;">차량 상태 · 모두 수집</div>
+          </div>
+        </div>
+      </div>
+
+      <h2 style="margin: 16px 0 0; font-size: 24px; line-height: 28px; font-weight: 700; color: #44464E;">11월 1일 토요일</h2>
+
+      <div style="display: flex; gap: 20px; align-items: stretch;">
+        <div style="width: 112px; flex-shrink: 0; padding-top: 28px; font-size: 24px; color: #5C5E64; text-align: right;">오전 10:20</div>
+        <div style="width: 4px; flex-shrink: 0; background: #E0E1E6; border-radius: 2px;"></div>
+        <div style="flex-grow: 1; box-sizing: border-box; padding: 24px; border-radius: 24px; background: #FFFFFF; border: 2px solid #E0E1E6; display: flex; gap: 20px; align-items: center;">
+          <div style="width: 64px; height: 64px; flex-shrink: 0; border-radius: 20px; background: #DCE8FF; color: #0050CC; display: flex; align-items: center; justify-content: center;">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15l1.5-5a2 2 0 0 1 1.9-1.4h9.2a2 2 0 0 1 1.9 1.4L20 15v3H4z"></path><circle cx="7.5" cy="15.5" r="1"></circle><circle cx="16.5" cy="15.5" r="1"></circle></svg>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0;">
+            <div style="font-size: 30px; line-height: 38px; font-weight: 700;">정비 전 상태 확인</div>
+            <div style="font-size: 24px; line-height: 28px; color: #44464E;">차량 상태 · 모두 수집</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="flex-grow: 1; min-width: 0; box-sizing: border-box; padding: 48px; border-radius: 48px; background: #FFFFFF; display: flex; flex-direction: column; gap: 28px;" aria-label="기록 상세">
+    <div style="display: flex; align-items: center; justify-content: space-between;">
+      <span style="height: 48px; box-sizing: border-box; padding: 0 20px; border-radius: 24px; background: #DCE8FF; color: #0040A8; font-size: 24px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15l1.5-5a2 2 0 0 1 1.9-1.4h9.2a2 2 0 0 1 1.9 1.4L20 15v3H4z"></path><circle cx="7.5" cy="15.5" r="1"></circle><circle cx="16.5" cy="15.5" r="1"></circle></svg>
+        차량 상태
+      </span>
+      <div style="display: flex; gap: 16px;">
+        <button type="button" style="height: 64px; padding: 0 24px; border: 2px solid #E0E1E6; border-radius: 16px; background: #FFFFFF; font: inherit; font-size: 26px; font-weight: 700; color: #131417; display: flex; align-items: center; gap: 12px;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg>편집
+        </button>
+        <button type="button" aria-label="기록 삭제" style="width: 64px; height: 64px; border: 2px solid #E0E1E6; border-radius: 16px; background: #FFFFFF; color: #C4261D; display: flex; align-items: center; justify-content: center;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"></path></svg>
+        </button>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 4px;">
+      <div style="font-size: 24px; line-height: 28px; color: #5C5E64;">2026년 11월 9일 오전 8:12 · “차 상태 캡처해줘”로 기록</div>
+      <h2 style="margin: 0; font-size: 48px; line-height: 64px; font-weight: 800;">방지턱 이후 소음</h2>
+    </div>
+
+    <div style="padding: 20px 24px; border-radius: 24px; background: #F7F8FA; display: flex; gap: 12px; align-items: center; font-size: 24px; line-height: 32px; color: #44464E;">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0;"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6M12 7.5v.5"></path></svg>
+      기록 순간에 조회한 값이에요. 진단 결과나 지금 상태가 아니에요. · 4개 중 3개 수집
+    </div>
+
+    <div style="display: flex; gap: 40px; align-items: center;">
+      <div style="display: flex; flex-direction: column; gap: 4px; flex-shrink: 0;">
+        <span style="font-size: 24px; color: #5C5E64;">누적 주행 거리</span>
+        <span style="font-size: 112px; line-height: 120px; font-weight: 800; letter-spacing: -3px;">12,480<span style="font-size: 36px; font-weight: 700; letter-spacing: 0; color: #44464E;"> km</span></span>
+      </div>
+      <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 12px;">
+        <span style="font-size: 24px; color: #5C5E64;">켜져 있던 경고등</span>
+        <span style="height: 64px; box-sizing: border-box; padding: 0 24px; border-radius: 32px; background: #FFF1DB; color: #131417; font-size: 26px; font-weight: 700; display: inline-flex; align-items: center; gap: 12px; align-self: flex-start;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#B45309" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4l9 16H3z"></path><path d="M12 10v4M12 17v.5"></path></svg>타이어 공기압
+        </span>
+      </div>
+    </div>
+
+    <div style="padding: 28px; border-radius: 32px; background: #F7F8FA; display: flex; gap: 32px; align-items: center;">
+      <div style="width: 180px; height: 240px; flex-shrink: 0; position: relative;" role="img" aria-label="타이어 공기압: 앞 왼쪽 33, 앞 오른쪽 33, 뒤 왼쪽 32, 뒤 오른쪽 응답 시간 초과">
+        <div style="position: absolute; left: 45px; top: 16px; width: 90px; height: 208px; border-radius: 36px; border: 3px solid #A4A8AE; background: #FFFFFF;"></div>
+        <div style="position: absolute; left: 18px; top: 40px; width: 22px; height: 52px; border-radius: 8px; background: #44464E;"></div>
+        <div style="position: absolute; right: 18px; top: 40px; width: 22px; height: 52px; border-radius: 8px; background: #44464E;"></div>
+        <div style="position: absolute; left: 18px; bottom: 40px; width: 22px; height: 52px; border-radius: 8px; background: #44464E;"></div>
+        <div style="position: absolute; right: 18px; bottom: 40px; width: 18px; height: 48px; border-radius: 8px; border: 2px dashed #686A72;"></div>
+      </div>
+      <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 16px;">
+        <span style="font-size: 24px; font-weight: 700; color: #44464E;">타이어 공기압</span>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;">
+          <div style="padding: 16px 20px; border-radius: 20px; background: #FFFFFF; display: flex; flex-direction: column;"><span style="font-size: 22px; color: #5C5E64;">앞 왼쪽</span><span style="font-size: 32px; font-weight: 700;">33 psi</span></div>
+          <div style="padding: 16px 20px; border-radius: 20px; background: #FFFFFF; display: flex; flex-direction: column;"><span style="font-size: 22px; color: #5C5E64;">앞 오른쪽</span><span style="font-size: 32px; font-weight: 700;">33 psi</span></div>
+          <div style="padding: 16px 20px; border-radius: 20px; background: #FFFFFF; display: flex; flex-direction: column;"><span style="font-size: 22px; color: #5C5E64;">뒤 왼쪽</span><span style="font-size: 32px; font-weight: 700;">32 psi</span></div>
+          <div style="padding: 14px 18px; border-radius: 20px; border: 2px dashed #686A72; display: flex; flex-direction: column;"><span style="font-size: 22px; color: #5C5E64;">뒤 오른쪽</span><span style="font-size: 26px; line-height: 38px; font-weight: 700; display: flex; align-items: center; gap: 8px;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>응답 시간 초과</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin-top: auto;">
+      <div style="padding: 24px; border-radius: 24px; border: 2px solid #E0E1E6; display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 24px; font-weight: 700; color: #44464E;">운전자 메모</span>
+        <p style="margin: 0; font-size: 28px; line-height: 38px; font-weight: 600;">방지턱을 넘은 뒤부터 오른쪽 뒤에서 덜컹거리는 소리가 났어요.</p>
+      </div>
+      <div style="padding: 24px; border-radius: 24px; border: 2px solid #E0E1E6; display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 24px; font-weight: 700; color: #44464E; display: flex; align-items: center; gap: 8px;">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>기록 당시 위치
+        </span>
+        <span style="font-size: 28px; line-height: 36px; font-weight: 700;">서울 강남구 강남대로 396 부근</span>
+        <span style="font-size: 22px; line-height: 28px; color: #5C5E64;">37.4980, 127.0276 · 관측 오전 8:12</span>
+      </div>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#2CC5B4","options":["#2CC5B4","#7CC6FF","#FFC24B","#B9A6FF"]},"accentDeep":{"editor":"color","default":"#0F766E"},"$preview":{"width":1700,"height":1184}}'>
+class Component extends DCLogic {
+renderVals() {
+return { accent: this.props.accent ?? '#2CC5B4', accentDeep: this.props.accentDeep ?? '#0F766E' };
+}
+}
+</script>
+</body>
+</html>

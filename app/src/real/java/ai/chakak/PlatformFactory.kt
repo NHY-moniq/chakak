@@ -32,6 +32,7 @@ class RealPlatform(private val context: Context) : Platform {
     private var ux: CarUxRestrictionsManager? = null
     private var properties: CarPropertyManager? = null
     override val voiceAllowed = MutableStateFlow(false)
+    override val accessResolved = MutableStateFlow(false)
     private var drivingState = DrivingState.UNKNOWN
     private var uxKnown = false
     private var unrestricted = false
@@ -46,6 +47,7 @@ class RealPlatform(private val context: Context) : Platform {
                 emulator = android.os.Build.HARDWARE == "ranchu"))
         touchAllowed.value = access.touch
         voiceAllowed.value = access.voice
+        accessResolved.value = active && uxKnown && drivingState != DrivingState.UNKNOWN
     }
     private fun readGear(value: CarPropertyValue<*>): DrivingState {
         if(value.status != CarPropertyValue.STATUS_AVAILABLE) return DrivingState.UNKNOWN
@@ -122,6 +124,7 @@ class RealPlatform(private val context: Context) : Platform {
 private class UnavailablePlatform : Platform {
     override val source = Source.REAL
     override val touchAllowed = MutableStateFlow(false)
+    override val accessResolved = MutableStateFlow(true)
     override val providers = emptyList<CaptureProvider>()
     override fun start() {}
     override fun stop() {}

@@ -1,1 +1,9 @@
-<resources><style name="AppTheme" parent="android:style/Theme.Material.Light.NoActionBar"><item name="android:fontFamily">sans</item><item name="android:windowLightStatusBar">false</item></style></resources>
+<resources>
+    <!-- 시작 창 배경: Pleos background/primary (Light). Dark는 values-night/styles.xml.
+         DeviceDefault.DayNight은 API 29+라 minSdk 28에 맞춰 Light/Night 리소스로 나눈다. -->
+    <style name="AppTheme" parent="android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:windowBackground">@color/chakak_background_primary</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+</resources>

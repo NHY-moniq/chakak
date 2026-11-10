@@ -34,17 +34,17 @@
       "type": "function",
       "function": {
         "name": "ADD_RECORD_MEMO",
-        "description": "Add a memo to a record using its unexpired follow-up context.",
+        "description": "Add a memo to the record that was just saved, while the save confirmation is still active.",
         "parameters": {
           "type": "object",
           "properties": {
             "recordId": {
               "type": "string",
-              "description": "The identifier returned by the capture action."
+              "description": "The identifier returned by the capture action, if known."
             },
             "memoToken": {
               "type": "string",
-              "description": "The one-time token returned by the capture action."
+              "description": "The one-time token returned by the capture action, if known."
             },
             "memo": {
               "type": "string",
@@ -52,8 +52,6 @@
             }
           },
           "required": [
-            "recordId",
-            "memoToken",
             "memo"
           ]
         },

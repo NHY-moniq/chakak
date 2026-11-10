@@ -25,21 +25,30 @@ class GleoContractTest {
         assertEquals(2, actions.length())
         val capture = actions.getJSONObject(0).getJSONObject("function")
         val memo = actions.getJSONObject(1).getJSONObject("function")
-        assertEquals("CAPTURE_RECORD", capture.getString("name"))
-        assertEquals("ADD_RECORD_MEMO", memo.getString("name"))
+        assertEquals(CAPTURE_RECORD, capture.getString("name"))
+        assertEquals(ADD_RECORD_MEMO, memo.getString("name"))
         listOf(capture, memo).forEach { assertEquals("service", it.getString("component")) }
         val categories = capture.getJSONObject("parameters").getJSONObject("properties").getJSONObject("category").getJSONArray("enum")
         assertEquals(Category.entries.map { it.name }.toSet(), (0 until categories.length()).map { categories.getString(it) }.toSet())
         val required = memo.getJSONObject("parameters").getJSONArray("required")
-        assertEquals(setOf("recordId", "memoToken", "memo"), (0 until required.length()).map { required.getString(it) }.toSet())
+        assertEquals(setOf("memo"), (0 until required.length()).map { required.getString(it) }.toSet())
     }
-    @Test fun configuredReceiverStillRejectsUntrustedBroadcast() {
+    @Test fun configuredFlagsAndCallbackTarget() {
         assertFalse(context.resources.getBoolean(R.bool.gleo_in_motion_approved))
         assertTrue(context.resources.getBoolean(R.bool.gleo_receiver_enabled))
         assertTrue(context.resources.getBoolean(R.bool.gleo_emulator_in_motion_enabled))
-        assertEquals("ai.umos.ambientai", context.getString(R.string.gleo_sender_package))
-        assertEquals(64, context.getString(R.string.gleo_sender_sha256).length)
-        // A plain Application is intentional: rejection must occur before accessing ChakakApp/storage.
-        GleoReceiver().onReceive(context, Intent("CAPTURE_RECORD").putExtra("ACTION_PARAM", "{}"))
+        assertEquals("ai.umos.ambientai", context.getString(R.string.gleo_package))
+    }
+    @Test fun acceptsObservedPrefixedAndDocumentedBareActions() {
+        assertEquals(CAPTURE_RECORD, gleoFunction("ai.chakak", "ai.chakak.CAPTURE_RECORD"))
+        assertEquals(ADD_RECORD_MEMO, gleoFunction("ai.chakak", "ai.chakak.ADD_RECORD_MEMO"))
+        assertEquals(CAPTURE_RECORD, gleoFunction("ai.chakak", "CAPTURE_RECORD"))
+        assertNull(gleoFunction("ai.chakak", "other.app.CAPTURE_RECORD"))
+        assertNull(gleoFunction("ai.chakak", "ai.chakak.DELETE_RECORD"))
+        assertNull(gleoFunction("ai.chakak", null))
+    }
+    @Test fun unknownActionIsIgnoredBeforeTouchingStorage() {
+        // A plain Application is intentional: an unrelated action must return before accessing ChakakApp/storage.
+        GleoReceiver().onReceive(context, Intent("ai.chakak.DELETE_RECORD").putExtra("ACTION_PARAM", "{}"))
     }
 }

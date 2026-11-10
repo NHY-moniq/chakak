@@ -15,6 +15,7 @@ data class ObservationRow(val recordId: String, val key: String, val status: Str
 @Entity(tableName = "requests") data class RequestRow(@PrimaryKey val id: String)
 data class RecordWithObservations(@Embedded val record: RecordRow,
     @Relation(parentColumn = "id", entityColumn = "recordId") val observations: List<ObservationRow>)
+data class PendingMemo(val id: String, val memoToken: String)
 @Dao interface RecordDao {
     @Transaction @Query("SELECT * FROM records ORDER BY createdAt DESC") fun watch(): kotlinx.coroutines.flow.Flow<List<RecordWithObservations>>
     @Insert(onConflict = OnConflictStrategy.IGNORE) suspend fun request(row: RequestRow): Long
@@ -27,7 +28,9 @@ data class RecordWithObservations(@Embedded val record: RecordRow,
     @Query("SELECT id FROM records WHERE collecting=1") suspend fun collecting(): List<String>
     @Query("UPDATE records SET title=:title, category=:category, memo=:memo, memoToken=NULL, memoExpiresAt=NULL WHERE id=:id") suspend fun edit(id: String, title: String, category: String, memo: String)
     @Query("DELETE FROM records WHERE id=:id") suspend fun delete(id: String)
+    @Query("UPDATE records SET memoToken=NULL, memoExpiresAt=NULL WHERE memoToken IS NOT NULL") suspend fun clearTokens()
     @Query("UPDATE records SET memoToken=:token, memoExpiresAt=:expires WHERE id=:id") suspend fun token(id: String, token: String, expires: Long)
+    @Query("SELECT id, memoToken FROM records WHERE memoToken IS NOT NULL AND memoExpiresAt>:now LIMIT 1") suspend fun pendingMemo(now: Long): PendingMemo?
     @Query("UPDATE records SET memo=:memo, memoToken=NULL, memoExpiresAt=NULL WHERE id=:id AND memoToken=:token AND memoExpiresAt>:now")
     suspend fun memo(id: String, token: String, now: Long, memo: String): Int
 }
@@ -52,6 +55,10 @@ class RoomRecordStore(private val db: ChakakDatabase) : RecordStore {
     override suspend fun edit(id: String, title: String, category: Category, memo: String) { dao.edit(id, title.take(120), category.name, memo.take(2000)) }
     override suspend fun delete(id: String) = dao.delete(id)
     override suspend fun deleteMany(ids: List<String>) = db.withTransaction { ids.distinct().forEach { dao.delete(it) } }
-    override suspend fun issueMemoToken(id: String, token: String, expiresAt: Long) = dao.token(id, token, expiresAt)
+    override suspend fun issueMemoToken(id: String, token: String, expiresAt: Long) = db.withTransaction { dao.clearTokens(); dao.token(id, token, expiresAt) }
     override suspend fun addMemo(id: String, token: String, now: Long, memo: String) = dao.memo(id, token, now, memo.take(2000)) == 1
+    override suspend fun addPendingMemo(now: Long, memo: String) = db.withTransaction {
+        val pending = dao.pendingMemo(now)
+        pending != null && dao.memo(pending.id, pending.memoToken, now, memo.take(2000)) == 1
+    }
 }

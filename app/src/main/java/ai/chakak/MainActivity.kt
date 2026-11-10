@@ -6,49 +6,17 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.mutableStateOf
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.lifecycle.ViewModel
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.getValue
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import ai.chakak.core.*
-import ai.chakak.ui.*
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.onEach
-import java.util.UUID
+import ai.chakak.core.Source
+import ai.chakak.ui.LibraryViewModel
+import ai.chakak.ui.app.AppWindowScaffold
+import ai.chakak.ui.app.LibraryCallbacks
+import ai.chakak.ui.app.ProvideTimelineClock
+import ai.chakak.ui.theme.ChaKakTheme
 
-class LibraryModel(val app: ChakakApp) : ViewModel() {
-    val busy = MutableStateFlow(false)
-    val message = MutableStateFlow<String?>(null)
-    val loaded = MutableStateFlow(false)
-    val records = app.store.records.onEach { loaded.value = true }.catch {
-        message.value = "기록을 읽지 못했습니다. 앱을 다시 열어 주세요."
-        loaded.value = true
-        emit(emptyList())
-    }
-    private fun mutate(successMessage: String = "저장했습니다.", block: suspend () -> Unit) {
-        if(busy.value) return
-        busy.value = true
-        message.value = null
-        viewModelScope.launch {
-            try {
-                app.ready.await()
-                if(!app.platform.touchAllowed.value) { message.value = "주차 상태를 확인해 주세요."; return@launch }
-                block()
-                message.value = successMessage
-            } catch (e: CancellationException) { throw e }
-            catch (_: Exception) { message.value = "처리하지 못했습니다. 기록을 확인한 뒤 다시 시도해 주세요." }
-            finally { busy.value = false }
-        }
-    }
-    fun capture() = mutate { app.engine.capture(UUID.randomUUID().toString(), Category.UNCLASSIFIED) }
-    fun edit(id: String, title: String, category: Category, memo: String) = mutate { app.store.edit(id, title, category, memo) }
-    fun delete(id: String) = mutate("삭제했습니다.") { app.store.delete(id) }
-    fun deleteMany(ids: List<String>) = mutate("선택한 기록을 삭제했습니다.") { app.store.deleteMany(ids) }
-
-}
 class MainActivity : ComponentActivity() {
     private val app get() = application as ChakakApp
     private val capturePermissions = arrayOf(
@@ -69,20 +37,23 @@ class MainActivity : ComponentActivity() {
     override fun onStart() { super.onStart(); app.platform.start() }
     override fun onStop() { app.platform.stop(); super.onStop() }
     override fun onCreate(savedInstanceState: Bundle?) {
+        // 시스템 바·IME insets를 Compose가 직접 처리한다(AppWindowScaffold의 safeDrawing).
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        val model = ViewModelProvider(this, object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST") override fun <T : ViewModel> create(modelClass: Class<T>): T = LibraryModel(app) as T
-        })[LibraryModel::class.java]
+        val model = ViewModelProvider(this, LibraryViewModel.Factory(app))[LibraryViewModel::class.java]
+        val callbacks = LibraryCallbacks(
+            capture = model::capture, edit = model::edit, delete = model::delete,
+            deleteMany = model::deleteMany,
+            retry = model::retry, consumeOutcome = model::consumeOutcome,
+        )
+        val mock = app.platform.source == Source.MOCK
         setContent {
-            val rows = model.records.collectAsStateWithLifecycle(emptyList()).value
-            val allowed = app.platform.touchAllowed.collectAsStateWithLifecycle().value
-            val busy = model.busy.collectAsStateWithLifecycle().value
-            val message = model.message.collectAsStateWithLifecycle().value
-            val loaded = model.loaded.collectAsStateWithLifecycle().value
-            ChakakTheme { LibraryScreen(rows, allowed, app.platform.source == Source.MOCK, model::capture, model::edit, model::delete,
-                busy = busy, message = message, loaded = loaded, deleteMany = model::deleteMany,
-                needsLocationPermission = needsLocationPermission.value,
-                requestLocationPermission = { if(app.platform.touchAllowed.value) requestLocation.launch(missingPermissions()) }) }
+            val state by model.uiState.collectAsStateWithLifecycle()
+            val actions by model.actions.collectAsStateWithLifecycle()
+            val allowed by app.platform.touchAllowed.collectAsStateWithLifecycle()
+            ChaKakTheme { ProvideTimelineClock { AppWindowScaffold(state, actions, allowed, mock, callbacks,
+                needsCapturePermission = needsLocationPermission.value,
+                requestCapturePermission = { if (app.platform.touchAllowed.value) requestLocation.launch(missingPermissions()) }) } }
         }
     }
 }

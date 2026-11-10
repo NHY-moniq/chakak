@@ -12,6 +12,6 @@
     <uses-permission android:name="pleos.car.permission.CAR_WINDOWS"/>
     <queries><package android:name="ai.umos.ambientai"/></queries>
     <application><uses-library android:name="android.car" android:required="false"/><receiver android:name=".gleo.GleoReceiver" android:enabled="@bool/gleo_receiver_enabled" android:exported="true">
-        <intent-filter><action android:name="CAPTURE_RECORD"/><action android:name="ADD_RECORD_MEMO"/></intent-filter>
+        <intent-filter><action android:name="${applicationId}.CAPTURE_RECORD"/><action android:name="${applicationId}.ADD_RECORD_MEMO"/><action android:name="CAPTURE_RECORD"/><action android:name="ADD_RECORD_MEMO"/></intent-filter>
     </receiver></application>
 </manifest>
