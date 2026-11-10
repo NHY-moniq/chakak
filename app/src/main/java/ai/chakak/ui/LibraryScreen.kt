@@ -129,17 +129,22 @@ import ai.chakak.core.*
     var expandedGroups by rememberSaveable(record.id) { mutableStateOf(arrayListOf<String>()) }
     LazyColumn(modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
         item { TextButton(onClick = back) { Text("목록") } }
-        item { Text("${record.source} · ${formatRecordTime(record.createdAt)}") }
+        item { OutlinedTextField(value = title, onValueChange = { title = it.take(120) }, label = { Text("제목") }, modifier = Modifier.fillMaxWidth()) }
+        item { OutlinedTextField(value = memo, onValueChange = { memo = it.take(2000) }, label = { Text("메모") }, modifier = Modifier.fillMaxWidth(), minLines = 3) }
+        item { FlowRow { Category.entries.forEach { c -> FilterChip(selected = c == category, onClick = { category = c }, label = { Text(c.label()) }) } } }
+        item { Button(onClick = { edit(record.id, title, category, memo) }) { Text("변경 저장") } }
+        item {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text("기록일시")
+                Text(formatRecordTime(record.createdAt))
+            }
+        }
         item(key = "surroundCapture") {
             SurroundCaptureCard(record.observations.find { it.key == SURROUND_CAPTURE_KEY })
         }
         items(record.observations.filter { it.key == "location" }, key = { "record:${it.key}" }) { observation ->
             ObservationCard(observation)
         }
-        item { OutlinedTextField(value = title, onValueChange = { title = it.take(120) }, label = { Text("제목") }, modifier = Modifier.fillMaxWidth()) }
-        item { FlowRow { Category.entries.forEach { c -> FilterChip(selected = c == category, onClick = { category = c }, label = { Text(c.label()) }) } } }
-        item { OutlinedTextField(value = memo, onValueChange = { memo = it.take(2000) }, label = { Text("메모") }, modifier = Modifier.fillMaxWidth(), minLines = 3) }
-        item { Button(onClick = { edit(record.id, title, category, memo) }) { Text("변경 저장") } }
         groupObservations(record.observations.filter { it.key != "location" && it.key != SURROUND_CAPTURE_KEY }).forEach { group ->
             val expanded = group.title in expandedGroups
             item(key = "group:${group.title}") {
