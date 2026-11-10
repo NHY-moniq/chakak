@@ -3,16 +3,17 @@ package ai.chakak.ui.model
 import androidx.compose.runtime.Immutable
 
 /** 사용자가 시작한 쓰기 동작 */
-enum class ActionKind { Capture, Edit, Delete }
+enum class ActionKind { Capture, Edit, Delete, Navigate }
 
 /**
  * 동작 결과.
  * - [Done]: 완료
- * - [Rejected]: 시작하지 않음(캡처 엔진이 false 반환 — 주행 제한·중복 요청)
+ * - [Rejected]: 시작하지 않음(캡처 엔진이 false 반환 — 주행 제한·중복 요청, 내비게이션 연동 없음·권한 없음)
  * - [Restricted]: 주차 상태가 아니어서 실행하지 않음
  * - [Failed]: 실행 중 오류
+ * - [Unconfirmed]: 요청은 보냈지만 결과를 확인하지 못함(내비게이션 응답 없음)
  */
-enum class ActionResult { Done, Rejected, Restricted, Failed }
+enum class ActionResult { Done, Rejected, Restricted, Failed, Unconfirmed }
 
 @Immutable
 data class ActionOutcome(val kind: ActionKind, val recordId: String?, val result: ActionResult) {
@@ -50,21 +51,31 @@ fun ActionOutcome.message(): UserMessage = when (result) {
     ActionResult.Done -> UserMessage(doneText(kind), isError = false)
     ActionResult.Rejected -> UserMessage(rejectedText(kind), isError = true)
     ActionResult.Failed -> UserMessage(failedText(kind), isError = true)
+    ActionResult.Unconfirmed -> UserMessage(unconfirmedText(kind), isError = true)
 }
 
 private fun doneText(kind: ActionKind): String = when (kind) {
     ActionKind.Capture -> "기록을 남겼습니다. 항목별 수집 결과는 상세에서 확인하세요."
     ActionKind.Edit -> "변경 내용을 저장했습니다."
     ActionKind.Delete -> "기록을 삭제했습니다."
+    ActionKind.Navigate -> "내비게이션에 목적지를 전달했습니다."
 }
 
 private fun rejectedText(kind: ActionKind): String = when (kind) {
     ActionKind.Capture -> "기록을 시작하지 못했습니다. 주차 상태를 확인한 뒤 다시 시도해 주세요."
     ActionKind.Edit, ActionKind.Delete -> failedText(kind)
+    ActionKind.Navigate -> "내비게이션 연동을 사용할 수 없어 안내를 시작하지 않았습니다. 권한과 내비게이션 상태를 확인해 주세요."
+}
+
+/** 보낸 요청이 반영됐을 수 있으므로 실패했다고 단정하지 않는다. */
+private fun unconfirmedText(kind: ActionKind): String = when (kind) {
+    ActionKind.Navigate -> "목적지를 보냈지만 내비게이션 응답을 확인하지 못했습니다. 내비게이션 화면에서 확인해 주세요."
+    ActionKind.Capture, ActionKind.Edit, ActionKind.Delete -> failedText(kind)
 }
 
 private fun failedText(kind: ActionKind): String = when (kind) {
     ActionKind.Capture -> "기록하지 못했습니다. 목록을 확인한 뒤 다시 시도해 주세요."
     ActionKind.Edit -> "저장하지 못했습니다. 입력한 내용은 남아 있으니 다시 시도해 주세요."
     ActionKind.Delete -> "삭제하지 못했습니다. 기록은 그대로 남아 있습니다."
+    ActionKind.Navigate -> "안내를 시작하지 못했습니다. 내비게이션 연결 상태를 확인한 뒤 다시 시도해 주세요."
 }

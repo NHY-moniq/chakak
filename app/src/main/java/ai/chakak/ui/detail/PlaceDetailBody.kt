@@ -35,11 +35,11 @@ private const val WIDE_SUMMARY_COLUMNS = 3
  * 미분류([Category.UNCLASSIFIED])는 같은 배치에 위치 패널 강조만 뺀다.
  */
 @Composable
-fun PlaceDetailBody(record: Record, compact: Boolean) {
+fun PlaceDetailBody(record: Record, compact: Boolean, onGuide: (() -> Unit)? = null) {
     val clock = currentTimelineClock()
     val tiles = remember(record, clock) { record.copy(observations = record.observations.filterNot { it.key.startsWith("vehicle.") || it.key == ai.chakak.ui.SURROUND_CAPTURE_KEY }).summaryTiles(clock) }
     PlaceHeading(record)
-    LocationPanel(rememberLocationDisplay(record), emphasized = record.category == Category.PLACE)
+    LocationPanel(rememberLocationDisplay(record), emphasized = record.category == Category.PLACE, onGuide = onGuide)
     record.observations.find { it.key == "location" }?.let { ai.chakak.ui.LocationValue(it) }
     ai.chakak.ui.SurroundCaptureCard(record.observations.find { it.key == ai.chakak.ui.SURROUND_CAPTURE_KEY })
     MemoBlock(record.memo)

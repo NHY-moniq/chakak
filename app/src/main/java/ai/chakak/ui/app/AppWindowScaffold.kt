@@ -2,6 +2,7 @@ package ai.chakak.ui.app
 
 import ai.chakak.core.Category
 import ai.chakak.core.Record
+import ai.chakak.platform.GuidanceTarget
 import ai.chakak.ui.component.MessageBar
 import ai.chakak.ui.model.ActionKind
 import ai.chakak.ui.model.ActionState
@@ -37,6 +38,7 @@ class LibraryCallbacks(
     val edit: (id: String, title: String, category: Category, memo: String) -> Unit = { _, _, _, _ -> },
     val delete: (String) -> Unit = {},
     val deleteMany: (List<String>) -> Unit = {},
+    val guide: (id: String, target: GuidanceTarget) -> Unit = { _, _ -> },
     val retry: () -> Unit = {},
     val consumeOutcome: () -> Unit = {},
 )
@@ -64,7 +66,7 @@ fun AppWindowScaffold(
     LaunchedEffect(actions.outcome) {
         val outcome = actions.outcome ?: return@LaunchedEffect
         nav = nav.after(outcome)
-        if (outcome.succeeded && outcome.kind != ActionKind.Capture) outcome.recordId?.let(drafts::removeState)
+        if (outcome.succeeded && (outcome.kind == ActionKind.Edit || outcome.kind == ActionKind.Delete)) outcome.recordId?.let(drafts::removeState)
         if (outcome.consumedImmediately()) callbacks.consumeOutcome()
     }
     LaunchedEffect(state) {

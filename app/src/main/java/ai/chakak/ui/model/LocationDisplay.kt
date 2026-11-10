@@ -1,6 +1,8 @@
 package ai.chakak.ui.model
 
 import ai.chakak.core.Observation
+import ai.chakak.core.Record
+import ai.chakak.platform.GuidanceTarget
 import ai.chakak.core.Status
 import androidx.compose.runtime.Immutable
 
@@ -47,6 +49,18 @@ fun locationDisplay(location: Observation?, address: Observation?, commandAt: Lo
             addressShown = false,
         )
     }
+}
+
+/**
+ * 내비게이션 목적지. 위치 항목이 OK이고 좌표가 유효할 때만 만든다(좌표 없는 기록은 안내 대상이 아니다).
+ * 주소는 주소 항목 또는 위치 값 안의 "address"를 참고용으로 함께 넘긴다.
+ */
+fun Record.guidanceTarget(): GuidanceTarget? {
+    val location = observation(ObservationKeys.LOCATION)?.takeIf { it.status == Status.OK } ?: return null
+    val reading = parseLocation(location.value) ?: return null
+    val address = observation(ObservationKeys.ADDRESS)?.takeIf { it.status == Status.OK }?.value
+        ?: runCatching { org.json.JSONObject(location.value ?: "").optString("address") }.getOrNull()
+    return GuidanceTarget(reading.latitude, reading.longitude, displayTitle(), address?.trim()?.takeIf { it.isNotEmpty() })
 }
 
 /** 좌표(파싱 실패 시 원문). 값이 없으면 null */

@@ -1,6 +1,7 @@
 package ai.chakak.ui.app
 
 import ai.chakak.core.Record
+import ai.chakak.ui.detail.GuidanceControl
 import ai.chakak.ui.detail.RecordDetailScreen
 import ai.chakak.ui.edit.DeleteRecordDialog
 import ai.chakak.ui.edit.RecordEditRoute
@@ -102,6 +103,13 @@ internal class LibraryHost(
                 actionsEnabled = !actions.busy,
                 modifier = modifier,
                 showMockBanner = showMockBanner,
+                guidance = GuidanceControl(
+                    enabled = !actions.busy,
+                    running = actions.isRunning(ActionKind.Navigate, record.id),
+                    finished = actions.outcome?.let { it.kind == ActionKind.Navigate && it.recordId == record.id } == true,
+                    onStart = { callbacks.guide(record.id, it) },
+                    onFinished = callbacks.consumeOutcome,
+                ),
             )
         }
     }

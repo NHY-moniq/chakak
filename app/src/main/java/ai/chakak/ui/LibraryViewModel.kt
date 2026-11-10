@@ -2,6 +2,8 @@ package ai.chakak.ui
 
 import ai.chakak.ChakakApp
 import ai.chakak.core.Category
+import ai.chakak.platform.GuidanceResult
+import ai.chakak.platform.GuidanceTarget
 import ai.chakak.ui.model.ActionKind
 import ai.chakak.ui.model.ActionOutcome
 import ai.chakak.ui.model.ActionResult
@@ -67,6 +69,17 @@ class LibraryViewModel(private val app: ChakakApp) : ViewModel() {
     fun deleteMany(ids: List<String>) = launchAction(ActionKind.Delete, null) {
         app.store.deleteMany(ids)
         ActionResult.Done
+    }
+
+    /** 기록 당시 위치를 차량 내비게이션 목적지로 넘긴다. 다른 쓰기와 같이 주차 상태에서만 실행한다. */
+    fun guide(id: String, target: GuidanceTarget) = launchAction(ActionKind.Navigate, id) {
+        when (app.platform.startGuidance(target)) {
+            GuidanceResult.STARTED -> ActionResult.Done
+            GuidanceResult.UNSUPPORTED, GuidanceResult.DENIED -> ActionResult.Rejected
+            GuidanceResult.RESTRICTED -> ActionResult.Restricted
+            GuidanceResult.FAILED -> ActionResult.Failed
+            GuidanceResult.TIMEOUT -> ActionResult.Unconfirmed
+        }
     }
 
     /** 화면이 결과(편집 종료·팝업 닫기)를 반영한 뒤 호출한다. */
