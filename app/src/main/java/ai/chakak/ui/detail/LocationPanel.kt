@@ -64,7 +64,6 @@ fun rememberLocationDisplay(record: Record): LocationDisplay {
         coordinates != null && resolved == null -> display.copy(
             headline = if (display.addressShown) display.headline else "도로명 주소를 조회하고 있어요",
             details = display.details + "도로명 주소 조회 중")
-        coordinates != null -> display.copy(details = display.details + "도로명 주소를 확인하지 못했어요")
         else -> display
     }
 }
@@ -72,7 +71,6 @@ fun rememberLocationDisplay(record: Record): LocationDisplay {
 /**
  * 장소 상세 위치 패널(시안 A). 큰 accent 타일 + "기록 당시 차량 위치" + 주소(또는 좌표) 큰 줄 + 작은 줄 + 안내.
  * [emphasized]가 false(미분류)면 강조 면 대신 테두리 패널과 무채색 타일, 한 단계 작은 글꼴을 쓴다.
- * 안내 문구는 항상 보인다(차량 위치이며 시설 위치와 다를 수 있음).
  * [onGuide]가 있으면 패널 전체가 버튼이 되고 "눌러서 이 위치로 안내" 줄을 보여준다(색만으로 알리지 않음).
  */
 @Composable
@@ -132,7 +130,6 @@ private fun LocationLines(display: LocationDisplay, label: String?, headlineStyl
         display.headline?.let { Text(it, style = headlineStyle, color = colors.textPrimary) }
         display.headlineStatus?.let { StatusBadge(it) }
         display.details.forEach { Text(it, style = ChaKakTheme.typography.labelMedium, color = colors.textTertiary) }
-        InfoNote(display.notice, ChaKakIcons.Info, modifier = Modifier.padding(top = ChaKakSpacing.tight))
         if (guidable) InfoNote(GUIDANCE_HINT, ChaKakIcons.Navigate, iconTint = colors.brand.accentDeep)
     }
 }

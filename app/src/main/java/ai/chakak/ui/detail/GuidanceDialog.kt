@@ -7,7 +7,6 @@ import ai.chakak.ui.component.ChaKakButton
 import ai.chakak.ui.component.InfoNote
 import ai.chakak.ui.component.PanelTone
 import ai.chakak.ui.component.SectionPanel
-import ai.chakak.ui.model.PLACE_LOCATION_NOTICE
 import ai.chakak.ui.theme.ChaKakDimens
 import ai.chakak.ui.theme.ChaKakIcons
 import ai.chakak.ui.theme.ChaKakShapes
@@ -91,7 +90,6 @@ fun GuidanceDialogContent(target: GuidanceTarget, running: Boolean, onConfirm: (
                 color = colors.textTertiary,
             )
         }
-        InfoNote(PLACE_LOCATION_NOTICE, ChaKakIcons.Info)
         InfoNote(GUIDANCE_REPLACES_ROUTE, ChaKakIcons.Caution)
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(ChaKakSpacing.item)) {
             ChaKakButton("취소", onDismiss, Modifier.weight(1f), ButtonVariant.Basic, ButtonSize.Medium, enabled = !running)

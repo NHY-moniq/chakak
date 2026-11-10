@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 
 internal const val SURROUND_CAPTURE_KEY = "surroundCapture"
 
@@ -35,7 +36,12 @@ internal fun SurroundCaptureCard() {
                 SectionLabel("서라운드뷰 캡처")
                 Text("차량 주변 보기", style = ChaKakTheme.typography.labelMedium, color = colors.textTertiary)
             }
-            Text("예시 이미지", style = ChaKakTheme.typography.labelMedium, color = colors.textSecondary)
+            Column(Modifier.weight(1f), horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.spacedBy(ChaKakSpacing.tight)) {
+                Text("예시 이미지", style = ChaKakTheme.typography.labelMedium, color = colors.textSecondary)
+                Text("협의가 필요한 기능입니다.", style = ChaKakTheme.typography.labelSmall,
+                    color = colors.textTertiary, textAlign = TextAlign.End)
+            }
         }
         Image(
             painter = painterResource(R.drawable.surroundview),
