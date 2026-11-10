@@ -1,6 +1,8 @@
 package ai.chakak.ui.model
 
 import ai.chakak.core.Observation
+import ai.chakak.core.Record
+import ai.chakak.platform.GuidanceTarget
 import ai.chakak.core.Status
 import androidx.compose.runtime.Immutable
 
@@ -40,6 +42,7 @@ fun locationDisplay(location: Observation?, address: Observation?, commandAt: Lo
         notice = if (addressText != null) ADDRESS_NOTICE else PLACE_LOCATION_NOTICE,
         addressShown = addressText != null,
     )
+
 }
 
 /**
@@ -60,4 +63,12 @@ internal fun savedLocationAddress(location: Observation?, address: Observation?)
     return explicit ?: location?.takeIf { it.status == Status.OK }?.value?.let { raw ->
         runCatching { org.json.JSONObject(raw).optString("address").trim().takeIf { it.isNotEmpty() && it != "null" } }.getOrNull()
     }
+}
+
+/** Valid recorded coordinates are retained for navigation, but not shown as an address. */
+fun Record.guidanceTarget(): GuidanceTarget? {
+    val location = observation(ObservationKeys.LOCATION)?.takeIf { it.status == Status.OK } ?: return null
+    val reading = parseLocation(location.value) ?: return null
+    return GuidanceTarget(reading.latitude, reading.longitude, displayTitle(),
+        savedLocationAddress(location, observation(ObservationKeys.ADDRESS)))
 }

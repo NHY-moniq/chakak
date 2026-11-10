@@ -87,4 +87,12 @@ class LibraryNavigationTest {
         assertFalse(ActionOutcome(ActionKind.Edit, "a", ActionResult.Failed).consumedImmediately())
         assertFalse(ActionOutcome(ActionKind.Delete, "a", ActionResult.Failed).consumedImmediately())
     }
+
+    @Test fun guidanceOutcomeStaysUntilTheDetailScreenClosesItsPopup() {
+        assertFalse(ActionOutcome(ActionKind.Navigate, "a", ActionResult.Done).consumedImmediately())
+        assertFalse(ActionOutcome(ActionKind.Navigate, "a", ActionResult.Failed).consumedImmediately())
+        assertTrue(ActionOutcome(ActionKind.Navigate, "a", ActionResult.Restricted).consumedImmediately())
+        val detail = LibraryNavigation(selectedId = "a")
+        assertEquals(detail, detail.after(ActionOutcome(ActionKind.Navigate, "a", ActionResult.Done)))
+    }
 }

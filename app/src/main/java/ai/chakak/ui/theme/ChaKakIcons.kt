@@ -25,6 +25,8 @@ object ChaKakIcons {
     /** 위치 핀 */
     val Pin: ImageVector by lazy { lineIcon("Pin", "M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z M9.5 10a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0 -5 0") }
     /** 원 안 i: 안내 */
+    val Navigate: ImageVector by lazy { lineIcon("Navigate", "M12 3l7 17l-7-4l-7 4z") }
+
     val Info: ImageVector by lazy { lineIcon("Info", "$CIRCLE_9 M12 11v6M12 7.5v.5") }
     /** 삼각 경고 */
     val Caution: ImageVector by lazy { lineIcon("Caution", "M12 4l9 16H3z M12 10v4M12 17v.5") }

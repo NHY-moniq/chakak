@@ -11,9 +11,9 @@ const val OTHER_OBSERVATIONS_LABEL = "함께 기록된 차량 정보"
 
 /** 장소·미분류도 차량 상세와 같은 시각화로 저장된 차량 상태를 보여준다. */
 @Composable
-fun PlaceDetailBody(record: Record, compact: Boolean) {
+fun PlaceDetailBody(record: Record, compact: Boolean, onGuide: (() -> Unit)? = null) {
     PlaceHeading(record)
-    LocationPanel(rememberLocationDisplay(record), emphasized = record.category == Category.PLACE)
+    LocationPanel(rememberLocationDisplay(record), emphasized = record.category == Category.PLACE, onGuide = onGuide)
     SurroundCaptureCard()
     val place = record.category == Category.PLACE
     MemoBlock(record.memo)

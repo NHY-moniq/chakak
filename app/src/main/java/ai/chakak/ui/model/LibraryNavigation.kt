@@ -67,5 +67,5 @@ data class LibraryNavigation(
     }
 }
 
-/** 화면이 처리한 뒤 비워도 되는 결과인지. 편집·삭제 실패는 해당 화면에 남겨 둔다. */
-fun ActionOutcome.consumedImmediately(): Boolean = succeeded || kind == ActionKind.Capture || result == ActionResult.Restricted
+/** 화면이 처리한 뒤 비워도 되는 결과인지. 편집·삭제 실패는 해당 화면에 남겨 둔다. 안내(Navigate) 결과는 상세 화면이 확인 팝업을 닫으며 비운다. */
+fun ActionOutcome.consumedImmediately(): Boolean = (succeeded && kind != ActionKind.Navigate) || kind == ActionKind.Capture || result == ActionResult.Restricted

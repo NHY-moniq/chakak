@@ -64,7 +64,7 @@ const val LIT_TELLTALES_LABEL = "켜져 있던 경고등"
  * 글꼴 배율이 [STACK_FONT_SCALE]보다 크면 큰 숫자 칸과 경고등 칸을 세로로 쌓아 숫자 칸 폭을 넓힌다.
  */
 @Composable
-fun VehicleDetailBody(record: Record, compact: Boolean) {
+fun VehicleDetailBody(record: Record, compact: Boolean, onGuide: (() -> Unit)? = null) {
     VehicleHeading(record)
     ObservationNote(OBSERVATION_NOTE)
     VehicleStatusOverview(record, compact)
@@ -77,7 +77,7 @@ fun VehicleDetailBody(record: Record, compact: Boolean) {
             SectionLabel(MEMO_HEADER)
             MemoText(record.memo, large = false)
         }
-        LocationBox(rememberLocationDisplay(record), itemModifier)
+        LocationBox(rememberLocationDisplay(record), itemModifier, onGuide)
     }
     val others = record.otherObservations(ObservationKeys.vehicleKeys + ObservationKeys.locationKeys + ai.chakak.ui.SURROUND_CAPTURE_KEY)
     ai.chakak.ui.SurroundCaptureCard()
