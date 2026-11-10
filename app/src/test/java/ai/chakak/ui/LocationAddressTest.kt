@@ -42,4 +42,16 @@ class LocationAddressTest {
         assertNull(Observation("location", Status.OK, "{}").coordinates())
         assertNull(Observation("location", Status.OK, """{"latitude":91,"longitude":127}""").coordinates())
     }
+
+    @org.junit.Test fun roadAddressRequiresRoadName() {
+        val address = android.location.Address(java.util.Locale.KOREA).apply {
+            adminArea = "경기도"
+            locality = "성남시"
+            subLocality = "수정구"
+        }
+        org.junit.Assert.assertNull(address.roadAddress())
+        address.thoroughfare = "시흥로"
+        address.subThoroughfare = "10"
+        org.junit.Assert.assertEquals("경기도 성남시 수정구 시흥로 10", address.roadAddress())
+    }
 }

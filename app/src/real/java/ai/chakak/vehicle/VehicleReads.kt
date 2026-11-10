@@ -45,6 +45,11 @@ internal fun vehicleProvider(context: Context, session: VehicleSession, field: S
         if(context.checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) return Observation(key, Status.DENIED)
         val vehicle = session.acquire()
         try { return read(vehicle).copy(key = key) }
+        catch (cancelled: CancellationException) { throw cancelled }
+        catch (error: Exception) {
+            if (error.message == "ERROR_NOT_SUPPORTED_PROPERTY") return Observation(key, Status.UNSUPPORTED)
+            throw error
+        }
         finally { withContext(NonCancellable) { session.release() } }
     }
 }
@@ -88,7 +93,9 @@ private suspend fun readEntry(area: String, read: ((Any?) -> Unit, (Exception) -
     } catch(error: CancellationException) { throw error }
     catch(_: SecurityException) { row.put("status", Status.DENIED.name) }
     catch(_: UnsupportedOperationException) { row.put("status", Status.UNSUPPORTED.name) }
-    catch(_: Exception) { row.put("status", Status.ERROR.name) }
+    catch(error: Exception) {
+        row.put("status", if (error.message == "ERROR_NOT_SUPPORTED_PROPERTY") Status.UNSUPPORTED.name else Status.ERROR.name)
+    }
     return row
 }
 private fun result(rows: List<JSONObject>): Observation {

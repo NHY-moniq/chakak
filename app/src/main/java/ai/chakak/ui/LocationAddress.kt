@@ -45,7 +45,7 @@ internal fun Address.localizedAddress(): String? {
 
 internal data class AddressResult(val address: String? = null, val message: String? = null, val retryable: Boolean = true)
 
-internal suspend fun resolveAddress(context: Context, coordinates: Coordinates): AddressResult {
+internal suspend fun resolveAddress(context: Context, coordinates: Coordinates, roadOnly: Boolean = false): AddressResult {
     return try {
         if (!Geocoder.isPresent()) return AddressResult(message = "위치 좌표는 기록되었습니다. 이 기기는 주소 변환 서비스를 지원하지 않아 주소를 표시할 수 없습니다.", retryable = false)
         withTimeoutOrNull(5000) {
@@ -63,7 +63,7 @@ internal suspend fun resolveAddress(context: Context, coordinates: Coordinates):
                 @Suppress("DEPRECATION")
                 runInterruptible(Dispatchers.IO) { geocoder.getFromLocation(coordinates.latitude, coordinates.longitude, 1).orEmpty() }
             }
-            val address = addresses.firstNotNullOfOrNull { it.localizedAddress() }
+            val address = addresses.firstNotNullOfOrNull { if (roadOnly) it.roadAddress() else it.localizedAddress() }
             AddressResult(address, if (address == null) "이 좌표에 해당하는 주소를 찾지 못했습니다." else null)
         } ?: AddressResult(message = "주소 조회 시간이 초과되었습니다.")
     } catch (cancelled: CancellationException) { throw cancelled }
@@ -103,4 +103,11 @@ internal suspend fun resolveAddress(context: Context, coordinates: Coordinates):
         }
         observation.displayLines().forEach { (label, value) -> Text("$label: $value") }
     }
+}
+
+/** A district/dong label alone is not a road-name address. */
+internal fun Address.roadAddress(): String? {
+    val road = thoroughfare?.trim()?.takeIf { it.isNotEmpty() } ?: return null
+    return listOf(adminArea, locality, subLocality, road, subThoroughfare)
+        .mapNotNull { it?.trim()?.takeIf(String::isNotEmpty) }.distinct().joinToString(" ")
 }

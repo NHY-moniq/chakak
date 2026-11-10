@@ -4,14 +4,11 @@ import ai.chakak.core.Record
 import ai.chakak.core.Source
 import ai.chakak.ui.component.CategoryIconTile
 import ai.chakak.ui.component.MockTag
-import ai.chakak.ui.component.StatusBadge
 import ai.chakak.ui.model.DayGroup
 import ai.chakak.ui.model.currentTimelineClock
-import ai.chakak.ui.model.captureSummary
 import ai.chakak.ui.model.displayTitle
 import ai.chakak.ui.model.formatClockTime
 import ai.chakak.ui.model.rowMetaLine
-import ai.chakak.ui.model.showsStatusBadge
 import ai.chakak.ui.theme.ChaKakDimens
 import ai.chakak.ui.theme.ChaKakSpacing
 import ai.chakak.ui.theme.ChaKakTheme
@@ -57,13 +54,13 @@ fun LazyListScope.timelineItems(groups: List<DayGroup>, selectedId: String?, onS
     groups.forEach { group ->
         item(key = "day:${group.date}", contentType = DAY_CONTENT_TYPE) { DayHeader(group.header) }
         items(group.records, key = { it.id }, contentType = { RECORD_CONTENT_TYPE }) { record ->
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                if (onCheck != null) androidx.compose.material3.Checkbox(
-                    checked = record.id in checked, onCheckedChange = { onCheck(record.id) }, enabled = enabled,
-                    modifier = Modifier.semantics { contentDescription = "${record.displayTitle()} 선택" },
-                )
-                RecordRow(record, selected = record.id == selectedId, onClick = { onSelect(record.id) }, modifier = Modifier.weight(1f))
-            }
+            RecordRow(
+                record,
+                selected = if (onCheck != null) record.id in checked else record.id == selectedId,
+                onClick = { if (onCheck != null) onCheck(record.id) else onSelect(record.id) },
+                enabled = enabled,
+                selectionMode = onCheck != null,
+            )
         }
     }
 }
@@ -84,7 +81,7 @@ private fun DayHeader(text: String) {
  * 행 전체가 눌림 영역이다(시각 열 포함).
  */
 @Composable
-fun RecordRow(record: Record, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
+fun RecordRow(record: Record, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, selectionMode: Boolean = false) {
     val interaction = remember { MutableInteractionSource() }
     val pressed by interaction.collectIsPressedAsState()
     val clock = currentTimelineClock()
@@ -92,7 +89,7 @@ fun RecordRow(record: Record, selected: Boolean, onClick: () -> Unit, modifier: 
         modifier = modifier
             .fillMaxWidth()
             .height(IntrinsicSize.Min)
-            .selectable(selected = selected, interactionSource = interaction, indication = null, role = Role.Button, onClick = onClick),
+            .selectable(selected = selected, interactionSource = interaction, indication = null, role = if (selectionMode) Role.Checkbox else Role.Button, enabled = enabled, onClick = onClick),
         horizontalArrangement = Arrangement.spacedBy(JournalDimens.timelineGap),
     ) {
         Text(
@@ -139,13 +136,12 @@ private fun RecordCard(record: Record, selected: Boolean, pressed: Boolean, modi
     }
 }
 
-/** 제목 · 메타 한 줄 · (수집 완료가 아니면) 상태 배지 · (Mock이면) 테스트 데이터 표시 */
+/** 제목 · 메타 한 줄 · (Mock이면) 테스트 데이터 표시 */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun CardText(record: Record, modifier: Modifier) {
     val colors = ChaKakTheme.colors
     val meta = remember(record) { record.rowMetaLine() }
-    val summary = remember(record) { record.captureSummary().takeIf { record.showsStatusBadge() } }
     Column(modifier, verticalArrangement = Arrangement.spacedBy(JournalDimens.cardTextGap)) {
         Text(
             record.displayTitle(),
@@ -162,13 +158,12 @@ private fun CardText(record: Record, modifier: Modifier) {
             overflow = TextOverflow.Ellipsis,
         )
         val mock = record.source == Source.MOCK
-        if (summary != null || mock) {
+        if (mock) {
             FlowRow(
                 modifier = Modifier.padding(top = ChaKakSpacing.tight),
                 horizontalArrangement = Arrangement.spacedBy(ChaKakSpacing.item),
                 verticalArrangement = Arrangement.spacedBy(ChaKakSpacing.tight),
             ) {
-                summary?.let { StatusBadge(it) }
                 if (mock) MockTag()
             }
         }

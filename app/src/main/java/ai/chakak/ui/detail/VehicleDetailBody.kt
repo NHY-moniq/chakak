@@ -59,24 +59,15 @@ const val LIT_TELLTALES_LABEL = "켜져 있던 경고등"
 
 /**
  * 차량 상태 상세 본문(시안 A'): 머리 → 관측 안내(진단 아님) → 누적 주행 거리 큰 숫자 + 경고등 →
- * 타이어 패널 → 메모 + 위치 상자 → 정해진 영역이 없는 항목. 수집 개수는 머리의 상태 배지가 보여준다.
+ * 타이어 패널 → 메모 + 위치 상자 → 정해진 영역이 없는 항목.
  * 각 묶음 아래에 항목별 관측 시각을 둬 명령 수신 시각과 구분한다(spec 5.4).
  * 글꼴 배율이 [STACK_FONT_SCALE]보다 크면 큰 숫자 칸과 경고등 칸을 세로로 쌓아 숫자 칸 폭을 넓힌다.
  */
 @Composable
 fun VehicleDetailBody(record: Record, compact: Boolean) {
-    val clock = currentTimelineClock()
-    val observedOf: (Observation?) -> String? = { it?.observedLine(record.createdAt, clock) }
-    val odometer = record.observation(ObservationKeys.ODOMETER)
-    val telltales = record.observation(ObservationKeys.TELLTALES)
-    val tires = record.observation(ObservationKeys.TIRES)
     VehicleHeading(record)
     ObservationNote(OBSERVATION_NOTE)
-    AdaptiveRow(compact || LocalDensity.current.fontScale > STACK_FONT_SCALE) { itemModifier ->
-        OdometerBlock(odometer, observedOf(odometer), compact, itemModifier)
-        TelltaleBlock(telltales, observedOf(telltales), itemModifier)
-    }
-    TirePanel(tires, compact, observed = observedOf(tires))
+    VehicleStatusOverview(record, compact)
     AdaptiveRow(compact) { itemModifier ->
         Column(
             itemModifier.border(ChaKakDimens.dividerThick, ChaKakTheme.colors.dividerSecondary, JournalShapes.card)
@@ -89,19 +80,32 @@ fun VehicleDetailBody(record: Record, compact: Boolean) {
         LocationBox(rememberLocationDisplay(record), itemModifier)
     }
     val others = record.otherObservations(ObservationKeys.vehicleKeys + ObservationKeys.locationKeys + ai.chakak.ui.SURROUND_CAPTURE_KEY)
-    record.observations.find { it.key == "location" }?.let { ai.chakak.ui.LocationValue(it) }
-    ai.chakak.ui.SurroundCaptureCard(record.observations.find { it.key == ai.chakak.ui.SURROUND_CAPTURE_KEY })
+    ai.chakak.ui.SurroundCaptureCard()
     if (others.isNotEmpty()) VehicleObservationList(others)
 }
 
-/** 넓으면 같은 높이 두 칸, 좁으면 세로로 쌓는다 */
+@Composable
+fun VehicleStatusOverview(record: Record, compact: Boolean) {
+    val clock = currentTimelineClock()
+    val observedOf: (Observation?) -> String? = { it?.observedLine(record.createdAt, clock) }
+    val odometer = record.observation(ObservationKeys.ODOMETER)
+    val telltales = record.observation(ObservationKeys.TELLTALES)
+    val tires = record.observation(ObservationKeys.TIRES)
+    AdaptiveRow(compact || LocalDensity.current.fontScale > STACK_FONT_SCALE) { itemModifier ->
+        OdometerBlock(odometer, observedOf(odometer), compact, itemModifier)
+        TelltaleBlock(telltales, observedOf(telltales), itemModifier)
+    }
+    TirePanel(tires, compact, observed = observedOf(tires))
+}
+
+/** 넓으면 두 칸, 좁으면 세로 배치. 숫자 측정용 BoxWithConstraints에 intrinsic 크기를 요청하지 않는다. */
 @Composable
 private fun AdaptiveRow(compact: Boolean, content: @Composable (Modifier) -> Unit) {
     if (compact) {
         Column(verticalArrangement = Arrangement.spacedBy(JournalDimens.detailGap)) { content(Modifier.fillMaxWidth()) }
     } else {
-        Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(JournalDimens.detailGap)) {
-            content(Modifier.weight(1f).fillMaxHeight())
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(JournalDimens.detailGap)) {
+            content(Modifier.weight(1f))
         }
     }
 }
@@ -132,7 +136,7 @@ private fun OdometerBlock(observation: Observation?, observed: String?, compact:
         when {
             observation == null -> PlainValue(NOT_COLLECTED_ITEM)
             reading != null -> OdometerNumber(reading, compact)
-            observation.status == Status.OK -> PlainValue(observation.displayValue().orEmpty())
+            observation.status == Status.OK -> PlainValue("값을 표시할 수 없습니다")
             else -> StatusBadge(observation.status)
         }
         ObservedTime(observed)
@@ -186,7 +190,7 @@ private fun TelltaleBlock(observation: Observation?, observed: String?, modifier
         val lit = observation?.takeIf { it.status == Status.OK }?.let { parseTelltales(it.value) }?.filter { it.lit }
         when {
             observation == null -> PlainValue(NOT_COLLECTED_ITEM)
-            lit == null && observation.status == Status.OK -> PlainValue(observation.displayValue().orEmpty())
+            lit == null && observation.status == Status.OK -> PlainValue("값을 표시할 수 없습니다")
             lit == null -> StatusBadge(observation.status)
             lit.isEmpty() -> PlainValue(NO_LIT_TELLTALES)
             else -> FlowRow(

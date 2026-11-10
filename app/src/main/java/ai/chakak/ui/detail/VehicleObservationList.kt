@@ -49,7 +49,7 @@ fun VehicleObservationList(observations: List<Observation>, modifier: Modifier =
             TextButton(onClick = { expanded = !expanded }) {
                 Text("${group.title} · ${group.observations.size}개 ${if (expanded) "접기 ▴" else "펼치기 ▾"}")
             }
-            if (expanded) group.observations.forEach { ObservationRow(it) }
+            if (expanded) group.observations.forEach { VehicleObservationTiles(it) }
         }
     }
 }

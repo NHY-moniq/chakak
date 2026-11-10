@@ -20,8 +20,8 @@ internal fun Observation.displayLines(): List<Pair<String, String>> {
             val entries = JSONObject(raw).optJSONArray("entries")
             if(entries != null) return (0 until entries.length()).map { index ->
                 val entry = entries.getJSONObject(index)
-                val area = entry.getString("area").split(", ").filter { it != "UNKNOWN" }.joinToString(" · ") {
-                    when(it) { "LEFT_FRONT" -> "앞 왼쪽"; "RIGHT_FRONT" -> "앞 오른쪽"; "LEFT_REAR" -> "뒤 왼쪽"; "RIGHT_REAR" -> "뒤 오른쪽"; else -> it }
+                val area = entry.getString("area").split(",").map(String::trim).filter { it != "UNKNOWN" }.joinToString(" · ") {
+                    when(it) { "LEFT_FRONT" -> "앞 왼쪽"; "RIGHT_FRONT" -> "앞 오른쪽"; "LEFT_REAR" -> "뒤 왼쪽"; "RIGHT_REAR" -> "뒤 오른쪽"; else -> ai.chakak.ui.model.vehicleAreaLabel(it) }
                 }.ifBlank { "위치 미확인" }
                 val status = entry.getString("status")
                 val rawValue = entry.opt("value")

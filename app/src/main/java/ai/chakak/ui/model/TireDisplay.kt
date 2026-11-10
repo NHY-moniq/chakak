@@ -20,6 +20,7 @@ data class WheelDisplay(val wheel: Wheel, val value: String?, val status: Status
  * - 항목은 OK인데 형식을 모르면 null(화면이 원문을 보여준다).
  */
 fun tireWheels(observation: Observation, locale: Locale): List<WheelDisplay>? {
+    if (observation.isLegacyTireThreshold()) return Wheel.entries.map { WheelDisplay(it, null, Status.UNAVAILABLE) }
     val parsed = parseTires(observation.value)
     if (parsed != null) return Wheel.entries.map { wheel -> wheelOf(wheel, parsed, locale) }
     if (observation.status == Status.OK) return null

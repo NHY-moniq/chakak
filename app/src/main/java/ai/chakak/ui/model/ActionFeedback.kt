@@ -53,7 +53,7 @@ fun ActionOutcome.message(): UserMessage = when (result) {
 }
 
 private fun doneText(kind: ActionKind): String = when (kind) {
-    ActionKind.Capture -> "기록을 남겼습니다. 항목별 수집 결과는 상세에서 확인하세요."
+    ActionKind.Capture -> "기록을 남겼습니다."
     ActionKind.Edit -> "변경 내용을 저장했습니다."
     ActionKind.Delete -> "기록을 삭제했습니다."
 }

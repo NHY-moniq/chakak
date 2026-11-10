@@ -31,17 +31,22 @@ class RecordPresentationTest {
 
     private fun location(status: Status = Status.OK, value: String? = locationJson) = Observation("location", status, value, observedAt)
 
-    @Test fun placeMetaPrefersAddressThenMemoThenCoordinates() {
+    @Test fun placeMetaShowsAddressWithoutCoordinates() {
         val address = Observation("address", Status.OK, "서울 어딘가 1")
         assertEquals("장소 · 서울 어딘가 1", record(Category.PLACE, "메모", location(), address).rowMetaLine())
-        assertEquals("장소 · “첫 줄”", record(Category.PLACE, "\n 첫 줄 \n둘째", location()).rowMetaLine())
-        assertEquals("장소 · 37.5219, 126.9399", record(Category.PLACE, "", location()).rowMetaLine())
-        assertEquals("장소 · 위치 정보 없음", record(Category.PLACE, "", location(Status.DENIED, null)).rowMetaLine())
+        assertEquals("장소 · 주소 정보 없음", record(Category.PLACE, "\n 첫 줄 \n둘째", location()).rowMetaLine())
+        assertEquals("장소 · 주소 정보 없음", record(Category.PLACE, "", location()).rowMetaLine())
+        assertEquals("장소 · 주소 정보 없음", record(Category.PLACE, "", location(Status.DENIED, null)).rowMetaLine())
+    }
+
+    @Test fun placePreviewUsesEmbeddedNaviAddressBeforeMemo() {
+        val saved = location(value = """{"latitude":37.4127,"longitude":127.0947,"address":"수정구 시흥동"}""")
+        assertEquals("장소 · 수정구 시흥동", record(Category.PLACE, "메모", saved).rowMetaLine())
     }
 
     @Test fun vehicleMetaShowsCompletionOnlyWhenComplete() {
         val ok = Observation("odometer", Status.OK, "x")
-        assertEquals("차량 상태 · 수집 완료", record(Category.VEHICLE_STATUS, "", ok).rowMetaLine())
+        assertEquals("차량 상태", record(Category.VEHICLE_STATUS, "", ok).rowMetaLine())
         val partial = record(Category.VEHICLE_STATUS, "", ok, Observation("tires", Status.TIMEOUT))
         assertEquals("차량 상태", partial.rowMetaLine())
         assertTrue(partial.showsStatusBadge())
@@ -58,24 +63,24 @@ class RecordPresentationTest {
         assertEquals(mapOf(null to 3, Category.UNCLASSIFIED to 0, Category.PLACE to 2, Category.VEHICLE_STATUS to 1), categoryCounts(records))
     }
 
-    @Test fun addressShownLargeWithCoordinatesSmall() {
+    @Test fun addressShownWithoutCoordinates() {
         val display = locationDisplay(location(), Observation("address", Status.OK, "서울 어딘가 1"), observedAt, clock)
         assertEquals("서울 어딘가 1", display.headline)
-        assertEquals(listOf("37.5219, 126.9399 · 신뢰도 0.8 · 관측 오전 9:34"), display.details)
+        assertEquals(listOf("관측 오전 9:34"), display.details)
         assertEquals(ADDRESS_NOTICE, display.notice)
         assertTrue(display.addressShown)
     }
 
-    @Test fun addressFailedShowsCoordinatesAndReason() {
+    @Test fun addressFailedShowsReasonWithoutCoordinates() {
         val display = locationDisplay(location(), Observation("address", Status.TIMEOUT), observedAt, clock)
-        assertEquals("37.5219, 126.9399", display.headline)
+        assertEquals(ADDRESS_FAILED, display.headline)
         assertEquals("$ADDRESS_FAILED · 응답 시간 초과", display.details.last())
         assertEquals(PLACE_LOCATION_NOTICE, display.notice)
     }
 
     @Test fun noAddressItemShowsNoFailureMessage() {
         val display = locationDisplay(location(), null, observedAt, clock)
-        assertEquals("37.5219, 126.9399", display.headline)
+        assertEquals(ADDRESS_FAILED, display.headline)
         assertTrue(display.details.none { it.contains(ADDRESS_FAILED) })
         assertEquals(PLACE_LOCATION_NOTICE, display.notice)
     }
@@ -88,8 +93,8 @@ class RecordPresentationTest {
         assertEquals(NO_LOCATION_ITEM, locationDisplay(null, null, observedAt, clock).headline)
     }
 
-    @Test fun unparseableLocationFallsBackToRaw() {
-        assertEquals("TEST: location sample", locationDisplay(location(value = "TEST: location sample"), null, observedAt, clock).headline)
+    @Test fun unparseableLocationDoesNotExposeRaw() {
+        assertEquals(ADDRESS_FAILED, locationDisplay(location(value = "TEST: location sample"), null, observedAt, clock).headline)
     }
 
     @Test fun summariesUseParsedValuesOrRawOrStatus() {
@@ -149,8 +154,8 @@ class RecordPresentationTest {
         assertEquals("장소 · $LOCATION_PENDING", collecting.rowMetaLine())
     }
 
-    @Test fun unparseableOkLocationRowHintsRaw() {
-        assertEquals("장소 · $LOCATION_RAW_ONLY", record(Category.PLACE, "", location(value = "TEST: location sample")).rowMetaLine())
+    @Test fun unparseableLocationRowDoesNotExposeRaw() {
+        assertEquals("장소 · 주소 정보 없음", record(Category.PLACE, "", location(value = "TEST: location sample")).rowMetaLine())
     }
 
     @Test fun staleLocationShowsObservedDate() {
@@ -186,5 +191,13 @@ class RecordPresentationTest {
         val tile = tires.summary(clock)
         assertEquals("33 · $UNSUPPORTED_WHEEL · $UNSUPPORTED_WHEEL · $MISSING_WHEEL", tile.value)
         assertEquals(Status.UNAVAILABLE, tile.status)
+    }
+
+    @Test fun embeddedNaviAddressAppearsInsideLocationPanel() {
+        val display = locationDisplay(location(value = """{"latitude":37.4,"longitude":127.0,"address":"경기도 성남시 시흥로 10"}"""),
+            null, observedAt, clock)
+        assertEquals("경기도 성남시 시흥로 10", display.headline)
+        assertTrue(display.addressShown)
+        assertTrue(display.details.none { it.contains("37.4") || it.contains("127.0") })
     }
 }
