@@ -19,41 +19,9 @@
                 "PLACE",
                 "UNCLASSIFIED"
               ]
-            },
-            "requestId": {
-              "type": "string",
-              "description": "An optional stable identifier for retrying the same request."
             }
           },
           "required": []
-        },
-        "component": "service"
-      }
-    },
-    {
-      "type": "function",
-      "function": {
-        "name": "ADD_RECORD_MEMO",
-        "description": "Add a memo to the record that was just saved, while the save confirmation is still active.",
-        "parameters": {
-          "type": "object",
-          "properties": {
-            "recordId": {
-              "type": "string",
-              "description": "The identifier returned by the capture action, if known."
-            },
-            "memoToken": {
-              "type": "string",
-              "description": "The one-time token returned by the capture action, if known."
-            },
-            "memo": {
-              "type": "string",
-              "description": "The memo to attach to the record."
-            }
-          },
-          "required": [
-            "memo"
-          ]
         },
         "component": "service"
       }

@@ -70,16 +70,16 @@ JDK 17, Android SDK 35, Gradle 8.12(wrapper). SDK 경로는 추적하지 않는 
 
 ### Gleo 음성 연동 (`real`만)
 
-`GleoReceiver`는 `CAPTURE_RECORD`, `ADD_RECORD_MEMO` 브로드캐스트를 받는다.
+`GleoReceiver`는 `CAPTURE_RECORD` 브로드캐스트를 받는다.
 
 - Intent action: 실제 Gleo는 `<패키지명>.<함수명>`(`ai.chakak.CAPTURE_RECORD`)으로 보낸다. 가이드는 함수명만 쓴다고 설명하므로 매니페스트와 `gleoFunction()`은 두 형식을 모두 받는다. 이외의 action은 `ChakakApp`·DB에 닿기 전에 반환한다.
-- 파라미터: `ACTION_PARAM` 문자열 extra 하나에 JSON 객체. 값이 없는 필드는 `""`로 온다(`requestId: ""`).
-- 발신자 검증 없음: Gleo는 신원 공유 없이 일반 `sendBroadcast`로 보내고, 가이드에도 검증 방법이 없다. 대신 응답은 `gleo_package`로만 보내 기록 ID·토큰이 다른 앱에 퍼지지 않게 하고, 메모 쓰기는 1회용 토큰으로 묶는다.
+- 파라미터: `ACTION_PARAM` 문자열 extra 하나에 JSON 객체. 값이 없는 필드는 빠지거나 `""`로 온다.
+- 발신자 검증 없음: Gleo는 신원 공유 없이 일반 `sendBroadcast`로 보내고, 가이드에도 검증 방법이 없다. 대신 응답은 `gleo_package`로만 보내 기록 ID가 다른 앱에 퍼지지 않게 한다.
 - 전체 예산 6초. 플랫폼을 `start()`하고 기어·UX 제한 상태가 확정(`accessResolved`)될 때까지 최대 1.5초 기다린 뒤 `voiceAllowed`로 판정한다. 대기 시간만큼 수집 예산 5초가 줄어든다.
 - 응답은 `ai.pleos.playground.intent.action.APP_ACTION_RESPONSE` 브로드캐스트로 돌려준다.
-- 음성 메모: 새 기록을 저장하면 매번 `status: "asking"`으로 응답해 Gleo가 메모를 묻게 한다. 이때 60초짜리 1회용 토큰을 발급하고 기존 대기 토큰은 지운다. 그래서 메모를 기다리는 기록은 항상 하나뿐이다.
-- Gleo는 응답 `data`의 `recordId`·`memoToken`을 다음 액션에 넘기지 않고 빈 값으로 `ADD_RECORD_MEMO`를 호출한다. 두 값이 비어 있으면 `addPendingMemo()`가 대기 중인 기록에 붙인다. 스키마에서 `memo`만 필수다. 주차 중 UI 편집(`edit`)은 대기 토큰을 지운다.
-- 메모 답에 "메모"라는 말이 있어야 Gleo가 `ADD_RECORD_MEMO`로 보낸다. 내용만 말하면 잡담 영역으로 가서 저장되지 않는다. 그래서 질문 메시지가 "메모 다음에 내용을 말하라"고 안내한다. Gleo는 이 영어 메시지를 자기 말로 바꿔 말하고, 그 표현이 다음 답의 라우팅에 영향을 준다. "키워드 메모를 포함해 말하라"는 문구로 바꾸면 Gleo가 "메모라고 말하면서…"로 안내하고, 사용자의 "메모 …" 답이 Gleo 기본 리마인더로 빠졌다. 문구를 바꾸면 에뮬레이터에서 메모 라우팅을 다시 확인한다.
+- 요청 ID를 받지 않는다. Gleo 플래너가 파라미터 값을 지어내서(`requestId: "unique_request_id"`) 이후 캡처가 중복으로 걸러진다. 캡처마다 수신기가 UUID를 만든다.
+- 응답 메시지는 항상 "The record has been saved." 한 문장이다. 항목별 누락(전기차의 엔진 오일 등)은 어떤 차에서도 생기므로 음성으로 알리지 않고 주차 후 화면에서 보여 준다.
+- 음성 메모는 없다. 메모는 주차 후 화면에서 쓴다. 스키마 함수는 `CAPTURE_RECORD` 하나다. 이유는 아래 "음성 메모를 넣지 않은 이유"에 있다. `RecordStore`의 메모 토큰 API(`issueMemoToken`, `addMemo`, `addPendingMemo`)와 DB 컬럼은 다시 켤 때 쓰려고 남겨 두었다.
 - 앱을 설치만 하고 한 번도 실행하지 않으면 Android의 stopped 상태라 브로드캐스트가 전달되지 않는다. 테스트 전 한 번 실행한다.
 - 기능 플래그는 전부 `gleo.xml`의 bool 리소스다. `realDebug/res/values/gleo.xml`이 에뮬레이터 opt-in만 덮어쓴다.
 - `app/src/real/assets/schema.json`(Gleo 액션 스키마)은 수신기·`Category` enum과 일치해야 하며 `GleoContractTest`가 검사한다. 액션이나 카테고리를 바꾸면 세 곳을 같이 고친다.
@@ -104,9 +104,25 @@ while true; do curl -s -X POST "http://127.0.0.1:18088/browser/session?client=cl
 curl -s -X PUT "http://127.0.0.1:18088/vehicle/gear?gear=Drive"   # Park | Reverse | Neutral | Drive
 ```
 
-Gleo가 메모를 물은 뒤 `isFromAsking:true` 로그가 찍히는 동안만 답을 받는다. 두 번째 문장은 `adb logcat -e 'isFromAsking:true' -m 1`로 기다렸다가 주입한다. 빌드는 JDK 17로 한다. Android Studio 내장 JBR은 25라 Gradle 8.12에서 실패한다.
+빌드는 JDK 17로 한다. Android Studio 내장 JBR은 25라 Gradle 8.12에서 실패한다.
 
-음성·좌표·토큰은 로그에 남기지 않는다(코드 주석의 명시적 정책). 메모 실패가 기본 레코드를 지우지 않는다.
+실제 마이크로 시험하려면 부팅 후 `adb emu avd hostmicon`을 실행한다. `-allow-host-audio` 실행 옵션만으로는 무음이 들어간다. Gleo는 호출어 "글레오"나 아래 신호(운전대 음성 버튼 짧게 누르기)로 깨우고, 약 5초 동안 듣는다. 대화 중에 신호를 다시 보내면 대화가 취소된다.
+
+```sh
+adb shell am broadcast --user 10 -a android.intent.action.VOICE_ASSIST -p ai.umos.ambientai
+```
+
+### 음성 메모를 넣지 않은 이유
+
+Pleos Connect v2.1.0 에뮬레이터의 Gleo(4.2.0)에서 세 가지 방식을 시험했고 모두 안정적으로 동작하지 않았다. Gleo 쪽 동작이라 앱에서 고칠 수 없다. Gleo가 바뀌면 다시 시험한다.
+
+- 저장 후 되묻기(`status: "asking"`): Gleo는 질문을 말하고 다시 듣지만, 답을 새 요청처럼 다뤄 담당 영역부터 다시 고른다. 내용만 답하면 잡담·차량 설명서·리마인더로 가서 앱이 호출되지 않는다(12번 중 2번만 도착). 가이드 예시의 `missingField`나 `data`에 넣은 힌트는 이 분류에 영향을 주지 않았고, Gleo가 같은 함수를 값을 채워 다시 부른 적도 없다.
+- 키워드로 답하기: "메모 …"는 결과가 매번 달랐고, "차칵 메모 …"는 텍스트로는 항상 됐지만 실제 음성에서 "착한 외모"로 인식됐다. Gleo가 응답 메시지를 자기 말로 바꿔 말하므로 안내 문구도 고정할 수 없다.
+- 한 문장에 메모 포함("지금 위치 저장해줘, 메모는 …"): 텍스트로는 `memo` 파라미터가 채워져 온다. 실제 음성에서는 "저장해줘"나 "메모" 뒤의 1초 미만 쉼에서 인식이 끝나 메모가 빠진다. 말 끝 판단은 Gleo 음성 인식 서버가 하고 앱에 열린 설정이 없다.
+
+가이드도 "각 function은 여러 호출 없이도 단독으로 사용자 명령을 수행할 수 있도록 설계"하라고 권한다. 운영사무국에 물어볼 것은 되묻기 뒤의 답을 같은 앱으로 이어 주는 방법, 승인된 앱의 라우팅 예시 등록, 말 끝 판단 시간 조정이다.
+
+음성·좌표는 로그에 남기지 않는다(코드 주석의 명시적 정책).
 
 ### UI
 
