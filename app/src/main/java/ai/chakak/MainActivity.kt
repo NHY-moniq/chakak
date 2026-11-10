@@ -45,6 +45,7 @@ class MainActivity : ComponentActivity() {
             capture = model::capture, edit = model::edit, delete = model::delete,
             deleteMany = model::deleteMany, guide = model::guide,
             retry = model::retry, consumeOutcome = model::consumeOutcome,
+            dictate = app.platform.dictation,
         )
         val mock = app.platform.source == Source.MOCK
         setContent {

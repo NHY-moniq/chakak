@@ -95,6 +95,7 @@ class RealPlatform(private val context: Context) : Platform {
         runCatching { ux?.unregisterListener() }; runCatching { properties?.unregisterCallback(listener) }; runCatching { car?.disconnect() }
         ux = null; properties = null; car = null
     }
+    override val dictation = { ai.chakak.vehicle.pleosDictation(context) }
     override suspend fun startGuidance(target: ai.chakak.platform.GuidanceTarget) = ai.chakak.vehicle.startNaviGuidance(context, target) { touchAllowed.value }
     override val providers: List<CaptureProvider> = ai.chakak.vehicle.vehicleProviders(context) + listOf(
         object : CaptureProvider {

@@ -128,6 +128,17 @@ Pleos Connect v2.1.0 에뮬레이터의 Gleo(4.2.0)에서 세 가지 방식을 �
 
 `MainActivity` → `LibraryModel`(ViewModel) → `LibraryScreen` 하나. `mutate()`가 모든 쓰기를 직렬화하고 `touchAllowed`를 재확인한다. UI 문자열은 Compose 안에 한국어로 직접 쓴다(strings.xml 없음). 840dp 이상이면 목록·상세 2단, 아니면 단일 패널.
 
+### 메모 음성 입력 (`real`만)
+
+편집 화면의 "음성으로 메모 입력" 버튼이 `Platform.dictation`을 부른다. `real`은 Pleos SpeechToText SDK(`vehicle/Dictation.kt`)로 구현하고, `mock`과 비차량 환경은 null이라 버튼이 보이지 않는다.
+
+- Flow를 수집하는 동안만 차량 마이크가 열린다. 버튼을 다시 누르거나, 말이 끝나거나, 저장·주행 제한으로 편집이 잠기거나, 화면을 떠나면 닫힌다. 한 번에 한 문장을 받고, 결과는 기존 메모 뒤에 이어 붙는다.
+- 권한은 `pleos.car.permission.STT_SERVICE`(normal, 설치 시 부여) 하나다.
+- SDK는 `ai.pleos.playground.security:universal-access`에 의존한다. `settings.gradle.kts`의 저장소 그룹 필터에 이 그룹이 있어야 받아진다.
+- `Mode.HYBRID`로 연다. 서버 인식은 Pleos Playground My Project의 Client ID·Secret으로 `registerApp()`을 해야 하고, 지금은 등록 정보가 없어 "Client credentials missing"으로 실패한 뒤 기기 내장 인식으로 넘어간다.
+- 최종 결과가 종료 신호보다 늦게 올 수 있어 종료 뒤 0.5초까지 기다린다.
+- 인식된 말은 로그에 남기지 않는다.
+
 ## 작업 관례
 
 - 파일 수가 적고 한 줄에 많이 담는 밀도 높은 Kotlin이다. 새 파일을 늘리기보다 기존 파일에 맞춰 넣는다.

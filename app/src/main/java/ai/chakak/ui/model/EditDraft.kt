@@ -14,6 +14,12 @@ const val MAX_MEMO_LENGTH = 2000
 data class EditDraft(val title: String, val category: Category, val memo: String) {
     fun withTitle(value: String): EditDraft = copy(title = value.take(MAX_TITLE_LENGTH))
     fun withMemo(value: String): EditDraft = copy(memo = value.take(MAX_MEMO_LENGTH))
+
+    /** 음성으로 받은 문장을 [base] 메모 뒤에 이어 붙인다. 빈 메모면 그대로 넣는다. */
+    fun withDictation(base: String, spoken: String): EditDraft {
+        val text = spoken.trim()
+        return withMemo(if (text.isEmpty()) base else if (base.isBlank()) text else "${base.trimEnd()} $text")
+    }
     fun withCategory(value: Category): EditDraft = copy(category = value)
     fun differsFrom(record: Record): Boolean =
         title != record.title || category != record.category || memo != record.memo

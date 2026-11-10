@@ -3,6 +3,7 @@
     <!-- NaviHelper.requestRoute needs NAVI_ROUTE_SEARCH and requestNavigationScreen needs NAVI_CUSTOM_MAP (SecurityException without them on Pleos Connect v2.1.0). -->
     <uses-permission android:name="pleos.car.permission.NAVI_ROUTE_SEARCH" />
     <uses-permission android:name="pleos.car.permission.NAVI_CUSTOM_MAP" />
+    <uses-permission android:name="pleos.car.permission.STT_SERVICE"/>
     <uses-permission android:name="pleos.car.permission.CAR_DRIVE"/>
     <uses-permission android:name="pleos.car.permission.CAR_SAFETY"/>
     <uses-permission android:name="android.car.permission.CAR_POWERTRAIN"/>
