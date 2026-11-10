@@ -32,6 +32,15 @@ android {
 androidComponents {
     beforeVariants(selector().withBuildType("release")) { if (it.productFlavors.any { p -> p.second == "mock" }) it.enable = false }
 }
+// Inspect runtime dependencies too, including NaviHelper's navi-aidl transport.
+val naviInspection by configurations.creating {
+    isCanBeConsumed = false
+    isCanBeResolved = true
+    attributes {
+        attribute(org.gradle.api.attributes.Usage.USAGE_ATTRIBUTE,
+            objects.named(org.gradle.api.attributes.Usage::class.java, org.gradle.api.attributes.Usage.JAVA_RUNTIME))
+    }
+}
 dependencies {
     implementation(project(":core"))
     implementation("androidx.core:core-ktx:1.15.0")
@@ -47,10 +56,23 @@ dependencies {
     implementation("androidx.room:room-ktx:2.7.2")
     kapt("androidx.room:room-compiler:2.7.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
+    "realImplementation"("ai.pleos.playground:NaviHelper:3.0.5")
     "realImplementation"("ai.pleos.playground:Vehicle:2.3.2")
     "realImplementation"("ai.pleos.playground:FusedLocation:1.1.3")
+    add(naviInspection.name, "ai.pleos.playground:NaviHelper:3.0.5")
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.robolectric:robolectric:4.14.1")
     testImplementation("androidx.test:core:1.6.1")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
+}
+
+// Export the exact SDK artifacts for public API inspection without compiling the app.
+tasks.register("exportNaviSdk") {
+    doLast {
+        val output = layout.buildDirectory.dir("navi-inspection/artifacts").get().asFile
+        output.mkdirs()
+        naviInspection.resolvedConfiguration.resolvedArtifacts
+            .filter { it.moduleVersion.id.group == "ai.pleos.playground" }
+            .forEach { artifact -> artifact.file.copyTo(output.resolve(artifact.file.name), overwrite = true) }
+    }
 }

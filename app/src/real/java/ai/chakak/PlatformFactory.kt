@@ -10,9 +10,6 @@ import android.car.hardware.property.CarPropertyManager
 import android.car.drivingstate.CarUxRestrictionsManager
 import ai.chakak.core.*
 import ai.chakak.platform.Platform
-import ai.pleos.playground.vehicle.Vehicle
-import ai.pleos.playground.vehicle.api.model.capability.CapabilityConfig
-import ai.pleos.playground.vehicle.api.model.capability.AccessType
 import ai.pleos.playground.location.fused.FusedLocation
 import ai.pleos.playground.location.fused.listener.FusedLocationListener
 import ai.pleos.playground.location.fused.model.LocationData
@@ -21,7 +18,6 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import org.json.JSONObject
-import org.json.JSONArray
 
 private suspend fun <T> callback(register: ((T) -> Unit, (Exception) -> Unit) -> Unit): T = suspendCancellableCoroutine { c ->
     val terminal = java.util.concurrent.atomic.AtomicBoolean(false)
@@ -29,7 +25,6 @@ private suspend fun <T> callback(register: ((T) -> Unit, (Exception) -> Unit) ->
     register({ value -> if(terminal.compareAndSet(false, true)) c.resume(value) },
         { error -> if(terminal.compareAndSet(false, true)) c.resumeWithException(error) })
 }
-private fun CapabilityConfig.readable() = accessType == AccessType.READ || accessType == AccessType.READ_WRITE
 class RealPlatform(private val context: Context) : Platform {
     override val source = Source.REAL
     override val touchAllowed = MutableStateFlow(false)
@@ -98,52 +93,12 @@ class RealPlatform(private val context: Context) : Platform {
         runCatching { ux?.unregisterListener() }; runCatching { properties?.unregisterCallback(listener) }; runCatching { car?.disconnect() }
         ux = null; properties = null; car = null
     }
-    private fun vehicleProvider(field: String, permission: String, read: suspend (Vehicle) -> Observation) = object : CaptureProvider {
-        override val key = field
-        override suspend fun read(): Observation {
-            if(context.checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) return Observation(key, Status.DENIED)
-            val vehicle = Vehicle(context)
-            try { vehicle.initialize(); return read(vehicle) } finally { vehicle.release() }
-        }
-    }
-    override val providers: List<CaptureProvider> = listOf(
-        vehicleProvider("odometer", "pleos.car.permission.CAR_DRIVE") { vehicle ->
-            val capability = callback<CapabilityConfig> { ok, error -> vehicle.getOdometer().checkCurrentDistanceDrivenCapabilities(ok, error) }
-            if(!capability.readable()) Observation("odometer", Status.UNSUPPORTED)
-            else {
-                val value = callback<Float?> { ok, error -> vehicle.getOdometer().getCurrentDistanceDriven(ok, error) }
-                Observation("odometer", if(value == null) Status.UNAVAILABLE else Status.OK,
-                    value?.let { JSONObject().put("rawValue", it).put("unit", JSONObject.NULL).toString() })
-            }
-        },
-        vehicleProvider("telltales", "pleos.car.permission.PRIVATE_CAR_SAFETY") { vehicle ->
-            val capability = callback<CapabilityConfig> { ok, error -> vehicle.getSafety().checkTelltalesCapabilities(ok, error) }
-            if(!capability.readable()) Observation("telltales", Status.UNSUPPORTED)
-            else {
-                val value = callback<ai.pleos.playground.vehicle.api.model.telltale.Telltales?> { ok, error -> vehicle.getSafety().getTelltalesInfo(ok, error) }
-                Observation("telltales", if(value == null) Status.UNAVAILABLE else Status.OK,
-                    value?.let { JSONArray(it.telltales.map { item -> JSONObject().put("type", item.type.name).put("state", item.state.name).put("warningCount", item.warningCount) }).toString() })
-            }
-        },
-        vehicleProvider("tires", "pleos.car.permission.CAR_SAFETY") { vehicle ->
-            val (capability, areas) = callback<Pair<CapabilityConfig, List<ai.pleos.playground.vehicle.api.model.area.WheelArea>>> { ok, error ->
-                vehicle.getTire().checkLowTirePressureCapabilities({ config, supported -> ok(config to supported) }, error)
-            }
-            if(!capability.readable() || areas.isEmpty()) Observation("tires", Status.UNSUPPORTED)
-            else {
-                val values = JSONArray()
-                var missing = false
-                for(area in areas) {
-                    val value = callback<Float?> { ok, error -> vehicle.getTire().getLowTirePressure(area, ok, error) }
-                    if(value == null) missing = true
-                    values.put(JSONObject().put("area", area.values.joinToString { it.name }).put("rawValue", value ?: JSONObject.NULL).put("unit", JSONObject.NULL))
-                }
-                Observation("tires", if(missing) Status.UNAVAILABLE else Status.OK, values.toString())
-            }
-        },
+    override val providers: List<CaptureProvider> = ai.chakak.vehicle.vehicleProviders(context) + listOf(
         object : CaptureProvider {
             override val key = "location"
             override suspend fun read(): Observation {
+                val navi = ai.chakak.vehicle.readNaviLocation(context)
+                navi.observation?.let { return it }
                 val sdk = FusedLocation(context)
                 try {
                     if(!sdk.isSupported()) return Observation(key, Status.UNSUPPORTED)
@@ -158,7 +113,7 @@ class RealPlatform(private val context: Context) : Platform {
                     val age = System.currentTimeMillis() - location.timestampMillis
                     if(age !in 0..60_000) return Observation(key, Status.UNAVAILABLE, observedAt = location.timestampMillis)
                     return Observation(key, Status.OK, JSONObject().put("latitude", location.latitude).put("longitude", location.longitude)
-                        .put("confidence", location.confidence).toString(), location.timestampMillis)
+                        .put("confidence", location.confidence).put("addressMessage", navi.reason).toString(), location.timestampMillis)
                 } finally { sdk.release() }
             }
         }

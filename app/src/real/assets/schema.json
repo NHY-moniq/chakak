@@ -7,7 +7,7 @@
       "type": "function",
       "function": {
         "name": "CAPTURE_RECORD",
-        "description": "Save the current vehicle observations and location when voice recording is permitted.",
+        "description": "기록해줘, 다 기록해줘, 차량 상태 기록해줘, 캡처해줘 요청 시 위치와 지원되는 전체 차량 상태 26개 조회 항목을 한 기록에 저장합니다. 미지원·권한 없음·시간 초과도 항목별로 기록합니다.",
         "parameters": {
           "type": "object",
           "properties": {

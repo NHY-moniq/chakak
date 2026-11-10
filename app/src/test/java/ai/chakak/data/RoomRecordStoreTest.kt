@@ -22,6 +22,27 @@ class RoomRecordStoreTest {
         store = RoomRecordStore(db)
     }
     @After fun close() { db.close() }
+    @Test fun bulkDeletionPreservesUnselectedRecordsAndRequestTombstones() = runTest {
+        for(id in listOf("first", "second", "keep")) {
+            store.begin(id, 1, Category.PLACE, Source.REAL, listOf("location"))
+            store.observe(id, Observation("location", Status.OK, "coordinates"))
+        }
+        store.deleteMany(listOf("first", "second", "first", "missing"))
+        assertEquals(listOf("keep"), store.records.first().map { it.id })
+        assertFalse(store.begin("first", 2, Category.PLACE, Source.REAL, emptyList()))
+        store.observe("second", Observation("location", Status.OK, "late"))
+        assertEquals(1, store.records.first().size)
+        db.openHelper.readableDatabase.query("SELECT COUNT(*) FROM observations").use {
+            assertTrue(it.moveToFirst())
+            assertEquals(1, it.getInt(0))
+        }
+        val confirmedIds = store.records.first().map { it.id }
+        store.begin("new", 3, Category.PLACE, Source.REAL, emptyList())
+        store.deleteMany(confirmedIds)
+        assertEquals(listOf("new"), store.records.first().map { it.id })
+        store.deleteMany(listOf("new"))
+        assertTrue(store.records.first().isEmpty())
+    }
     @Test fun transactionsPreserveEditsAndRejectLateWritesAfterDeletion() = runTest {
         assertTrue(store.begin("id", 1, Category.PLACE, Source.REAL, listOf("location")))
         store.edit("id", "title", Category.PLACE, "memo")

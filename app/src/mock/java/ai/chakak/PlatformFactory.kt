@@ -10,7 +10,7 @@ class MockPlatform : Platform {
     override val source = Source.MOCK
     override val touchAllowed = MutableStateFlow(true)
     var scenario = MockScenario.SUCCESS
-    override val providers = listOf("location", "odometer", "telltales", "tires").map { field -> object : CaptureProvider {
+    override val providers = (listOf("location") + ai.chakak.ui.recordedVehicleFieldLabels.keys).map { field -> object : CaptureProvider {
         override val key = field
         override suspend fun read(): Observation {
             val selected = scenario

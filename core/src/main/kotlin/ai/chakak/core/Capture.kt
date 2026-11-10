@@ -20,6 +20,7 @@ interface RecordStore {
     suspend fun recover()
     suspend fun edit(id: String, title: String, category: Category, memo: String)
     suspend fun delete(id: String)
+    suspend fun deleteMany(ids: List<String>) { ids.distinct().forEach { delete(it) } }
     suspend fun issueMemoToken(id: String, token: String, expiresAt: Long)
     suspend fun addMemo(id: String, token: String, now: Long, memo: String): Boolean
 }

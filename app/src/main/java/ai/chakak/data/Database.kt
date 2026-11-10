@@ -51,6 +51,7 @@ class RoomRecordStore(private val db: ChakakDatabase) : RecordStore {
     override suspend fun recover() = db.withTransaction { dao.collecting().forEach { dao.pending(it, Status.INTERRUPTED.name); dao.finish(it) } }
     override suspend fun edit(id: String, title: String, category: Category, memo: String) { dao.edit(id, title.take(120), category.name, memo.take(2000)) }
     override suspend fun delete(id: String) = dao.delete(id)
+    override suspend fun deleteMany(ids: List<String>) = db.withTransaction { ids.distinct().forEach { dao.delete(it) } }
     override suspend fun issueMemoToken(id: String, token: String, expiresAt: Long) = dao.token(id, token, expiresAt)
     override suspend fun addMemo(id: String, token: String, now: Long, memo: String) = dao.memo(id, token, now, memo.take(2000)) == 1
 }
