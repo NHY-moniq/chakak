@@ -29,4 +29,12 @@ class EditDraftTest {
         val saved = with(EditDraft.Saver) { SaverScope { true }.save(draft) }!!
         assertEquals(draft, EditDraft.Saver.restore(saved))
     }
+
+    @Test fun dictationAppendsToExistingMemoAndRespectsLimit() {
+        val draft = EditDraft("", Category.PLACE, "")
+        assertEquals("오른쪽에 카페", draft.withDictation("", " 오른쪽에 카페 ").memo)
+        assertEquals("입구는 뒤쪽 오른쪽에 카페", draft.withDictation("입구는 뒤쪽 ", "오른쪽에 카페").memo)
+        assertEquals("입구는 뒤쪽", draft.withDictation("입구는 뒤쪽", "  ").memo)
+        assertEquals(MAX_MEMO_LENGTH, draft.withDictation("가".repeat(MAX_MEMO_LENGTH - 1), "나다라").memo.length)
+    }
 }

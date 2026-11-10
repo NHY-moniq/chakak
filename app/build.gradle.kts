@@ -60,6 +60,7 @@ dependencies {
     "realImplementation"("ai.pleos.playground:NaviHelper:3.0.5")
     "realImplementation"("ai.pleos.playground:Vehicle:2.3.2")
     "realImplementation"("ai.pleos.playground:FusedLocation:1.1.3")
+    "realImplementation"("ai.pleos.playground:SpeechToText:3.3.1")
     add(naviInspection.name, "ai.pleos.playground:NaviHelper:3.0.5")
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.robolectric:robolectric:4.14.1")

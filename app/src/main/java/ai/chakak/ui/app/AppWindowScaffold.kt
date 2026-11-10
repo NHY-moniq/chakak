@@ -1,5 +1,7 @@
 package ai.chakak.ui.app
 
+import ai.chakak.platform.DictationEvent
+import kotlinx.coroutines.flow.Flow
 import ai.chakak.core.Category
 import ai.chakak.core.Record
 import ai.chakak.platform.GuidanceTarget
@@ -41,6 +43,8 @@ class LibraryCallbacks(
     val guide: (id: String, target: GuidanceTarget) -> Unit = { _, _ -> },
     val retry: () -> Unit = {},
     val consumeOutcome: () -> Unit = {},
+    /** 주차 중 메모 음성 입력. null이면 마이크 버튼을 보이지 않는다. */
+    val dictate: (() -> Flow<DictationEvent>)? = null,
 )
 
 /**

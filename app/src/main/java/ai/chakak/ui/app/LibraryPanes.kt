@@ -124,6 +124,7 @@ internal class LibraryHost(
             saveFailed = failed,
             enabled = !actions.busy || saving,
             onSave = { draft -> callbacks.edit(record.id, draft.title, draft.category, draft.memo) },
+            dictate = callbacks.dictate,
             onCancel = {
                 // 명시적 취소는 초안을 버린다. 시스템 뒤로는 초안을 남긴다.
                 drafts.removeState(record.id)

@@ -31,6 +31,8 @@ object ChaKakIcons {
     /** 삼각 경고 */
     val Caution: ImageVector by lazy { lineIcon("Caution", "M12 4l9 16H3z M12 10v4M12 17v.5") }
     /** 메모(사각 안 줄) */
+    val Mic: ImageVector by lazy { lineIcon("Mic", "M9 5a3 3 0 0 1 6 0v6a3 3 0 0 1 -6 0z M5 11a7 7 0 0 0 14 0 M12 18v3 M9 21h6") }
+
     val Memo: ImageVector by lazy { lineIcon("Memo", "M5 4h14v16H5z M8 9h8M8 13h8M8 17h5") }
 
 
