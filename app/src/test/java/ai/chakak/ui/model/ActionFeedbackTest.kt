@@ -23,6 +23,15 @@ class ActionFeedbackTest {
         }
     }
 
+    @Test fun guidanceThatDidNotStartDoesNotClaimDelivery() {
+        listOf(ActionResult.Rejected, ActionResult.Failed, ActionResult.Restricted, ActionResult.Unconfirmed).forEach { result ->
+            assertFalse(outcome(ActionKind.Navigate, result).message().text.contains("전달했습니다"))
+        }
+        assertTrue(outcome(ActionKind.Navigate, ActionResult.Done).message().text.contains("전달했습니다"))
+        // 응답을 못 받은 경우는 목적지가 바뀌었을 수 있으므로 실패했다고 단정하지 않는다.
+        assertFalse(outcome(ActionKind.Navigate, ActionResult.Unconfirmed).message().text.contains("시작하지 못했습니다"))
+    }
+
     @Test fun deleteFailureSaysRecordKept() {
         assertTrue(outcome(ActionKind.Delete, ActionResult.Failed).message().text.contains("그대로 남아"))
     }

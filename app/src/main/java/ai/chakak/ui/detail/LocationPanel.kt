@@ -17,6 +17,7 @@ import ai.chakak.ui.theme.JournalDimens
 import ai.chakak.ui.theme.JournalShapes
 import ai.chakak.ui.theme.Tint
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,6 +31,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 
@@ -49,9 +53,10 @@ fun rememberLocationDisplay(record: Record): LocationDisplay {
  * 장소 상세 위치 패널(시안 A). 큰 accent 타일 + "기록 당시 차량 위치" + 주소(또는 좌표) 큰 줄 + 작은 줄 + 안내.
  * [emphasized]가 false(미분류)면 강조 면 대신 테두리 패널과 무채색 타일, 한 단계 작은 글꼴을 쓴다.
  * 안내 문구는 항상 보인다(차량 위치이며 시설 위치와 다를 수 있음).
+ * [onGuide]가 있으면 패널 전체가 버튼이 되고 "눌러서 이 위치로 안내" 줄을 보여준다(색만으로 알리지 않음).
  */
 @Composable
-fun LocationPanel(display: LocationDisplay, emphasized: Boolean, modifier: Modifier = Modifier) {
+fun LocationPanel(display: LocationDisplay, emphasized: Boolean, modifier: Modifier = Modifier, onGuide: (() -> Unit)? = null) {
     val colors = ChaKakTheme.colors
     val shape = if (emphasized) JournalShapes.panel else JournalShapes.card
     val surface = if (emphasized) {
@@ -60,7 +65,7 @@ fun LocationPanel(display: LocationDisplay, emphasized: Boolean, modifier: Modif
         Modifier.border(ChaKakDimens.dividerThick, colors.dividerSecondary, shape).padding(JournalDimens.cardPadding)
     }
     Row(
-        modifier = modifier.fillMaxWidth().then(surface),
+        modifier = modifier.fillMaxWidth().guideClickable(shape, onGuide).then(surface),
         horizontalArrangement = Arrangement.spacedBy(if (emphasized) JournalDimens.detailGap else JournalDimens.timelineGap),
     ) {
         if (emphasized) {
@@ -73,16 +78,18 @@ fun LocationPanel(display: LocationDisplay, emphasized: Boolean, modifier: Modif
             label = VEHICLE_LOCATION_LABEL,
             headlineStyle = if (emphasized) ChaKakTheme.typography.titleLargeStrong else ChaKakTheme.typography.titleSmall,
             modifier = Modifier.weight(1f),
+            guidable = onGuide != null,
         )
     }
 }
 
 /** 차량 상태 상세 하단의 작은 위치 상자. 같은 판정을 작은 글꼴로 보여준다 */
 @Composable
-fun LocationBox(display: LocationDisplay, modifier: Modifier = Modifier) {
+fun LocationBox(display: LocationDisplay, modifier: Modifier = Modifier, onGuide: (() -> Unit)? = null) {
     val colors = ChaKakTheme.colors
     Column(
         modifier = modifier
+            .guideClickable(JournalShapes.card, onGuide)
             .border(ChaKakDimens.dividerThick, colors.dividerSecondary, JournalShapes.card)
             .padding(JournalDimens.cardPadding),
         verticalArrangement = Arrangement.spacedBy(ChaKakSpacing.tight),
@@ -91,19 +98,25 @@ fun LocationBox(display: LocationDisplay, modifier: Modifier = Modifier) {
             Icon(ChaKakIcons.Pin, contentDescription = null, tint = colors.iconSecondary, modifier = Modifier.size(JournalDimens.chipGlyph))
             SectionLabel(SHORT_LOCATION_LABEL)
         }
-        LocationLines(display, label = null, headlineStyle = ChaKakTheme.typography.bodyMedium)
+        LocationLines(display, label = null, headlineStyle = ChaKakTheme.typography.bodyMedium, guidable = onGuide != null)
     }
 }
 
 /** 라벨 · 큰 줄(또는 상태 배지) · 작은 줄들 · 안내 */
 @Composable
-private fun LocationLines(display: LocationDisplay, label: String?, headlineStyle: TextStyle, modifier: Modifier = Modifier) {
+private fun LocationLines(display: LocationDisplay, label: String?, headlineStyle: TextStyle, modifier: Modifier = Modifier, guidable: Boolean = false) {
     val colors = ChaKakTheme.colors
-    Column(modifier.semantics(mergeDescendants = true) {}, verticalArrangement = Arrangement.spacedBy(ChaKakSpacing.tight)) {
+    // 안내 가능한 카드는 바깥 버튼이 내용을 한 노드로 읽으므로 여기서 따로 묶지 않는다.
+    Column(if (guidable) modifier else modifier.semantics(mergeDescendants = true) {}, verticalArrangement = Arrangement.spacedBy(ChaKakSpacing.tight)) {
         label?.let { SectionLabel(it) }
         display.headline?.let { Text(it, style = headlineStyle, color = colors.textPrimary) }
         display.headlineStatus?.let { StatusBadge(it) }
         display.details.forEach { Text(it, style = ChaKakTheme.typography.labelMedium, color = colors.textTertiary) }
         InfoNote(display.notice, ChaKakIcons.Info, modifier = Modifier.padding(top = ChaKakSpacing.tight))
+        if (guidable) InfoNote(GUIDANCE_HINT, ChaKakIcons.Navigate, iconTint = colors.brand.accentDeep)
     }
 }
+
+/** 안내 가능한 위치 카드만 버튼으로 만든다. 누르면 확인 팝업이 먼저 뜬다. */
+private fun Modifier.guideClickable(shape: Shape, onGuide: (() -> Unit)?): Modifier =
+    if (onGuide == null) this else clip(shape).clickable(role = Role.Button, onClickLabel = GUIDANCE_HINT, onClick = onGuide)
