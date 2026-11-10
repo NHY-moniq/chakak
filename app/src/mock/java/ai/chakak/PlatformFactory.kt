@@ -9,6 +9,7 @@ enum class MockScenario { SUCCESS, PARTIAL, DENIED, UNSUPPORTED, ERROR, TIMEOUT 
 class MockPlatform : Platform {
     override val source = Source.MOCK
     override val touchAllowed = MutableStateFlow(true)
+    override val accessResolved = MutableStateFlow(true)
     var scenario = MockScenario.SUCCESS
     override val providers = listOf("location", "odometer", "telltales", "tires").map { field -> object : CaptureProvider {
         override val key = field
