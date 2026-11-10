@@ -126,9 +126,15 @@ internal fun vehicleProviders(context: Context): List<CaptureProvider> {
         vehicleProvider(context, session, "tires", "pleos.car.permission.CAR_SAFETY") { vehicle ->
             val domain = vehicle.getTire()
             val capability = areaCapability<WheelArea> { ok, error ->
-                domain.checkLowTirePressureCapabilities({ config, supported -> ok(config, supported) }, error)
+                domain.checkTirePressureCapabilities({ config, supported -> ok(config, supported) }) { failure ->
+                    android.util.Log.w("ChakakTire", "Tire capability failed: ${failure.javaClass.simpleName}: ${failure.message}")
+                    error(failure)
+                }
             }
-            readAreas(capability, { area -> area.values.joinToString(", ") { it.name } }) { area, ok, error -> domain.getLowTirePressure(area, ok, error) }
+            readAreas(capability, { area -> area.values.joinToString(", ") { it.name } }) { area, ok, error -> domain.getTirePressure(area, ok) { failure ->
+                android.util.Log.w("ChakakTire", "Tire pressure read failed: ${failure.javaClass.simpleName}: ${failure.message}")
+                error(failure)
+            } }.withUnit("kPa")
         },
         vehicleProvider(context, session, "vehicle.getCurrentWindowLockState", "pleos.car.permission.CAR_WINDOWS") { vehicle ->
             val domain = vehicle.getWindow()

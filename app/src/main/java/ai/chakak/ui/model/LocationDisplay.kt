@@ -14,8 +14,8 @@ const val EMPTY_VALUE = "값이 비어 있습니다"
 
 /**
  * 위치 패널 내용.
- * - [headline]: 큰 줄(주소 → 좌표 → 원문). null이면 [headlineStatus]를 배지로 보여준다.
- * - [details]: 작은 줄(좌표·신뢰도·관측 시각, 주소 실패 사유).
+ * - [headline]: 큰 줄(주소 또는 조회 안내). null이면 [headlineStatus]를 배지로 보여준다.
+ * - [details]: 작은 줄(관측 시각, 주소 실패 사유).
  * - [notice]: 주소를 보여줄 때는 주소 근사값 안내, 그 외에는 차량 위치 안내. 항상 있다.
  */
 @Immutable
@@ -27,53 +27,22 @@ data class LocationDisplay(
     val addressShown: Boolean,
 )
 
-/**
- * 주소(선택 항목 "address")가 OK면 주소를 크게, 좌표는 작게.
- * 주소 항목이 있지만 실패면 좌표를 크게 + "주소를 가져오지 못했어요 · 사유".
- * 주소 항목이 없으면(현재 플랫폼) 좌표를 크게, 실패 문구 없음.
- */
+/** 저장된 주소와 관측 시각. 좌표와 원문 JSON은 화면에 노출하지 않는다. */
 fun locationDisplay(location: Observation?, address: Observation?, commandAt: Long, clock: TimelineClock): LocationDisplay {
-    val addressText = address?.takeIf { it.status == Status.OK }?.value?.trim()?.takeIf { it.isNotEmpty() }
-    val coordinate = location?.let { coordinateLine(it) }
-    val meta = location?.let { locationMeta(it, commandAt, clock) }.orEmpty()
-    val addressFailure = address?.takeIf { addressText == null }?.let { "$ADDRESS_FAILED · ${it.statusReason()}" }
-    return if (addressText != null) {
-        val coordinatePart = coordinate ?: location?.let { "좌표 ${it.statusReason()}" }
-        LocationDisplay(addressText, null, listOfNotNull(joinMeta(listOfNotNull(coordinatePart) + meta)), ADDRESS_NOTICE, true)
-    } else {
-        LocationDisplay(
-            headline = coordinate ?: if (location == null) NO_LOCATION_ITEM else null,
-            headlineStatus = location?.status?.takeIf { coordinate == null },
-            details = listOfNotNull(joinMeta(meta), addressFailure),
-            notice = PLACE_LOCATION_NOTICE,
-            addressShown = false,
-        )
-    }
-}
+    val addressText = savedLocationAddress(location, address)
+    return LocationDisplay(
+        headline = addressText ?: when {
+            location == null -> NO_LOCATION_ITEM
+            location.status == Status.OK -> ADDRESS_FAILED
+            else -> null
+        },
+        headlineStatus = location?.status?.takeIf { addressText == null && it != Status.OK },
+        details = listOfNotNull(location?.observedLine(commandAt, clock),
+            address?.takeIf { it.status != Status.OK }?.let { "$ADDRESS_FAILED · ${it.statusReason()}" }),
+        notice = if (addressText != null) ADDRESS_NOTICE else PLACE_LOCATION_NOTICE,
+        addressShown = addressText != null,
+    )
 
-/**
- * 내비게이션 목적지. 위치 항목이 OK이고 좌표가 유효할 때만 만든다(좌표 없는 기록은 안내 대상이 아니다).
- * 주소는 주소 항목 또는 위치 값 안의 "address"를 참고용으로 함께 넘긴다.
- */
-fun Record.guidanceTarget(): GuidanceTarget? {
-    val location = observation(ObservationKeys.LOCATION)?.takeIf { it.status == Status.OK } ?: return null
-    val reading = parseLocation(location.value) ?: return null
-    val address = observation(ObservationKeys.ADDRESS)?.takeIf { it.status == Status.OK }?.value
-        ?: runCatching { org.json.JSONObject(location.value ?: "").optString("address") }.getOrNull()
-    return GuidanceTarget(reading.latitude, reading.longitude, displayTitle(), address?.trim()?.takeIf { it.isNotEmpty() })
-}
-
-/** 좌표(파싱 실패 시 원문). 값이 없으면 null */
-private fun coordinateLine(location: Observation): String? = when {
-    location.status != Status.OK -> null
-    location.value.isNullOrBlank() -> EMPTY_VALUE
-    else -> parseLocation(location.value)?.coordinatesText() ?: location.value
-}
-
-/** 신뢰도 · 관측 시각. 관측 날짜가 명령 수신 날짜와 다르면 날짜를 붙인다 */
-private fun locationMeta(location: Observation, commandAt: Long, clock: TimelineClock): List<String> {
-    val confidence = parseLocation(location.value)?.confidence?.let { "신뢰도 ${formatNumber(it, clock.locale)}" }
-    return listOfNotNull(confidence, location.observedLine(commandAt, clock))
 }
 
 /**
@@ -87,3 +56,19 @@ private fun joinMeta(parts: List<String>): String? = parts.takeIf { it.isNotEmpt
 
 /** 값이 없을 때의 사유(상태 이름). OK인데 값이 비면 그렇게 알린다 */
 fun Observation.statusReason(): String = if (status == Status.OK) EMPTY_VALUE else status.label()
+
+/** Address stored separately or embedded by Navi in the location payload. */
+internal fun savedLocationAddress(location: Observation?, address: Observation?): String? {
+    val explicit = address?.takeIf { it.status == Status.OK }?.value?.trim()?.takeIf { it.isNotEmpty() }
+    return explicit ?: location?.takeIf { it.status == Status.OK }?.value?.let { raw ->
+        runCatching { org.json.JSONObject(raw).optString("address").trim().takeIf { it.isNotEmpty() && it != "null" } }.getOrNull()
+    }
+}
+
+/** Valid recorded coordinates are retained for navigation, but not shown as an address. */
+fun Record.guidanceTarget(): GuidanceTarget? {
+    val location = observation(ObservationKeys.LOCATION)?.takeIf { it.status == Status.OK } ?: return null
+    val reading = parseLocation(location.value) ?: return null
+    return GuidanceTarget(reading.latitude, reading.longitude, displayTitle(),
+        savedLocationAddress(location, observation(ObservationKeys.ADDRESS)))
+}

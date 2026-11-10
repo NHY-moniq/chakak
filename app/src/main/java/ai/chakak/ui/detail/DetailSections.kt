@@ -8,10 +8,8 @@ import ai.chakak.ui.component.ButtonSize
 import ai.chakak.ui.component.ButtonVariant
 import ai.chakak.ui.component.CategoryChip
 import ai.chakak.ui.component.ChaKakButton
-import ai.chakak.ui.component.StatusBadge
 import ai.chakak.ui.model.EMPTY_VALUE
 import ai.chakak.ui.model.currentTimelineClock
-import ai.chakak.ui.model.captureSummary
 import ai.chakak.ui.model.displayTitle
 import ai.chakak.ui.model.formatClockTime
 import ai.chakak.ui.model.formatDateTime
@@ -82,7 +80,7 @@ fun DetailTopRow(category: Category, onEdit: () -> Unit, onDelete: () -> Unit, e
     }
 }
 
-/** 장소·미분류 머리: 큰 시각(accentDeep) · 이름 · "명령 수신 날짜 시각" · 수집 요약 배지 */
+/** 장소·미분류 머리: 큰 시각(accentDeep) · 이름 · "명령 수신 날짜 시각" */
 @Composable
 fun PlaceHeading(record: Record) {
     val clock = currentTimelineClock()
@@ -94,18 +92,16 @@ fun PlaceHeading(record: Record) {
         )
         RecordTitle(record)
         MetaLine(commandReceivedText(record.createdAt, clock))
-        StatusBadge(record.captureSummary())
     }
 }
 
-/** 차량 상태 머리: "명령 수신 날짜 시각" · 이름 · 수집 요약 배지 */
+/** 차량 상태 머리: "명령 수신 날짜 시각" · 이름 */
 @Composable
 fun VehicleHeading(record: Record) {
     val clock = currentTimelineClock()
     Column(verticalArrangement = Arrangement.spacedBy(ChaKakSpacing.tight)) {
         MetaLine(commandReceivedText(record.createdAt, clock))
         RecordTitle(record)
-        StatusBadge(record.captureSummary())
     }
 }
 

@@ -2,6 +2,11 @@ package ai.chakak.ui.library
 
 import ai.chakak.core.Category
 import ai.chakak.core.Record
+import ai.chakak.ui.component.ChaKakButton
+import ai.chakak.ui.component.ButtonVariant
+import ai.chakak.ui.component.ButtonSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.icons.filled.Delete
 import ai.chakak.ui.component.InfoNote
 import ai.chakak.ui.component.MockBanner
 import ai.chakak.ui.model.DayGroup
@@ -87,6 +92,7 @@ fun RecordLibraryScreen(
     listState: LazyListState = rememberLazyListState(),
 ) {
     val records = (state as? LibraryUiState.Content)?.records
+    var selecting by rememberSaveable { mutableStateOf(false) }
     var checked by rememberSaveable { mutableStateOf(arrayListOf<String>()) }
     var pending by remember { mutableStateOf<List<String>?>(null) }
     val clock = currentTimelineClock()
@@ -100,6 +106,7 @@ fun RecordLibraryScreen(
         val outcome = actions.outcome
         if (outcome?.kind == ActionKind.Delete && outcome.succeeded) {
             checked = arrayListOf()
+            selecting = false
             pending = null
         }
     }
@@ -131,17 +138,40 @@ fun RecordLibraryScreen(
         libraryHeader(mock, capture)
         filterTabs(filter, changeFilter, enabled = state is LibraryUiState.Content, counts = counts)
         if (visible.isNotEmpty()) item(key = "header:bulk-delete") {
-            FlowRow {
-                TextButton(onClick = { checked = if (checked.size == visible.size) arrayListOf() else ArrayList(visibleIds) }, enabled = !actions.busy) {
-                    Text(if (checked.size == visible.size) "전체 선택 해제" else "전체 선택")
+            FlowRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(ChaKakSpacing.inline, androidx.compose.ui.Alignment.End),
+                verticalArrangement = Arrangement.spacedBy(ChaKakSpacing.inline),
+            ) {
+                if (!selecting) {
+                    ChaKakButton("선택", onClick = {
+                        checked = arrayListOf()
+                        selecting = true
+                    }, variant = ButtonVariant.Outlined, size = ButtonSize.Small, enabled = !actions.busy)
+                } else {
+                    ChaKakButton(
+                        if (checked.size == visible.size) "전체 선택 해제" else "전체 선택",
+                        onClick = {
+                            checked = if (checked.size == visible.size) arrayListOf() else ArrayList(visibleIds)
+                        },
+                        variant = ButtonVariant.Accent, size = ButtonSize.Small, enabled = !actions.busy,
+                    )
+                    if (checked.isNotEmpty()) {
+                        ChaKakButton("삭제 (${checked.size})", onClick = { pending = checked.toList() },
+                            variant = ButtonVariant.Destructive, size = ButtonSize.Small,
+                            icon = Icons.Filled.Delete, enabled = !actions.busy)
+                    }
+                    ChaKakButton("선택 취소", onClick = {
+                        selecting = false
+                        checked = arrayListOf()
+                    }, variant = ButtonVariant.Outlined, size = ButtonSize.Small, enabled = !actions.busy)
                 }
-                TextButton(onClick = { pending = checked.toList() }, enabled = checked.isNotEmpty() && !actions.busy) { Text("선택 삭제 (${checked.size})") }
-                TextButton(onClick = { pending = visibleIds }, enabled = !actions.busy) { Text("현재 목록 전체 삭제") }
             }
         }
+
         libraryBody(state, filter, groups, selectedId, onSelect, onRetry, checked, { id ->
             checked = ArrayList(if (id in checked) checked - id else checked + id)
-        }, !actions.busy)
+        }, !actions.busy, selecting)
     }
 }
 
@@ -183,6 +213,7 @@ private fun LazyListScope.libraryBody(
     checked: List<String>,
     onCheck: (String) -> Unit,
     enabled: Boolean,
+    selecting: Boolean,
 ) {
     when (state) {
         LibraryUiState.Loading -> item(key = KEY_STATE) { RecordListLoading() }
@@ -190,7 +221,7 @@ private fun LazyListScope.libraryBody(
         is LibraryUiState.Content -> when {
             state.records.isEmpty() -> item(key = KEY_STATE) { RecordListEmpty() }
             groups.isEmpty() && filter != null -> item(key = KEY_STATE) { RecordListFilteredEmpty(filter) }
-            else -> timelineItems(groups, selectedId, onSelect, checked, onCheck, enabled)
+            else -> timelineItems(groups, selectedId, onSelect, checked, if (selecting) onCheck else null, enabled)
         }
     }
 }

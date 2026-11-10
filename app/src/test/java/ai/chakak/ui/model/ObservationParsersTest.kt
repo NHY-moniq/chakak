@@ -111,4 +111,41 @@ class ObservationParsersTest {
         val nullFirst = parseTires("""[{"area":"LEFT_REAR","rawValue":null},{"area":"LEFT_REAR","rawValue":31}]""")!!
         assertEquals(Measurement(31.0, null), nullFirst.valueOf(Wheel.RearLeft))
     }
+
+    @Test fun currentSdkEntriesRenderAsMeasurements() {
+        assertEquals(Measurement(0.0, null), parseOdometer("""{"entries":[{"area":"값","status":"OK","value":0}]}"""))
+        assertNull(parseOdometer("""{"entries":[{"area":"값","status":"DENIED","value":100}]}"""))
+        val tires = parseTires("""{"entries":[{"area":"UNKNOWN, LEFT_FRONT","status":"OK","value":137},{"area":"RIGHT_FRONT","status":"TIMEOUT"}]}""")!!
+        assertEquals(Measurement(137.0, null), tires.valueOf(Wheel.FrontLeft))
+        assertTrue(tires.has(Wheel.FrontRight))
+        assertNull(tires.valueOf(Wheel.FrontRight))
+        assertFalse(tires.has(Wheel.RearLeft))
+    }
+
+    @Test fun currentSdkWarningsIncludeEmptyAndKoreanFields() {
+        assertEquals(emptyList<TelltaleReading>(), parseTelltales("""{"entries":[{"area":"값","status":"OK","value":[]}]}"""))
+        val lights = parseTelltales("""{"entries":[{"area":"값","status":"OK","value":[{"종류":"TPMS","상태":"BLINKING","경고 횟수":2}]}]}""")!!
+        assertTrue(lights.single().lit)
+        assertEquals("타이어 공기압 (깜빡임)", telltaleLabel(lights.single()))
+        assertEquals(2, lights.single().warningCount)
+        assertNull(parseTelltales("""{"entries":[{"status":"DENIED"}]}"""))
+    }
+
+    @Test fun measuredTirePressureConvertsKpaToPsi() {
+        val parsed = parseTires("""{"entries":[{"area":"LEFT_FRONT","status":"OK","value":220,"unit":"kPa"},{"area":"RIGHT_FRONT","status":"OK","value":2.2,"unit":"bar"}]}""")!!
+        assertEquals(31.9083, parsed.valueOf(Wheel.FrontLeft)!!.value, 0.001)
+        assertEquals("psi", parsed.valueOf(Wheel.FrontLeft)!!.unit)
+        assertEquals(parsed.valueOf(Wheel.FrontLeft)!!.value, parsed.valueOf(Wheel.FrontRight)!!.value, 0.001)
+        val observation = ai.chakak.core.Observation("tires", ai.chakak.core.Status.OK,
+            """{"entries":[{"area":"LEFT_FRONT","status":"OK","value":220,"unit":"kPa"}]}""")
+        assertEquals("31.9 psi", tireWheels(observation, Locale.US)!!.first().value)
+        assertFalse(observation.isLegacyTireThreshold())
+    }
+
+    @Test fun legacyLowPressureThresholdIsNotDisplayedAsMeasuredPressure() {
+        val observation = ai.chakak.core.Observation("tires", ai.chakak.core.Status.OK,
+            """{"entries":[{"area":"LEFT_FRONT","status":"OK","value":137}]}""")
+        assertTrue(observation.isLegacyTireThreshold())
+        assertTrue(tireWheels(observation, Locale.US)!!.all { it.value == null })
+    }
 }

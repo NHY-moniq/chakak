@@ -29,6 +29,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.produceState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
+import ai.chakak.ui.coordinates
+import ai.chakak.ui.resolveAddress
+import ai.chakak.ui.AddressResult
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,8 +50,22 @@ const val SHORT_LOCATION_LABEL = "기록 당시 위치"
 @Composable
 fun rememberLocationDisplay(record: Record): LocationDisplay {
     val clock = currentTimelineClock()
-    return remember(record, clock) {
-        locationDisplay(record.observation(ObservationKeys.LOCATION), record.observation(ObservationKeys.ADDRESS), record.createdAt, clock)
+    val location = record.observation(ObservationKeys.LOCATION)
+    val context = LocalContext.current.applicationContext
+    val coordinates = remember(location) { location?.coordinates() }
+    val resolved by produceState<AddressResult?>(null, location) {
+        value = null
+        if (coordinates != null) value = resolveAddress(context, coordinates, roadOnly = true)
+    }
+    val display = locationDisplay(location, record.observation(ObservationKeys.ADDRESS), record.createdAt, clock)
+    return when {
+        resolved?.address != null -> display.copy(headline = resolved?.address, headlineStatus = null,
+            addressShown = true, notice = ai.chakak.ui.model.ADDRESS_NOTICE)
+        coordinates != null && resolved == null -> display.copy(
+            headline = if (display.addressShown) display.headline else "도로명 주소를 조회하고 있어요",
+            details = display.details + "도로명 주소 조회 중")
+        coordinates != null -> display.copy(details = display.details + "도로명 주소를 확인하지 못했어요")
+        else -> display
     }
 }
 

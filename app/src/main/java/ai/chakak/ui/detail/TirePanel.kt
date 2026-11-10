@@ -1,8 +1,10 @@
 package ai.chakak.ui.detail
 
 import ai.chakak.core.Observation
+import ai.chakak.core.Status
 import ai.chakak.ui.component.StatusBadge
 import ai.chakak.ui.component.dashedBorder
+import ai.chakak.ui.model.isLegacyTireThreshold
 import ai.chakak.ui.model.currentTimelineClock
 import ai.chakak.ui.model.TIRES_TITLE
 import ai.chakak.ui.model.Wheel
@@ -46,24 +48,24 @@ import androidx.compose.ui.semantics.semantics
 @Composable
 fun TirePanel(observation: Observation?, compact: Boolean, modifier: Modifier = Modifier, observed: String? = null) {
     val locale = currentTimelineClock().locale
-    val wheels = remember(observation, locale) { observation?.let { tireWheels(it, locale) } }
-    val panel = modifier.fillMaxWidth().background(ChaKakTheme.colors.backgroundPrimary, JournalShapes.panel).padding(ChaKakSpacing.panel)
-    if (wheels == null) {
-        Column(panel, verticalArrangement = Arrangement.spacedBy(ChaKakSpacing.item)) {
-            SectionLabel(TIRES_TITLE)
-            Text(
-                observation?.value ?: NOT_COLLECTED_ITEM,
-                style = ChaKakTheme.typography.bodyMedium,
-                color = ChaKakTheme.colors.textPrimary,
-            )
-            ObservedTime(observed)
+    val wheels = remember(observation, locale) {
+        observation?.let { tireWheels(it, locale) } ?: Wheel.entries.map {
+            WheelDisplay(it, null, if (observation == null) Status.UNAVAILABLE else Status.ERROR)
         }
-        return
     }
+    val panel = modifier.fillMaxWidth().background(ChaKakTheme.colors.backgroundPrimary, JournalShapes.panel).padding(ChaKakSpacing.panel)
     val content: @Composable (Modifier) -> Unit = { m ->
         Column(m, verticalArrangement = Arrangement.spacedBy(ChaKakSpacing.item)) {
             SectionLabel(TIRES_TITLE)
             WheelGrid(wheels)
+            if (observation?.isLegacyTireThreshold() == true) {
+                Text("이전 기록에는 저압 경고 기준값이 저장되었습니다. 실제 공기압은 새로 기록해 주세요.",
+                    style = ChaKakTheme.typography.labelMedium, color = ChaKakTheme.colors.textTertiary)
+            }
+            if (observation?.isLegacyTireThreshold() != true && observation?.let { ai.chakak.ui.model.parseTires(it.value) }?.readings?.values?.any { it != null && it.unit == null } == true) {
+                Text(ai.chakak.ui.model.UNIT_NOT_PROVIDED, style = ChaKakTheme.typography.labelMedium,
+                    color = ChaKakTheme.colors.textTertiary)
+            }
             ObservedTime(observed)
         }
     }

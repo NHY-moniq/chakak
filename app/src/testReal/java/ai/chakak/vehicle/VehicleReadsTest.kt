@@ -61,10 +61,10 @@ class VehicleReadsTest {
     @Test fun temperatureUnitsAndClimateSwitchesAreReadable() = runTest {
         val temperature = readScalar(CapabilityConfig(AccessType.READ)) { ok, _ -> ok(22.5) }
             .copy(key = "vehicle.getHvacTemperature").withUnit("°C")
-        assertEquals(listOf("값" to "22.5 °C"), temperature.displayLines())
+        assertEquals(listOf("전체" to "22.5 °C"), temperature.displayLines())
         val circulation = readScalar(CapabilityConfig(AccessType.READ)) { ok, _ -> ok(false) }
             .copy(key = "vehicle.getHvacRecirculationState")
-        assertEquals(listOf("값" to "OFF (꺼짐)"), circulation.displayLines())
+        assertEquals(listOf("전체" to "OFF (꺼짐)"), circulation.displayLines())
     }
     @Test fun writeOnlyCapabilitiesDoNotCallGetter() = runTest {
         val result = readScalar(CapabilityConfig(AccessType.WRITE)) { _, _ -> fail("Getter must not run") }
@@ -93,5 +93,12 @@ class VehicleReadsTest {
             ok(null); ok(99); error(IllegalStateException())
         }
         assertEquals(Status.UNAVAILABLE, result.status)
+    }
+
+    @Test fun unsupportedSdkPropertyIsNotReportedAsCollectionError() = runTest {
+        val observation = readScalar(CapabilityConfig(AccessType.READ)) { _, error ->
+            error(IllegalStateException("ERROR_NOT_SUPPORTED_PROPERTY"))
+        }
+        assertEquals(Status.UNSUPPORTED, observation.status)
     }
 }

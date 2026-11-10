@@ -28,8 +28,8 @@ data class Measurement(val value: Double, val unit: String?)
 @Immutable
 data class TelltaleReading(val type: String, val state: String, val warningCount: Int?) {
     /** 켜짐 또는 깜빡임 */
-    val lit: Boolean get() = state == STATE_ON || state == STATE_BLINK
-    val blinking: Boolean get() = state == STATE_BLINK
+    val lit: Boolean get() = state == STATE_ON || blinking
+    val blinking: Boolean get() = state == STATE_BLINK || state == "BLINKING"
 
     companion object {
         const val STATE_ON = "ON"
@@ -57,15 +57,20 @@ fun parseLocation(raw: String?): LocationReading? = parseObject(raw) { json ->
 }
 
 fun parseOdometer(raw: String?): Measurement? = parseObject(raw) { json ->
-    json.optFiniteDouble("rawValue")?.let { Measurement(it, json.optUnit()) }
+    val entry = json.optJSONArray("entries")?.optJSONObject(0)
+    if (entry != null) {
+        if (entry.optString("status") != "OK") null
+        else entry.optFiniteDouble("value")?.let { Measurement(it, entry.optUnit()) }
+    } else json.optFiniteDouble("rawValue")?.let { Measurement(it, json.optUnit()) }
 }
 
-fun parseTelltales(raw: String?): List<TelltaleReading>? = parseArray(raw) { array ->
+fun parseTelltales(raw: String?): List<TelltaleReading>? = parseArray(telltaleArray(raw)) { array ->
     (0 until array.length()).map { index ->
         val item = array.optJSONObject(index) ?: return@parseArray null
-        val type = item.optString("type").takeIf { it.isNotBlank() } ?: return@parseArray null
-        val state = item.optString("state").takeIf { it.isNotBlank() } ?: return@parseArray null
-        TelltaleReading(type, state, if (item.has("warningCount") && !item.isNull("warningCount")) item.optInt("warningCount") else null)
+        val type = item.optString("type", item.optString("종류")).takeIf { it.isNotBlank() } ?: return@parseArray null
+        val state = item.optString("state", item.optString("상태")).takeIf { it.isNotBlank() } ?: return@parseArray null
+        val countKey = if (item.has("warningCount")) "warningCount" else "경고 횟수"
+        TelltaleReading(type, state, if (item.has(countKey) && !item.isNull(countKey)) item.optInt(countKey) else null)
     }
 }
 
@@ -73,11 +78,12 @@ fun parseTelltales(raw: String?): List<TelltaleReading>? = parseArray(raw) { arr
  * "LEFT_FRONT, RIGHT_FRONT"처럼 한 영역이 여러 바퀴를 덮으면 각 바퀴에 같은 값을 넣는다. 모르는 영역은 무시한다.
  * 같은 바퀴가 여러 영역에 나오면 null이 아닌 첫 값을 쓴다.
  */
-fun parseTires(raw: String?): TireReadings? = parseArray(raw) { array ->
+fun parseTires(raw: String?): TireReadings? = parseArray(entriesArray(raw)) { array ->
     val entries = (0 until array.length()).flatMap { index ->
         val item = array.optJSONObject(index) ?: return@parseArray null
         val wheels = item.optString("area").split(',').mapNotNull { name -> Wheel.entries.firstOrNull { it.sdkName == name.trim() } }
-        val value = item.optFiniteDouble("rawValue")?.let { Measurement(it, item.optUnit()) }
+        val available = !item.has("status") || item.optString("status") == "OK"
+        val value = if (available) item.optFiniteDouble(if (item.has("value")) "value" else "rawValue")?.let { Measurement(it, item.optUnit()).pressureInPsi() } else null
         wheels.map { it to value }
     }
     // 같은 바퀴가 여러 번 나오면 값이 있는 쪽을 쓴다(뒤의 null이 앞의 값을 덮지 않게)
@@ -109,3 +115,38 @@ private fun JSONObject.optFiniteDouble(name: String): Double? =
     if (!has(name) || isNull(name)) null else optDouble(name).takeIf { it.isFinite() }
 
 private fun JSONObject.optUnit(): String? = if (!has("unit") || isNull("unit")) null else optString("unit").takeIf { it.isNotBlank() }
+
+/** Both historic arrays and the current SDK entry envelope are persisted on devices. */
+private fun entriesArray(raw: String?): String? =
+    parseObject(raw) { it.optJSONArray("entries")?.toString() } ?: raw
+
+private fun telltaleArray(raw: String?): String? {
+    if (raw?.trimStart()?.startsWith("{") != true) return raw
+    return parseObject(raw) { json ->
+        val entries = json.optJSONArray("entries") ?: return@parseObject null
+        val lights = JSONArray()
+        for (i in 0 until entries.length()) {
+            val entry = entries.optJSONObject(i) ?: return@parseObject null
+            if (entry.optString("status") != "OK") return@parseObject null
+            val values = entry.optJSONArray("value") ?: return@parseObject null
+            for (j in 0 until values.length()) lights.put(values.get(j))
+        }
+        lights.toString()
+    }
+}
+
+/** AAOS TIRE_PRESSURE is kPa; retain unknown units instead of guessing. */
+internal fun Measurement.pressureInPsi(): Measurement = when (unit?.lowercase(Locale.ROOT)) {
+    "kpa" -> Measurement(value / 6.894757293168, "psi")
+    "bar" -> Measurement(value * 100.0 / 6.894757293168, "psi")
+    "psi" -> copy(unit = "psi")
+    else -> this
+}
+
+/** Before unit-tagged getTirePressure capture, entries came from getLowTirePressure. */
+fun ai.chakak.core.Observation.isLegacyTireThreshold(): Boolean =
+    key == ObservationKeys.TIRES && parseObject(value) { json ->
+        json.optJSONArray("entries")?.let { entries ->
+            (0 until entries.length()).any { entries.optJSONObject(it)?.optUnit() == null }
+        }
+    } == true

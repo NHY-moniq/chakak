@@ -17,8 +17,8 @@ const val UNIT_NOT_PROVIDED = "단위 정보 없음"
 
 /**
  * 타임라인 카드의 한 줄 메타.
- * - 장소: 주소 → 메모 첫 줄(따옴표) → 좌표 → 위치 원문 표시 → "위치 확인 중"(수집 중) → "위치 정보 없음"
- * - 차량 상태: 수집 완료면 "차량 상태 · 수집 완료", 아니면 "차량 상태"(사유는 카드의 상태 배지가 보여준다)
+ * - 장소: 저장된 주소 → "위치 확인 중" → "주소 정보 없음"
+ * - 차량 상태: "차량 상태"
  * - 미분류: 메모 첫 줄이 있으면 따옴표로 덧붙인다
  * 메모는 운전자가 쓴 글이라 차량 값과 헷갈리지 않게 항상 “…”로 감싼다.
  */
@@ -26,7 +26,7 @@ fun Record.rowMetaLine(): String {
     val category = category.label()
     val detail = when (this.category) {
         Category.PLACE -> placeHint()
-        Category.VEHICLE_STATUS -> captureSummary().takeIf { it is CaptureSummary.Complete }?.label()
+        Category.VEHICLE_STATUS -> null
         Category.UNCLASSIFIED -> quotedMemo()
     }
     return detail?.let { "$category · $it" } ?: category
@@ -36,17 +36,10 @@ fun Record.rowMetaLine(): String {
 fun Record.showsStatusBadge(): Boolean = captureSummary() !is CaptureSummary.Complete
 
 private fun Record.placeHint(): String {
-    val address = observation(ObservationKeys.ADDRESS)?.takeIf { it.status == Status.OK }?.value?.trim()?.takeIf { it.isNotEmpty() }
-    return address ?: quotedMemo() ?: locationHint(observation(ObservationKeys.LOCATION))
-}
-
-/** 좌표 → (형식을 모르는 값) 원문 있음 → 확인 중 → 없음 */
-private fun locationHint(location: Observation?): String {
-    val raw = location?.takeIf { it.status == Status.OK }?.value?.takeIf { it.isNotBlank() }
-    return when {
-        raw != null -> parseLocation(raw)?.coordinatesText() ?: LOCATION_RAW_ONLY
+    val location = observation(ObservationKeys.LOCATION)
+    return savedLocationAddress(location, observation(ObservationKeys.ADDRESS)) ?: when {
         location?.status == Status.PENDING -> LOCATION_PENDING
-        else -> NO_LOCATION_INFO
+        else -> "주소 정보 없음"
     }
 }
 
@@ -82,6 +75,7 @@ fun Record.summaryTiles(clock: TimelineClock): List<ObservationSummary> =
 /** 값이 있으면 사람이 읽는 짧은 문장, 없으면 상태 */
 fun Observation.summary(clock: TimelineClock): ObservationSummary {
     val label = observationKeyLabel(key)
+    if (isLegacyTireThreshold()) return ObservationSummary(label, "실제 공기압 재기록 필요", Status.UNAVAILABLE)
     // 타이어는 일부 바퀴만 값이 있어도(UNAVAILABLE) 있는 값을 보여주고, 항목 상태도 함께 보인다
     val tires = if (key == ObservationKeys.TIRES) parseTires(value) else null
     if (status != Status.OK && tires == null) return ObservationSummary(label, null, status)
