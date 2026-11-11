@@ -33,6 +33,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -100,7 +105,7 @@ fun RecordRow(record: Record, selected: Boolean, onClick: () -> Unit, modifier: 
             modifier = Modifier.width(JournalDimens.timeColumnWidth).padding(top = JournalDimens.timeColumnTopPadding),
         )
         Rail(selected)
-        RecordCard(record, selected, pressed, Modifier.weight(1f))
+        RecordCard(record, selected, pressed, Modifier.weight(1f), checked = if (selectionMode) selected else null)
     }
 }
 
@@ -116,7 +121,7 @@ private fun Rail(selected: Boolean) {
 }
 
 @Composable
-private fun RecordCard(record: Record, selected: Boolean, pressed: Boolean, modifier: Modifier) {
+private fun RecordCard(record: Record, selected: Boolean, pressed: Boolean, modifier: Modifier, checked: Boolean? = null) {
     val colors = ChaKakTheme.colors
     val shape = JournalShapes.card
     Row(
@@ -133,6 +138,18 @@ private fun RecordCard(record: Record, selected: Boolean, pressed: Boolean, modi
     ) {
         CategoryIconTile(record.category)
         CardText(record, Modifier.weight(1f))
+        if (checked != null) CheckMark(checked)
+    }
+}
+
+/** 선택 모드 표시. 상세에서 열어 둔 기록의 테두리 강조와 구분되도록 체크 표시를 따로 둔다. */
+@Composable
+private fun CheckMark(checked: Boolean) {
+    val colors = ChaKakTheme.colors
+    if (checked) {
+        Icon(Icons.Filled.CheckCircle, contentDescription = null, tint = colors.brand.accentDeep, modifier = Modifier.size(ChaKakDimens.iconGrid))
+    } else {
+        Box(Modifier.size(ChaKakDimens.iconGrid).padding(ChaKakDimens.lineLevel4).border(ChaKakDimens.dividerThick, colors.dividerTertiary, CircleShape))
     }
 }
 

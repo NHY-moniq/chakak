@@ -4,6 +4,9 @@ import ai.chakak.platform.GuidanceTarget
 import ai.chakak.ui.component.ButtonSize
 import ai.chakak.ui.component.ButtonVariant
 import ai.chakak.ui.component.ChaKakButton
+import ai.chakak.ui.component.ChaKakPopup
+import ai.chakak.ui.component.ChaKakPopupContent
+import ai.chakak.ui.component.PopupActions
 import ai.chakak.ui.component.InfoNote
 import ai.chakak.ui.component.PanelTone
 import ai.chakak.ui.component.SectionPanel
@@ -57,46 +60,32 @@ class GuidanceControl(
  */
 @Composable
 fun GuidanceDialog(target: GuidanceTarget, running: Boolean, onConfirm: () -> Unit, onDismiss: () -> Unit) {
-    Dialog(
-        onDismissRequest = { if (!running) onDismiss() },
-        properties = DialogProperties(dismissOnBackPress = !running, dismissOnClickOutside = !running, usePlatformDefaultWidth = false),
-    ) {
-        GuidanceDialogContent(target, running, onConfirm, onDismiss, Modifier.padding(ChaKakSpacing.screen))
-    }
+    ChaKakPopup(GUIDANCE_TITLE, running, onDismiss) { GuidanceBody(target, running, onConfirm, onDismiss) }
 }
 
 /** 팝업 본문. Preview에서도 직접 쓴다. */
 @Composable
 fun GuidanceDialogContent(target: GuidanceTarget, running: Boolean, onConfirm: () -> Unit, onDismiss: () -> Unit, modifier: Modifier = Modifier) {
+    ChaKakPopupContent(GUIDANCE_TITLE, modifier) { GuidanceBody(target, running, onConfirm, onDismiss) }
+}
+
+@Composable
+private fun GuidanceBody(target: GuidanceTarget, running: Boolean, onConfirm: () -> Unit, onDismiss: () -> Unit) {
     val colors = ChaKakTheme.colors
-    Column(
-        modifier = modifier
-            .widthIn(max = ChaKakDimens.popupWidth)
-            .fillMaxWidth()
-            .background(colors.backgroundPopup, ChaKakShapes.popup)
-            .border(ChaKakDimens.dividerThick, colors.dividerPrimary, ChaKakShapes.popup)
-            .verticalScroll(rememberScrollState())
-            .padding(ChaKakDimens.popupPadding)
-            .semantics { paneTitle = GUIDANCE_TITLE },
-        verticalArrangement = Arrangement.spacedBy(ChaKakSpacing.section),
-    ) {
-        Text(GUIDANCE_TITLE, style = ChaKakTheme.typography.titleMedium, color = colors.textPrimary, modifier = Modifier.semantics { heading() })
-        SectionPanel(tone = PanelTone.High) {
-            Text(target.name, style = ChaKakTheme.typography.bodyMedium, color = colors.textPrimary, maxLines = 2, overflow = TextOverflow.Ellipsis)
-            target.address?.let { Text(it, style = ChaKakTheme.typography.bodySmall, color = colors.textSecondary) }
-            Text(
-                String.format(Locale.US, "%.5f, %.5f", target.latitude, target.longitude),
-                style = ChaKakTheme.typography.labelMedium,
-                color = colors.textTertiary,
-            )
-        }
-        InfoNote(GUIDANCE_REPLACES_ROUTE, ChaKakIcons.Caution)
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(ChaKakSpacing.item)) {
-            ChaKakButton("취소", onDismiss, Modifier.weight(1f), ButtonVariant.Basic, ButtonSize.Medium, enabled = !running)
-            ChaKakButton(
-                "안내 시작", onConfirm, Modifier.weight(1f), ButtonVariant.Accent, ButtonSize.Medium,
-                icon = ChaKakIcons.Navigate, loading = running, loadingText = "요청 중…",
-            )
-        }
+    SectionPanel(tone = PanelTone.High) {
+        Text(target.name, style = ChaKakTheme.typography.bodyMedium, color = colors.textPrimary, maxLines = 2, overflow = TextOverflow.Ellipsis)
+        target.address?.let { Text(it, style = ChaKakTheme.typography.bodySmall, color = colors.textSecondary) }
+        Text(
+            String.format(Locale.US, "%.5f, %.5f", target.latitude, target.longitude),
+            style = ChaKakTheme.typography.labelMedium,
+            color = colors.textTertiary,
+        )
+    }
+    InfoNote(GUIDANCE_REPLACES_ROUTE, ChaKakIcons.Caution)
+    PopupActions(running, onDismiss) { modifier ->
+        ChaKakButton(
+            "안내 시작", onConfirm, modifier, ButtonVariant.Accent, ButtonSize.Medium,
+            icon = ChaKakIcons.Navigate, loading = running, loadingText = "요청 중…",
+        )
     }
 }

@@ -32,13 +32,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import ai.chakak.ui.edit.BulkDeleteDialog
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import ai.chakak.ui.model.ActionState
 import ai.chakak.ui.model.ActionKind
+import ai.chakak.ui.theme.JournalDimens
+import ai.chakak.ui.theme.JournalShapes
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.Text
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -111,12 +118,12 @@ fun RecordLibraryScreen(
         }
     }
     pending?.let { ids ->
-        AlertDialog(
-            onDismissRequest = { if (!actions.busy) pending = null },
-            title = { Text("${ids.size}개 기록을 삭제할까요?") },
-            text = { Text(if (actions.outcome?.kind == ActionKind.Delete && actions.outcome?.succeeded == false) actions.message?.text ?: "삭제하지 못했습니다. 다시 시도해 주세요." else "삭제한 기록은 복구할 수 없습니다.") },
-            confirmButton = { TextButton(onClick = { deleteMany(ids) }, enabled = !actions.busy) { Text("삭제") } },
-            dismissButton = { TextButton(onClick = { pending = null }, enabled = !actions.busy) { Text("취소") } },
+        BulkDeleteDialog(
+            count = ids.size,
+            deleting = actions.isRunning(ActionKind.Delete),
+            failed = actions.outcome?.let { it.kind == ActionKind.Delete && !it.succeeded } == true,
+            onConfirm = { deleteMany(ids) },
+            onDismiss = { pending = null },
         )
     }
     val groups = remember(visible, clock) { groupByDay(visible, clock) }
@@ -129,49 +136,67 @@ fun RecordLibraryScreen(
         // 탭 아래까지 내려가 있었다면 새 목록의 처음부터 보여준다. 위쪽에 있으면 위치를 유지한다.
         if (listState.firstVisibleItemIndex > tabsIndex) scope.launch { listState.scrollToItem(tabsIndex) }
     }
-    LazyColumn(
-        modifier = modifier,
-        state = listState,
-        contentPadding = PaddingValues(bottom = ChaKakSpacing.screen),
-        verticalArrangement = Arrangement.spacedBy(ChaKakSpacing.item),
-    ) {
-        libraryHeader(mock, capture)
-        filterTabs(filter, changeFilter, enabled = state is LibraryUiState.Content, counts = counts)
-        if (visible.isNotEmpty()) item(key = "header:bulk-delete") {
-            FlowRow(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(ChaKakSpacing.inline, androidx.compose.ui.Alignment.End),
-                verticalArrangement = Arrangement.spacedBy(ChaKakSpacing.inline),
-            ) {
-                if (!selecting) {
-                    ChaKakButton("선택", onClick = {
+    Column(modifier, verticalArrangement = Arrangement.spacedBy(ChaKakSpacing.item)) {
+        LazyColumn(
+            modifier = Modifier.weight(1f).fillMaxWidth(),
+            state = listState,
+            contentPadding = PaddingValues(bottom = ChaKakSpacing.screen),
+            verticalArrangement = Arrangement.spacedBy(ChaKakSpacing.item),
+        ) {
+            libraryHeader(mock, capture)
+            filterTabs(filter, changeFilter, enabled = state is LibraryUiState.Content, counts = counts)
+            if (visible.isNotEmpty()) item(key = "header:bulk-delete") {
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                    ChaKakButton(if (selecting) "완료" else "선택", onClick = {
                         checked = arrayListOf()
-                        selecting = true
-                    }, variant = ButtonVariant.Outlined, size = ButtonSize.Small, enabled = !actions.busy)
-                } else {
-                    ChaKakButton(
-                        if (checked.size == visible.size) "전체 선택 해제" else "전체 선택",
-                        onClick = {
-                            checked = if (checked.size == visible.size) arrayListOf() else ArrayList(visibleIds)
-                        },
-                        variant = ButtonVariant.Accent, size = ButtonSize.Small, enabled = !actions.busy,
-                    )
-                    if (checked.isNotEmpty()) {
-                        ChaKakButton("삭제 (${checked.size})", onClick = { pending = checked.toList() },
-                            variant = ButtonVariant.Destructive, size = ButtonSize.Small,
-                            icon = Icons.Filled.Delete, enabled = !actions.busy)
-                    }
-                    ChaKakButton("선택 취소", onClick = {
-                        selecting = false
-                        checked = arrayListOf()
+                        selecting = !selecting
                     }, variant = ButtonVariant.Outlined, size = ButtonSize.Small, enabled = !actions.busy)
                 }
             }
-        }
 
-        libraryBody(state, filter, groups, selectedId, onSelect, onRetry, checked, { id ->
-            checked = ArrayList(if (id in checked) checked - id else checked + id)
-        }, !actions.busy, selecting)
+            libraryBody(state, filter, groups, selectedId, onSelect, onRetry, checked, { id ->
+                checked = ArrayList(if (id in checked) checked - id else checked + id)
+            }, !actions.busy, selecting)
+        }
+        if (selecting && visible.isNotEmpty()) {
+            SelectionBar(
+                count = checked.size,
+                allSelected = checked.size == visible.size,
+                enabled = !actions.busy,
+                onToggleAll = { checked = if (checked.size == visible.size) arrayListOf() else ArrayList(visibleIds) },
+                onDelete = { pending = checked.toList() },
+            )
+        }
+    }
+}
+
+const val SELECTION_EMPTY = "삭제할 기록을 선택하세요"
+
+/**
+ * 선택 모드의 하단 고정 바. 목록을 스크롤해도 같은 자리에 있고, 삭제 버튼은 처음부터 보인다
+ * (선택이 없으면 비활성 + 왼쪽 안내 문구). 버튼이 나타나며 옆 버튼을 밀지 않는다.
+ */
+@Composable
+private fun SelectionBar(count: Int, allSelected: Boolean, enabled: Boolean, onToggleAll: () -> Unit, onDelete: () -> Unit) {
+    val colors = ChaKakTheme.colors
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(colors.surfaceHigh, JournalShapes.card)
+            .padding(horizontal = JournalDimens.cardPadding, vertical = ChaKakSpacing.item),
+        horizontalArrangement = Arrangement.spacedBy(ChaKakSpacing.inline),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            if (count == 0) SELECTION_EMPTY else "${count}개 선택",
+            style = ChaKakTheme.typography.bodySmallStrong,
+            color = if (count == 0) colors.textSecondary else colors.textPrimary,
+            modifier = Modifier.weight(1f).semantics { liveRegion = LiveRegionMode.Polite },
+        )
+        ChaKakButton(if (allSelected) "전체 해제" else "전체 선택", onToggleAll,
+            variant = ButtonVariant.Outlined, size = ButtonSize.Small, enabled = enabled)
+        ChaKakButton("삭제", onDelete, variant = ButtonVariant.Destructive, size = ButtonSize.Small,
+            icon = Icons.Filled.Delete, enabled = enabled && count > 0)
     }
 }
 

@@ -2,6 +2,7 @@ package ai.chakak.ui.detail
 
 import ai.chakak.core.Observation
 import ai.chakak.core.Status
+import ai.chakak.ui.component.TextAction
 import ai.chakak.ui.displayLines
 import ai.chakak.ui.model.*
 import ai.chakak.ui.theme.*
@@ -13,14 +14,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.unit.dp
 
 private fun fieldIcon(key: String): ImageVector = when {
     "Temperature" in key -> ChaKakIcons.Temperature
@@ -46,12 +45,12 @@ internal fun VehicleObservationTiles(observation: Observation) {
         verticalArrangement = Arrangement.spacedBy(ChaKakSpacing.inline),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(ChaKakSpacing.inline)) {
-            Icon(fieldIcon(observation.key), null, tint = colors.brand.accentDeep, modifier = Modifier.size(32.dp))
+            Icon(fieldIcon(observation.key), null, tint = colors.brand.accentDeep, modifier = Modifier.size(ChaKakDimens.badgeIcon))
             Text(vehicleFieldLabels[observation.key] ?: observationKeyLabel(observation.key),
                 style = ChaKakTheme.typography.bodySmallStrong, color = colors.textPrimary, modifier = Modifier.weight(1f))
             // Successful values are already visible in the tiles; no repeated "관측값 있음".
             if (observation.status != Status.OK) {
-                Icon(ChaKakIcons.Info, observation.status.shortLabel(), tint = colors.iconSecondary, modifier = Modifier.size(24.dp))
+                Icon(ChaKakIcons.Info, observation.status.shortLabel(), tint = colors.iconSecondary, modifier = Modifier.size(ChaKakDimens.badgeGlyph))
             }
         }
         val seats = cells.filter { it.area.startsWith("ROW_") }
@@ -62,7 +61,7 @@ internal fun VehicleObservationTiles(observation: Observation) {
                 verticalArrangement = Arrangement.spacedBy(ChaKakSpacing.inline),
             ) {
                 Icon(ChaKakIcons.Car, "차량 앞쪽", tint = colors.iconTertiary,
-                    modifier = Modifier.size(28.dp).align(Alignment.CenterHorizontally))
+                    modifier = Modifier.size(JournalDimens.chipGlyph).align(Alignment.CenterHorizontally))
                 seatRows.filter { row -> seats.any { it.area in row } }.forEach { row ->
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(ChaKakSpacing.tight)) {
                         row.forEach { area ->
@@ -85,9 +84,7 @@ internal fun VehicleObservationTiles(observation: Observation) {
             StateTile(VehicleCell("값", "전체", if (observation.status == Status.OK) "상세 값" else observation.status.shortLabel(),
                 observation.status, null), fieldIcon(observation.key), Modifier.fillMaxWidth())
         }
-        TextButton(onClick = { details = !details }) {
-            Text(if (details) "상세 접기" else "상세 보기", style = ChaKakTheme.typography.labelMedium)
-        }
+        TextAction(if (details) "상세 접기" else "상세 보기", { details = !details }, expanded = details)
         if (details) {
             observation.displayLines().forEach { (label, value) ->
                 Text("$label: $value", style = ChaKakTheme.typography.bodySmall, color = colors.textSecondary)
@@ -109,7 +106,7 @@ private fun StateTile(cell: VehicleCell, icon: ImageVector, modifier: Modifier) 
         verticalArrangement = Arrangement.spacedBy(ChaKakSpacing.tight),
     ) {
         Icon(if (cell.status == Status.OK) icon else ChaKakIcons.Info, null,
-            tint = if (active) colors.brand.accentDeep else colors.iconSecondary, modifier = Modifier.size(32.dp))
+            tint = if (active) colors.brand.accentDeep else colors.iconSecondary, modifier = Modifier.size(ChaKakDimens.badgeIcon))
         if (cell.area != "값") Text(cell.label, style = ChaKakTheme.typography.labelMedium, color = colors.textTertiary)
         Text(cell.value, style = ChaKakTheme.typography.bodySmallStrong, color = colors.textPrimary)
     }

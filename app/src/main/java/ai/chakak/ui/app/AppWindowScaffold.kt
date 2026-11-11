@@ -5,7 +5,12 @@ import kotlinx.coroutines.flow.Flow
 import ai.chakak.core.Category
 import ai.chakak.core.Record
 import ai.chakak.platform.GuidanceTarget
+import ai.chakak.ui.component.ButtonSize
+import ai.chakak.ui.component.ButtonVariant
+import ai.chakak.ui.component.ChaKakButton
+import ai.chakak.ui.component.InfoNote
 import ai.chakak.ui.component.MessageBar
+import ai.chakak.ui.theme.ChaKakIcons
 import ai.chakak.ui.model.ActionKind
 import ai.chakak.ui.model.ActionState
 import ai.chakak.ui.model.LibraryNavigation
@@ -100,10 +105,9 @@ fun AppWindowScaffold(
         ) {
             RestrictionGate(allowed, mock, Modifier.fillMaxSize()) {
                 if (needsCapturePermission) {
-                    androidx.compose.material3.Text("차량 상태와 위치를 기록하려면 조회 권한을 허용해 주세요.")
-                    androidx.compose.material3.OutlinedButton(onClick = requestCapturePermission, enabled = !actions.busy) {
-                        androidx.compose.material3.Text("차량·위치 조회 권한 허용")
-                    }
+                    InfoNote("차량 상태와 위치를 기록하려면 조회 권한을 허용해 주세요.", ChaKakIcons.Info)
+                    ChaKakButton("차량·위치 조회 권한 허용", requestCapturePermission,
+                        variant = ButtonVariant.Outlined, size = ButtonSize.Small, enabled = !actions.busy)
                 }
                 actions.message?.let { MessageBar(it) }
                 val paneModifier = Modifier.weight(1f).fillMaxWidth()

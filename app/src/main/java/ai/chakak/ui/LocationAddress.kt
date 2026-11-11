@@ -4,10 +4,6 @@ import android.content.Context
 import android.location.Address
 import android.location.Geocoder
 import android.os.Build
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.*
-import androidx.compose.ui.platform.LocalContext
 import ai.chakak.core.Observation
 import ai.chakak.core.Status
 import kotlinx.coroutines.CancellationException
@@ -68,41 +64,6 @@ internal suspend fun resolveAddress(context: Context, coordinates: Coordinates, 
         } ?: AddressResult(message = "주소 조회 시간이 초과되었습니다.")
     } catch (cancelled: CancellationException) { throw cancelled }
     catch (_: Exception) { AddressResult(message = "주소 조회에 실패했습니다. 네트워크 상태를 확인하고 다시 시도해 주세요.") }
-}
-
-@Composable internal fun LocationValue(observation: Observation) {
-    val saved = remember(observation) { runCatching { JSONObject(observation.value ?: "{}") }.getOrNull() }
-    val savedAddress = saved?.optString("address")?.takeIf { it.isNotBlank() }
-    if (savedAddress != null) {
-        Text("주소: $savedAddress")
-        return
-    }
-    val savedMessage = saved?.optString("addressMessage")?.takeIf { it.isNotBlank() }
-    if (savedMessage != null) {
-        Text(savedMessage)
-        observation.displayLines().forEach { (label, value) -> Text("$label: $value") }
-        return
-    }
-    val coordinates = remember(observation) { observation.coordinates() }
-    val context = LocalContext.current.applicationContext
-    var attempt by remember(coordinates) { mutableStateOf(0) }
-    val result by produceState<AddressResult?>(null, coordinates, attempt) {
-        value = null
-        if (coordinates != null) value = resolveAddress(context, coordinates)
-    }
-    val address = result?.address
-    if (address != null) {
-        Text("주소: $address")
-        if (address.any { it in 'A'..'Z' || it in 'a'..'z' }) {
-            Text("한국어로 제공되지 않는 지명은 원문으로 표시합니다.")
-        }
-    } else {
-        if (coordinates != null) {
-            Text(result?.message ?: "한국어 주소를 조회하고 있습니다…")
-            if (result?.retryable == true) TextButton(onClick = { attempt++ }) { Text("주소 다시 조회") }
-        }
-        observation.displayLines().forEach { (label, value) -> Text("$label: $value") }
-    }
 }
 
 /** A district/dong label alone is not a road-name address. */

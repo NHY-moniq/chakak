@@ -2,6 +2,7 @@ package ai.chakak.ui.detail
 
 import ai.chakak.core.Record
 import ai.chakak.core.Status
+import ai.chakak.ui.component.TextAction
 import ai.chakak.ui.SURROUND_CAPTURE_KEY
 import ai.chakak.ui.model.*
 import ai.chakak.ui.theme.*
@@ -9,7 +10,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -49,11 +49,12 @@ internal fun CompactVehicleCard(record: Record) {
             } ?: if (it.status == Status.OK) "값을 표시할 수 없습니다" else it.status.label()) },
         )
         lines.forEach { Text(it, style = ChaKakTheme.typography.bodySmall, color = colors.textSecondary) }
-        TextButton(onClick = { expanded = !expanded }) { Text(if (expanded) "차량 정보 접기" else "차량 정보 자세히 보기") }
-        if (expanded) {
-            VehicleStatusOverview(record, compact = true)
-            val others = observations.filter { it.key !in ObservationKeys.vehicleKeys }
-            if (others.isNotEmpty()) VehicleObservationList(others)
-        }
+        TextAction(if (expanded) "차량 정보 접기" else "차량 정보 자세히 보기", { expanded = !expanded }, expanded = expanded)
+    }
+    // 펼친 내용은 카드 밖에 둔다. 카드 안에 넣으면 테두리가 세 겹으로 겹친다.
+    if (expanded) {
+        VehicleStatusOverview(record, compact = true)
+        val others = observations.filter { it.key !in ObservationKeys.vehicleKeys }
+        if (others.isNotEmpty()) VehicleObservationList(others)
     }
 }
