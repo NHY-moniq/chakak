@@ -32,9 +32,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import ai.chakak.ui.edit.BulkDeleteDialog
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import ai.chakak.ui.model.ActionState
@@ -111,12 +109,12 @@ fun RecordLibraryScreen(
         }
     }
     pending?.let { ids ->
-        AlertDialog(
-            onDismissRequest = { if (!actions.busy) pending = null },
-            title = { Text("${ids.size}개 기록을 삭제할까요?") },
-            text = { Text(if (actions.outcome?.kind == ActionKind.Delete && actions.outcome?.succeeded == false) actions.message?.text ?: "삭제하지 못했습니다. 다시 시도해 주세요." else "삭제한 기록은 복구할 수 없습니다.") },
-            confirmButton = { TextButton(onClick = { deleteMany(ids) }, enabled = !actions.busy) { Text("삭제") } },
-            dismissButton = { TextButton(onClick = { pending = null }, enabled = !actions.busy) { Text("취소") } },
+        BulkDeleteDialog(
+            count = ids.size,
+            deleting = actions.isRunning(ActionKind.Delete),
+            failed = actions.outcome?.let { it.kind == ActionKind.Delete && !it.succeeded } == true,
+            onConfirm = { deleteMany(ids) },
+            onDismiss = { pending = null },
         )
     }
     val groups = remember(visible, clock) { groupByDay(visible, clock) }

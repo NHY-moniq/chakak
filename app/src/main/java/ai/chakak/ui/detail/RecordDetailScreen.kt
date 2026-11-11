@@ -23,6 +23,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -66,7 +67,7 @@ fun RecordDetailScreen(
         if (onBack != null) ScreenTopBar(title = DETAIL_TITLE, backLabel = BACK_TO_LIST, onBack = onBack)
         BoxWithConstraints(Modifier.weight(1f).fillMaxWidth()) {
             val compact = maxWidth < JournalDimens.detailCompactWidth
-            DetailSurface(compact) {
+            DetailSurface(compact, record.id) {
                 DetailTopRow(record.category, onEdit, onDelete, actionsEnabled)
                 if (showMockBanner && record.source == Source.MOCK) MockBanner()
                 if (record.category == Category.VEHICLE_STATUS) {
@@ -84,14 +85,16 @@ fun RecordDetailScreen(
  * 두 테마 모두 면이 구분된다. 내용은 면 안에서 스크롤한다.
  */
 @Composable
-private fun DetailSurface(compact: Boolean, content: @Composable ColumnScope.() -> Unit) {
+private fun DetailSurface(compact: Boolean, recordId: String, content: @Composable ColumnScope.() -> Unit) {
+    // 다른 기록을 열면 맨 위부터 보여준다(이전 기록의 스크롤 위치를 물려받지 않는다).
+    val scroll = key(recordId) { rememberScrollState() }
     val shape = if (compact) JournalShapes.detailSurfaceCompact else JournalShapes.detailSurface
     Column(
         modifier = Modifier
             .fillMaxSize()
             .clip(shape)
             .background(ChaKakTheme.colors.backgroundSecondary, shape)
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(scroll)
             .padding(if (compact) ChaKakSpacing.panel else JournalDimens.detailPadding),
         verticalArrangement = Arrangement.spacedBy(JournalDimens.detailGap),
         content = content,

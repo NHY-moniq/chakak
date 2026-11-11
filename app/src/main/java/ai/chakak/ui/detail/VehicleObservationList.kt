@@ -3,7 +3,6 @@ package ai.chakak.ui.detail
 import ai.chakak.ui.groupObservations
 import ai.chakak.ui.displayLines
 import ai.chakak.ui.vehicleFieldLabels
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import ai.chakak.core.Observation
@@ -11,6 +10,7 @@ import ai.chakak.ui.component.InfoNote
 import ai.chakak.ui.component.SectionHeader
 import ai.chakak.ui.component.SectionPanel
 import ai.chakak.ui.component.StatusBadge
+import ai.chakak.ui.component.TextAction
 import ai.chakak.ui.model.observationKeyLabel
 import ai.chakak.ui.theme.ChaKakDimens
 import ai.chakak.ui.theme.ChaKakSpacing
@@ -46,9 +46,7 @@ fun VehicleObservationList(observations: List<Observation>, modifier: Modifier =
         groupObservations(observations).forEach { group ->
             var expanded by rememberSaveable(group.title) { mutableStateOf(true) }
             HorizontalDivider(thickness = ChaKakDimens.dividerThin, color = ChaKakTheme.colors.dividerSecondary)
-            TextButton(onClick = { expanded = !expanded }) {
-                Text("${group.title} · ${group.observations.size}개 ${if (expanded) "접기 ▴" else "펼치기 ▾"}")
-            }
+            TextAction("${group.title} · ${group.observations.size}개 ${if (expanded) "접기" else "펼치기"}", { expanded = !expanded }, expanded = expanded)
             if (expanded) group.observations.forEach { VehicleObservationTiles(it) }
         }
     }

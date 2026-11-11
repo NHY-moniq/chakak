@@ -5,6 +5,9 @@ import ai.chakak.core.Source
 import ai.chakak.ui.component.ButtonSize
 import ai.chakak.ui.component.ButtonVariant
 import ai.chakak.ui.component.ChaKakButton
+import ai.chakak.ui.component.ChaKakPopup
+import ai.chakak.ui.component.ChaKakPopupContent
+import ai.chakak.ui.component.PopupActions
 import ai.chakak.ui.component.InfoNote
 import ai.chakak.ui.component.MockTag
 import ai.chakak.ui.component.PanelTone
@@ -52,22 +55,10 @@ private const val DELETE_TITLE = "기록을 삭제할까요?"
  */
 @Composable
 fun DeleteRecordDialog(record: Record, deleting: Boolean, failed: Boolean, onConfirm: () -> Unit, onDismiss: () -> Unit) {
-    Dialog(
-        onDismissRequest = { if (!deleting) onDismiss() },
-        properties = DialogProperties(
-            dismissOnBackPress = !deleting,
-            dismissOnClickOutside = !deleting,
-            usePlatformDefaultWidth = false,
-        ),
-    ) {
-        DeleteRecordDialogContent(record, deleting, failed, onConfirm, onDismiss, Modifier.padding(ChaKakSpacing.screen))
-    }
+    ChaKakPopup(DELETE_TITLE, deleting, onDismiss) { DeleteBody(deleting, failed, onConfirm, onDismiss) { DeleteTargetSummary(record) } }
 }
 
-/**
- * 팝업 본문. 폭 808(창이 좁으면 창 폭), 반경 48, 패딩 48, gap 40, background/popup,
- * 테두리 divider/primary 2 (foundations 5). Preview에서도 직접 쓴다.
- */
+/** 팝업 본문. Preview에서도 직접 쓴다. */
 @Composable
 fun DeleteRecordDialogContent(
     record: Record,
@@ -77,30 +68,42 @@ fun DeleteRecordDialogContent(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    ChaKakPopupContent(DELETE_TITLE, modifier) { DeleteBody(deleting, failed, onConfirm, onDismiss) { DeleteTargetSummary(record) } }
+}
+
+/** 여러 기록 삭제 확인. 한 건 삭제와 같은 틀·문구·버튼을 쓰고, 대상은 개수로 보여준다. */
+@Composable
+fun BulkDeleteDialog(count: Int, deleting: Boolean, failed: Boolean, onConfirm: () -> Unit, onDismiss: () -> Unit) {
+    ChaKakPopup(bulkDeleteTitle(count), deleting, onDismiss) { DeleteBody(deleting, failed, onConfirm, onDismiss) {} }
+}
+
+fun bulkDeleteTitle(count: Int): String = "기록 ${count}개를 삭제할까요?"
+
+/** 대상 요약 · 복구 불가 안내 · (실패 시) 원인 · 취소/삭제 */
+@Composable
+private fun DeleteBody(deleting: Boolean, failed: Boolean, onConfirm: () -> Unit, onDismiss: () -> Unit, target: @Composable () -> Unit) {
     val colors = ChaKakTheme.colors
-    Column(
-        modifier = modifier
-            .widthIn(max = ChaKakDimens.popupWidth)
-            .fillMaxWidth()
-            .background(colors.backgroundPopup, ChaKakShapes.popup)
-            .border(ChaKakDimens.dividerThick, colors.dividerPrimary, ChaKakShapes.popup)
-            .verticalScroll(rememberScrollState())
-            .padding(ChaKakDimens.popupPadding)
-            .semantics { paneTitle = DELETE_TITLE },
-        verticalArrangement = Arrangement.spacedBy(ChaKakSpacing.section),
-    ) {
-        Text(DELETE_TITLE, style = ChaKakTheme.typography.titleMedium, color = colors.textPrimary, modifier = Modifier.semantics { heading() })
-        DeleteTargetSummary(record)
-        InfoNote(DELETE_IRREVERSIBLE_NOTICE, Icons.Filled.Warning, iconTint = colors.regulationRed)
-        if (failed) {
-            InfoNote(
-                DELETE_FAILED_NOTICE,
-                Icons.Filled.Warning,
-                modifier = Modifier.semantics { liveRegion = LiveRegionMode.Assertive },
-                iconTint = colors.regulationRed,
-            )
-        }
-        DeleteActions(deleting, onConfirm, onDismiss)
+    target()
+    InfoNote(DELETE_IRREVERSIBLE_NOTICE, Icons.Filled.Warning, iconTint = colors.regulationRed)
+    if (failed) {
+        InfoNote(
+            DELETE_FAILED_NOTICE,
+            Icons.Filled.Warning,
+            modifier = Modifier.semantics { liveRegion = LiveRegionMode.Assertive },
+            iconTint = colors.regulationRed,
+        )
+    }
+    PopupActions(deleting, onDismiss) { modifier ->
+        ChaKakButton(
+            text = "삭제",
+            onClick = onConfirm,
+            modifier = modifier,
+            variant = ButtonVariant.Destructive,
+            size = ButtonSize.Medium,
+            icon = Icons.Filled.Delete,
+            loading = deleting,
+            loadingText = "삭제 중…",
+        )
     }
 }
 
@@ -117,29 +120,5 @@ private fun DeleteTargetSummary(record: Record) {
         Text("분류 · ${record.category.label()}", style = ChaKakTheme.typography.bodySmall, color = ChaKakTheme.colors.textSecondary)
         LabeledTime(COMMAND_TIME_LABEL, record.createdAt)
         if (record.source == Source.MOCK) MockTag()
-    }
-}
-
-@Composable
-private fun DeleteActions(deleting: Boolean, onConfirm: () -> Unit, onDismiss: () -> Unit) {
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(ChaKakSpacing.item)) {
-        ChaKakButton(
-            text = "취소",
-            onClick = onDismiss,
-            modifier = Modifier.weight(1f),
-            variant = ButtonVariant.Basic,
-            size = ButtonSize.Medium,
-            enabled = !deleting,
-        )
-        ChaKakButton(
-            text = "삭제",
-            onClick = onConfirm,
-            modifier = Modifier.weight(1f),
-            variant = ButtonVariant.Destructive,
-            size = ButtonSize.Medium,
-            icon = Icons.Filled.Delete,
-            loading = deleting,
-            loadingText = "삭제 중…",
-        )
     }
 }
