@@ -43,7 +43,6 @@ class RealPlatform(private val context: Context) : Platform {
             unrestricted, inMotionVoiceEnabled(
                 approved = context.resources.getBoolean(R.bool.gleo_in_motion_approved),
                 emulatorOptIn = context.resources.getBoolean(R.bool.gleo_emulator_in_motion_enabled),
-                debugBuild = BuildConfig.DEBUG,
                 emulator = android.os.Build.HARDWARE == "ranchu"))
         touchAllowed.value = access.touch
         voiceAllowed.value = access.voice

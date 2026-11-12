@@ -1,7 +1,8 @@
 <resources>
-    <bool name="gleo_emulator_in_motion_enabled">false</bool>
-    <!-- Enable only after feature/category/region eligibility is verified. Never enables touch UI. -->
-    <bool name="gleo_in_motion_approved">false</bool>
+    <!-- In-motion voice capture on the Pleos emulator; also guarded by ranchu hardware. Never applies to a vehicle. -->
+    <bool name="gleo_emulator_in_motion_enabled">true</bool>
+    <!-- In-motion voice capture is on in every build, on emulator and vehicle. Never enables touch UI. -->
+    <bool name="gleo_in_motion_approved">true</bool>
     <bool name="gleo_receiver_enabled">true</bool>
     <!-- Gleo app that receives APP_ACTION_RESPONSE callbacks. -->
     <string name="gleo_package" translatable="false">ai.umos.ambientai</string>

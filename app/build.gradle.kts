@@ -21,7 +21,8 @@ android {
         create("mock") { dimension = "data"; applicationIdSuffix = ".mock"; versionNameSuffix = "-mock" }
         create("real") { dimension = "data" }
     }
-    buildTypes { release { isMinifyEnabled = false } }
+    // The submission APK is a release build signed with the debug key so it installs on the emulator as is.
+    buildTypes { release { isMinifyEnabled = false; signingConfig = signingConfigs.getByName("debug") } }
     buildFeatures { compose = true; buildConfig = true }
     compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }
     kotlinOptions { jvmTarget = "17" }

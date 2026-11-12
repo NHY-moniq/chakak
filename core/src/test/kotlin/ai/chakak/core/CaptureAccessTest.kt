@@ -20,12 +20,12 @@ class CaptureAccessTest {
         assertEquals(CaptureAccess(true, true), captureAccess(DrivingState.PARKED, true, true, false))
         assertEquals(CaptureAccess(false, false), captureAccess(DrivingState.PARKED, true, false, true))
     }
-    @Test fun developmentOptInIsRestrictedToDebugEmulator() {
-        assertTrue(inMotionVoiceEnabled(false, true, true, true))
-        assertFalse(inMotionVoiceEnabled(false, true, false, true))
-        assertFalse(inMotionVoiceEnabled(false, true, true, false))
-        assertFalse(inMotionVoiceEnabled(false, false, true, true))
-        val enabled = inMotionVoiceEnabled(false, true, true, true)
+    @Test fun emulatorOptInIsRestrictedToEmulatorHardware() {
+        assertTrue(inMotionVoiceEnabled(false, true, true))
+        assertFalse(inMotionVoiceEnabled(false, true, false))
+        assertFalse(inMotionVoiceEnabled(false, false, true))
+        assertTrue(inMotionVoiceEnabled(true, false, false))
+        val enabled = inMotionVoiceEnabled(false, true, true)
         assertEquals(CaptureAccess(false, true), captureAccess(DrivingState.DRIVE, true, false, enabled))
     }
 
