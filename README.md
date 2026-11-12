@@ -1,55 +1,105 @@
-# ChaKak
+# ChaKak (차칵)
 
-음성 요청 시점의 위치와 차량 관측값을 차량 내에 저장하고, 주차 후 검토·편집하는 Pleos Connect 앱입니다. 구현 기준은 [spec-en.md](spec-en.md)입니다.
+## 앱 이름 및 한 줄 소개
 
-## 실행
+**ChaKak(차칵)** — 말 한마디로 그 순간의 위치와 차량 상태를 차량 안에 저장하고, 주차한 뒤 살펴보고 메모를 다는 Hyundai Pleos Connect 앱입니다.
 
-Android Studio에서 이 디렉터리를 열고 Android SDK 35 및 JDK 17 이상을 설정합니다. 로컬 SDK 경로는 추적하지 않는 `local.properties`에 지정합니다. Android Studio의 내장 JBR도 사용할 수 있습니다.
+- 주행 중에는 Gleo 음성("지금 위치 저장해줘", "타이어 상태 기록해줘")으로만 기록하고, 화면 조작은 주차(P) 상태에서만 열립니다.
+- 기록은 차량 내 Room DB에만 저장합니다. 구현 기준 문서는 [spec-en.md](spec-en.md)(한국어판 [spec.md](spec.md))입니다.
+
+## 실행 방법
+
+1. `local.properties`에 Android SDK 경로를 적습니다.
+
+   ```properties
+   sdk.dir=/Users/<사용자>/Library/Android/sdk
+   ```
+
+2. JDK 17로 빌드합니다.
+
+   ```sh
+   ./gradlew :app:assembleRealDebug     # Pleos 에뮬레이터·차량용 (패키지 ai.chakak)
+   ./gradlew :app:assembleMockDebug     # 일반 Android 기기용 모의 데이터 (패키지 ai.chakak.mock)
+   ```
+
+3. Pleos Connect 에뮬레이터를 띄우고 설치·실행합니다.
+
+   ```sh
+   adb install -r app/build/outputs/apk/real/debug/app-real-debug.apk
+   adb shell am start -n ai.chakak/.MainActivity
+   ```
+
+4. 기어가 P인 상태에서 화면의 "차량·위치 조회 권한 허용" 버튼을 눌러 권한을 허용한 뒤 기록합니다.
+
+음성으로 기록하려면 앱을 한 번 실행한 뒤 Gleo에게 말하거나, 마이크 없이 문장을 주입합니다.
 
 ```sh
-./gradlew :core:test :app:testMockDebugUnitTest
-./gradlew :app:assembleMockDebug :app:assembleRealDebug
+adb shell am broadcast --user 10 -a ai.umos.intent.action.ASR -p ai.umos.ambientai --es ASR "'차칵으로 지금 위치 저장해줘'"
+```
+
+## 테스트 환경 및 필요한 설정
+
+| 항목 | 값 |
+|---|---|
+| JDK | 17 (Android Studio 내장 JBR 25는 Gradle 8.12에서 실패) |
+| Gradle | 8.12 (wrapper) |
+| Android SDK | compileSdk·targetSdk 35, minSdk 28 |
+| Pleos SDK | Vehicle 2.3.2, FusedLocation 1.1.3, NaviHelper 3.0.5, SpeechToText 3.3.1 |
+| 네트워크 | `real` 빌드는 Pleos Nexus(`nexus-playground.pleos.ai`)에 접근할 수 있어야 합니다. 막혀 있으면 `mock`만 빌드됩니다. |
+
+```sh
+./gradlew :core:test                      # 순수 JVM (캡처 엔진, 접근 게이트)
+./gradlew :app:testMockDebugUnitTest      # Robolectric (Room 저장소)
+./gradlew :app:testRealDebugUnitTest      # Robolectric (Gleo 스키마·리소스 계약)
 ./gradlew :app:lintMockDebug :app:lintRealDebug
 ```
 
-- `mockDebug`: 일반 Android 환경에서 화면과 테스트 데이터를 확인합니다. 패키지는 `ai.chakak.mock`이며 실제 데이터로 전환하거나 자동 대체하지 않습니다. `MockPlatform.scenario`에 성공·부분 실패·권한 거부·미지원·오류·시간 초과가 정의되어 있습니다.
-- `realDebug`: Vehicle 2.3.2, FusedLocation 1.1.3 사용. 패키지는 `ai.chakak`입니다. 실제 Pleos 서비스와 권한이 필요합니다. 주차 및 CarUxRestrictions를 모두 확인하지 못하면 화면 조작을 차단합니다.
-- 모의 release 변형은 생성하지 않습니다. debug APK는 제출용 release APK가 아닙니다.
+단위 테스트는 JVM·Robolectric에서 실행합니다. Gleo 음성 기록(스키마 읽기 → `CAPTURE_RECORD` 호출 → 저장 → 응답)은 Pleos Connect v2.1.0 에뮬레이터에서 확인했고, 실차에서는 검증하지 않았습니다.
 
-APK 경로:
+에뮬레이터에서 필요한 설정:
 
-- `app/build/outputs/apk/mock/debug/app-mock-debug.apk`
-- `app/build/outputs/apk/real/debug/app-real-debug.apk`
+- **권한**: 앱 화면의 권한 버튼으로 허용합니다. adb로 줄 때는 사용자 10에 부여합니다.
 
-## 전체 차량 상태 기록
+  ```sh
+  adb shell pm grant --user 10 ai.chakak pleos.car.permission.FUSED_LOCATION
+  ```
 
-현재 상태 기록 버튼과 Gleo의 `CAPTURE_RECORD`는 문서 목록의 선택된 차량 조회 26개 항목 및 FusedLocation 위치를 한 기록에 수집합니다. `기록해줘`, `다 기록해줘`, `차량 상태 기록해줘`, `캡처해줘`를 같은 동작으로 설명하도록 음성 스키마를 갱신했습니다. 실제 Gleo 인식·전달은 등록된 스키마와 환경에서 별도로 검증해야 합니다.
+- **기어 변경**: 기기 안 8088 포트의 Virtual Console을 씁니다. 세션 신호가 1초마다 와야 적용됩니다.
 
-Vehicle 2.3.2 공개 메서드와 권한 선언을 확인한 명시적 읽기 전용 어댑터를 사용합니다. 전체 수집 제한은 5초이며, 지원 범위·권한을 확인하고 문/공조 영역/바퀴별 결과와 실패 사유를 저장합니다. 값 조회의 개별 응답 제한은 1.5초입니다. 일부 영역의 실패가 다른 영역의 값을 지우지 않습니다. 숫자는 단위를 임의로 추정하지 않습니다. 차량 등록 정보·VIN, 좌석·헤드레스트, 연비, 누적 전비, 실내 조명, 문 열림 위치, 글로브박스 잠금, 하이패스 음량, 스마트글라스·블라인드, 공기 청정·자동 내기순환·자동 공조는 수집 대상에서 제외했습니다. 방향지시등, 사이드미러·핸들 열선, 크루즈 목표 속도, 조향각, 주유 이후 거리·시간, 온도 표시 단위도 제외했습니다. 상세 화면은 위치·주행·제동·공조 등 구분별로 묶어 표시하며, 현재 수집에서 제외한 과거 항목은 이전 수집·기타 항목으로 표시합니다. 트립 관련 수집을 모두 제외하고 누적 주행거리만 유지합니다. 기존 기록은 변경하지 않습니다.
+  ```sh
+  adb forward tcp:18088 tcp:8088
+  while true; do curl -s -X POST "http://127.0.0.1:18088/browser/session?client=cli" >/dev/null; sleep 1; done &
+  curl -s -X PUT "http://127.0.0.1:18088/vehicle/gear?gear=Drive"   # Park | Reverse | Neutral | Drive
+  ```
 
-배터리 그룹은 배터리 충전량·현재 전비, 연료 그룹은 연료 잔량·현재 전비를 표시합니다. 현재 전비는 한 번 저장한 동일 관측값을 두 그룹에 표시하며 연비로 변환하지 않습니다. 충전 전류 제한·충전 스위치·순간 전비·충전 이후 전비는 수집에서 제외합니다.
+- **주행 중 음성 기록**: `realDebug` 빌드가 에뮬레이터에서만 주행(D) 중 음성 기록을 허용합니다. 터치 화면은 주행 중 잠깁니다.
+- **실제 마이크**: 에뮬레이터를 `-allow-host-audio`로 띄우고, 부팅이 끝난 뒤 `hostmicon`을 실행합니다. 실행 옵션만으로는 무음이 들어갑니다. 그다음 호출어 "글레오"로 Gleo를 깨워 말합니다.
 
-공조는 에어컨 상태·냉난방 설정 온도·현재 온도·내기순환 상태 4개 항목만 수집합니다. 온도는 SDK에 섭씨를 명시해 요청하고 단위와 함께 저장합니다. 별도 히터 상태는 제공 API가 확인되지 않아 추정하지 않습니다. 상세 화면의 각 구분은 처음에 접힌 상태이며 제목을 눌러 펼치거나 접을 수 있습니다.
+  ```sh
+  ~/Library/Android/sdk/emulator/emulator -avd Pleos_Connect_v2_1_0 -allow-host-audio
+  ~/Library/Android/sdk/platform-tools/adb emu avd hostmicon
+  ```
+- **메모 음성 입력**: Pleos Playground 앱 등록 정보(Client ID·Secret)가 없어 기기 내장 인식으로 동작합니다.
 
-외부 조명은 앞·뒤 안개등, 상향등, 하향등, 후미등의 실제 상태만 수집하고 스위치 값은 제외합니다.
+## 개발에 사용한 Pleos Connect 에뮬레이터 버전과 화면 규격
 
-주차 화면의 차량·위치 조회 권한 버튼으로 필요한 권한을 요청합니다. 시스템이나 프로젝트 승인이 필요한 권한은 일반 권한 요청으로 부여되지 않을 수 있으며 해당 항목은 권한 없음으로 기록됩니다. 차량 상태 수집은 NaviHelper 다운로드나 주소 변환에 의존하지 않습니다.
+| 항목 | 값 |
+|---|---|
+| 에뮬레이터 | Pleos Connect v2.1.0 (Android Automotive, API 34, arm64-v8a) |
+| Gleo | 4.2.0 (`ai.umos.ambientai`) |
+| 폼팩터 | Connect-S-17 (기본), 16:9, 17인치 |
+| 전체 해상도 | 2560 × 1440 px, 160 dpi (1dp = 1px) |
+| 앱 영역 | 가로 1700 × 1184 dp, 세로 840 × 1184 dp |
 
-## 현재 확인 범위
+폭 840dp 이상이면 목록·상세 2단, 그보다 좁으면 단일 패널로 표시합니다.
 
-[0–4단계 실행 기록](docs/technical/implementation-status.md)에 구현·검증·외부 조건을 구분했습니다. 테스트는 JVM 및 Robolectric에서 실행했으며 Pleos 에뮬레이터나 차량에서 실행한 결과가 아닙니다.
+## APK 파일 위치 또는 GitHub Release 링크
 
-Gleo 스키마와 주행 중 headless 음성 캡처 경로를 구현했습니다. 터치 조작은 계속 주차 상태에서만 허용합니다. Pleos Connect v2.1.0 에뮬레이터에서 Gleo가 스키마를 읽고 `CAPTURE_RECORD`를 호출해 기록 저장과 결과 응답까지 확인했습니다. 수신기는 Gleo Interface 가이드의 계약만 구현하며, 가이드에 호출자 검증 방법이 없어 발신 앱을 제한하지 않습니다. 현재 `realDebug` Pleos 에뮬레이터에서는 주행(D) 중 음성 캡처를 허용합니다. 실제 차량·release의 주행 음성 승인은 별도이며 터치 UI 잠금은 유지합니다. 음성으로는 기록 저장만 하고, 메모는 주차 후 화면에서 씁니다. Gleo가 되물은 뒤의 답을 앱으로 이어 주지 않아 음성 메모는 넣지 않았습니다. 공모전 프로젝트 승인은 검증되지 않았습니다. 위치 런타임 권한을 요청하는 화면은 아직 없습니다. [연동 활성화 조건](docs/technical/gleo-integration.md)을 확인해야 합니다. 자체 마이크 상시 청취·호출어 기능은 없습니다. 주차 중 편집 화면에서는 Pleos SpeechToText SDK로 메모를 음성 입력할 수 있습니다. 서버 인식에 필요한 앱 등록 정보가 없어 지금은 기기 내장 인식으로 동작합니다. 앱 자체 TTS는 없습니다.
+GitHub Release: [v1.0.0](https://github.com/NHY-moniq/chakak/releases/tag/v1.0.0)
 
-설계 입력 `.fig`와 기존 참고 문서는 `docs/`에 있으며 기존 Git 제외 규칙을 유지합니다. 새 설계·검증 문서는 추적 대상입니다. GitHub 업로드와 제출용 서명·배포는 5–6단계 작업으로 이번 범위에 포함하지 않았습니다.
+직접 빌드하면 아래 경로에 APK가 생깁니다. 저장소에는 포함하지 않습니다.
 
-### 서라운드뷰 이미지 표시 준비
+- `app/build/outputs/apk/real/debug/app-real-debug.apk` — Pleos 에뮬레이터·차량용
+- `app/build/outputs/apk/mock/debug/app-mock-debug.apk` — 일반 Android 기기용 모의 데이터
 
-기록 상세는 기록 시간 → 서라운드뷰 이미지 → 위치 → 편집 및 차량 상태 순서로 표시합니다.
-이미지와 위치는 접지 않습니다. 실제 서라운드뷰 SDK 캡처는 아직 연결하지 않았습니다.
-현재 기록에 이미지가 없으면 빈 상태를 표시하며 임의의 차량 이미지를 대신 표시하지 않습니다.
-향후 캡처 어댑터는 `surroundCapture` 키를 수집 시작 시 등록하고, 성공 시
-`Observation("surroundCapture", Status.OK, "{\"uri\":\"content://...\"}", capturedAt)`를 저장합니다.
-이미지는 기록별로 보존 가능한 로컬 URI여야 하며 어댑터가 파일 수명과 삭제 처리를 함께 구현해야 합니다.
-UI는 로컬 `content://` 또는 `file://` 이미지를 비동기로 축소 디코딩하여 원본 비율로 표시합니다.
-주소 조회는 새 캡처에서 Pleos NaviHelper를 사용하며, 외부 지도 API는 추가하지 않았습니다. `NAVI_ROUTE` 권한과 내비게이션 서비스 응답이 필요합니다. SDK 반환 언어를 보존하며 한국어 변환을 보장하지 않습니다.
+둘 다 debug 서명 APK입니다.
