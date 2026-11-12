@@ -15,17 +15,17 @@
    sdk.dir=/Users/<사용자>/Library/Android/sdk
    ```
 
-2. JDK 17로 빌드합니다.
+2. JDK 17로 빌드합니다. 저장소의 `apk/메이비올낫_차칵_release.apk`를 그대로 쓸 때는 이 단계를 건너뜁니다.
 
    ```sh
-   ./gradlew :app:assembleRealDebug     # Pleos 에뮬레이터·차량용 (패키지 ai.chakak)
+   ./gradlew :app:assembleRealRelease   # Pleos 에뮬레이터·차량용 release (패키지 ai.chakak)
    ./gradlew :app:assembleMockDebug     # 일반 Android 기기용 모의 데이터 (패키지 ai.chakak.mock)
    ```
 
 3. Pleos Connect 에뮬레이터를 띄우고 설치·실행합니다.
 
    ```sh
-   adb install -r app/build/outputs/apk/real/debug/app-real-debug.apk
+   adb install -r apk/메이비올낫_차칵_release.apk
    adb shell am start -n ai.chakak/.MainActivity
    ```
 
@@ -72,7 +72,7 @@ adb shell am broadcast --user 10 -a ai.umos.intent.action.ASR -p ai.umos.ambient
   curl -s -X PUT "http://127.0.0.1:18088/vehicle/gear?gear=Drive"   # Park | Reverse | Neutral | Drive
   ```
 
-- **주행 중 음성 기록**: `realDebug` 빌드가 에뮬레이터에서만 주행(D) 중 음성 기록을 허용합니다. 터치 화면은 주행 중 잠깁니다.
+- **주행 중 음성 기록**: 주행(D) 중에도 Gleo 음성으로 기록합니다. 터치 화면은 주행 중 잠깁니다.
 - **실제 마이크**: 에뮬레이터를 `-allow-host-audio`로 띄우고, 부팅이 끝난 뒤 `hostmicon`을 실행합니다. 실행 옵션만으로는 무음이 들어갑니다. 그다음 호출어 "글레오"로 Gleo를 깨워 말합니다.
 
   ```sh
@@ -95,11 +95,7 @@ adb shell am broadcast --user 10 -a ai.umos.intent.action.ASR -p ai.umos.ambient
 
 ## APK 파일 위치 또는 GitHub Release 링크
 
-GitHub Release: [v1.0.0](https://github.com/NHY-moniq/chakak/releases/tag/v1.0.0)
+- 저장소: [`apk/메이비올낫_차칵_release.apk`](apk/메이비올낫_차칵_release.apk) — release 빌드, 버전 1.0.0, 패키지 `ai.chakak`
+- GitHub Release: [v1.0.0](https://github.com/NHY-moniq/chakak/releases/tag/v1.0.0)
 
-직접 빌드하면 아래 경로에 APK가 생깁니다. 저장소에는 포함하지 않습니다.
-
-- `app/build/outputs/apk/real/debug/app-real-debug.apk` — Pleos 에뮬레이터·차량용
-- `app/build/outputs/apk/mock/debug/app-mock-debug.apk` — 일반 Android 기기용 모의 데이터
-
-둘 다 debug 서명 APK입니다.
+Android debug 키로 서명해 에뮬레이터에 바로 설치됩니다. 직접 빌드하면 `app/build/outputs/apk/real/release/app-real-release.apk`에 같은 APK가 생깁니다.

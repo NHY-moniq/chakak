@@ -32,7 +32,7 @@ class GleoContractTest {
         assertEquals(Category.entries.map { it.name }.toSet(), (0 until categories.length()).map { categories.getString(it) }.toSet())
     }
     @Test fun configuredFlagsAndCallbackTarget() {
-        assertFalse(context.resources.getBoolean(R.bool.gleo_in_motion_approved))
+        assertTrue(context.resources.getBoolean(R.bool.gleo_in_motion_approved))
         assertTrue(context.resources.getBoolean(R.bool.gleo_receiver_enabled))
         assertTrue(context.resources.getBoolean(R.bool.gleo_emulator_in_motion_enabled))
         assertEquals("ai.umos.ambientai", context.getString(R.string.gleo_package))

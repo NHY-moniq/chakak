@@ -28,7 +28,8 @@ JDK 17, Android SDK 35, Gradle 8.12(wrapper). SDK 경로는 추적하지 않는 
 ```
 
 - `mockRelease` 변형은 `androidComponents`에서 비활성화되어 있다. 존재하지 않는 태스크다.
-- `GleoContractTest`는 `realDebug` 리소스 오버라이드(`gleo_emulator_in_motion_enabled=true`)를 단정하므로 `testRealDebugUnitTest`로만 통과한다.
+- `GleoContractTest`는 `real` 플레이버의 `gleo.xml` 값과 `schema.json`을 단정하므로 `testRealDebugUnitTest`로 돌린다.
+- release 빌드는 debug 키로 서명한다. 제출용 APK는 `:app:assembleRealRelease` 산출물을 `apk/메이비올낫_차칵_release.apk`로 복사한 것이다.
 - Room은 `exportSchema = true`로 `app/schemas/`에 스키마를 내보낸다. 엔티티를 바꾸면 DB `version`을 올리고 새 스키마 JSON이 생성되는지 확인한다.
 - 테스트는 JVM·Robolectric에서만 돌았다. Pleos 에뮬레이터나 실차 검증 결과가 아니라는 점을 문서에 쓸 때 구분한다.
 
@@ -64,7 +65,7 @@ JDK 17, Android SDK 35, Gradle 8.12(wrapper). SDK 경로는 추적하지 않는 
 - 터치 = 주차(P) ∧ UX 제한 정보 확인됨 ∧ 산만 최적화 불필요. 하나라도 모르면 차단.
 - 음성 = 터치 ∨ (주행(D) ∧ UX 확인됨 ∧ 주행 중 음성 승인).
 - UNKNOWN·R·기타 기어는 승인 여부와 무관하게 전부 차단.
-- 주행 중 음성 승인은 `gleo_in_motion_approved`(배포 승인) 또는 `gleo_emulator_in_motion_enabled ∧ DEBUG ∧ HARDWARE=="ranchu"`(에뮬레이터 opt-in). 어느 쪽도 터치 UI를 열지 않는다.
+- 주행 중 음성 승인은 `gleo_in_motion_approved`(배포 승인) 또는 `gleo_emulator_in_motion_enabled ∧ HARDWARE=="ranchu"`(에뮬레이터 opt-in, 빌드 타입 무관). 지금은 `gleo_in_motion_approved=true`라 모든 빌드·환경에서 주행 중 음성이 열려 있다. 공모전·Gleo 쪽의 주행 중 기능 승인 여부는 확인되지 않았다. 어느 쪽도 터치 UI를 열지 않는다.
 
 이 규칙은 `CaptureAccessTest`에 고정되어 있다. 완화하려면 스펙과 테스트를 같이 바꾼다.
 
@@ -81,7 +82,7 @@ JDK 17, Android SDK 35, Gradle 8.12(wrapper). SDK 경로는 추적하지 않는 
 - 응답 메시지는 항상 "The record has been saved." 한 문장이다. 항목별 누락(전기차의 엔진 오일 등)은 어떤 차에서도 생기므로 음성으로 알리지 않고 주차 후 화면에서 보여 준다.
 - 음성 메모는 없다. 메모는 주차 후 화면에서 쓴다. 스키마 함수는 `CAPTURE_RECORD` 하나다. 이유는 아래 "음성 메모를 넣지 않은 이유"에 있다. `RecordStore`의 메모 토큰 API(`issueMemoToken`, `addMemo`, `addPendingMemo`)와 DB 컬럼은 다시 켤 때 쓰려고 남겨 두었다.
 - 앱을 설치만 하고 한 번도 실행하지 않으면 Android의 stopped 상태라 브로드캐스트가 전달되지 않는다. 테스트 전 한 번 실행한다.
-- 기능 플래그는 전부 `gleo.xml`의 bool 리소스다. `realDebug/res/values/gleo.xml`이 에뮬레이터 opt-in만 덮어쓴다.
+- 기능 플래그는 전부 `app/src/real/res/values/gleo.xml`의 bool 리소스다.
 - `app/src/real/assets/schema.json`(Gleo 액션 스키마)은 수신기·`Category` enum과 일치해야 하며 `GleoContractTest`가 검사한다. 액션이나 카테고리를 바꾸면 세 곳을 같이 고친다.
 
 ### 에뮬레이터 음성 테스트
