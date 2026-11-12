@@ -73,7 +73,12 @@ adb shell am broadcast --user 10 -a ai.umos.intent.action.ASR -p ai.umos.ambient
   ```
 
 - **주행 중 음성 기록**: `realDebug` 빌드가 에뮬레이터에서만 주행(D) 중 음성 기록을 허용합니다. 터치 화면은 주행 중 잠깁니다.
-- **실제 마이크**: 부팅 후 `adb emu avd hostmicon`을 실행하고, 호출어 "글레오"로 Gleo를 깨웁니다.
+- **실제 마이크**: 에뮬레이터를 `-allow-host-audio`로 띄우고, 부팅이 끝난 뒤 `hostmicon`을 실행합니다. 실행 옵션만으로는 무음이 들어갑니다. 그다음 호출어 "글레오"로 Gleo를 깨워 말합니다.
+
+  ```sh
+  ~/Library/Android/sdk/emulator/emulator -avd Pleos_Connect_v2_1_0 -allow-host-audio
+  ~/Library/Android/sdk/platform-tools/adb emu avd hostmicon
+  ```
 - **메모 음성 입력**: Pleos Playground 앱 등록 정보(Client ID·Secret)가 없어 기기 내장 인식으로 동작합니다.
 
 ## 개발에 사용한 Pleos Connect 에뮬레이터 버전과 화면 규격
