@@ -95,7 +95,9 @@ adb shell am broadcast --user 10 -a ai.umos.intent.action.ASR -p ai.umos.ambient
 
 ## APK 파일 위치 또는 GitHub Release 링크
 
-빌드하면 아래 경로에 APK가 생깁니다. 저장소에는 포함하지 않습니다.
+GitHub Release: [v1.0.0](https://github.com/NHY-moniq/chakak/releases/tag/v1.0.0)
+
+직접 빌드하면 아래 경로에 APK가 생깁니다. 저장소에는 포함하지 않습니다.
 
 - `app/build/outputs/apk/real/debug/app-real-debug.apk` — Pleos 에뮬레이터·차량용
 - `app/build/outputs/apk/mock/debug/app-mock-debug.apk` — 일반 Android 기기용 모의 데이터
